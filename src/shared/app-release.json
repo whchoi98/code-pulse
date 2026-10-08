@@ -1,6 +1,32 @@
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "releases": [
+    {
+      "version": "1.2.0",
+      "date": "2026-10-08",
+      "changes": [
+        {
+          "category": "Added",
+          "en": "Show every official change in Korean alongside the short overview, including fixes and smaller updates.",
+          "ko": "핵심 요약과 함께 오류 수정과 작은 개선을 포함한 공식 변경 사항 전체를 한국어로 표시"
+        },
+        {
+          "category": "Added",
+          "en": "Validate one explanation per source item and resume polished batches after interrupted generation.",
+          "ko": "원문 항목과 한국어 설명을 대조하고 중단된 생성 작업을 중간 저장부터 재개"
+        },
+        {
+          "category": "Added",
+          "en": "Include complete change lists in search, read state, Markdown exports and RSS.",
+          "ko": "검색, 읽음 상태, Markdown 내보내기와 RSS에 전체 변경 목록 반영"
+        },
+        {
+          "category": "Fixed",
+          "en": "Preserve complete source bodies instead of cutting long release records.",
+          "ko": "긴 릴리스 원문이 글자 수 제한으로 잘리던 문제 수정"
+        }
+      ]
+    },
     {
       "version": "1.1.0",
       "date": "2026-10-08",

@@ -1,20 +1,25 @@
 import { createHash, randomUUID } from 'node:crypto';
-import type { CollectionRun, Entry, Explanation, Snapshot, SourceStatus } from '../shared/types.js';
+import type { CollectionRun, Entry, Explanation, FullChanges, Snapshot, SourceStatus } from '../shared/types.js';
 import { parseSource, plainText, SOURCES, type Candidate, type SourceDefinition } from './sources.js';
 import type { FetchedDocument } from './official-fetch.js';
 import { readSourceHistory } from './source-history.js';
 import { WriteConflict, type SnapshotStore } from './store.js';
+import { extractChangeItems } from './change-items.js';
+import { FULL_CHANGES_VERSION, fullChangesSourceHash, isFullChangesComplete, isFullChangesProgress } from './full-changes.js';
+import { DEFAULT_MODEL_ID } from './explanation.js';
 
 export interface Supplement { url: string; text: string }
 export interface CollectOptions {
   store: SnapshotStore;
   fetchDocument: (url: string) => Promise<FetchedDocument>;
   summarize: (candidate: Candidate, supplements: Supplement[]) => Promise<Explanation>;
+  expandChanges?: (candidate: Candidate, previous?: FullChanges, onProgress?: (value: FullChanges) => Promise<void>) => Promise<FullChanges>;
   sources?: SourceDefinition[];
   now?: () => Date;
   lookbackDays?: number;
   sinceDate?: string;
   maxSummaries?: number;
+  maxFullChanges?: number;
   summaryConcurrency?: number;
   modelId?: string;
   refreshModel?: boolean;
@@ -59,6 +64,22 @@ function earliestHistorySince(...values: (string | undefined)[]): string | undef
   return times.length ? new Date(Math.min(...times)).toISOString() : undefined;
 }
 
+function retainedFullChanges(source: Entry, ...values: (FullChanges | undefined)[]): FullChanges | undefined {
+  const valid = values.filter((value): value is FullChanges => Boolean(value)
+    && isFullChangesProgress(value, source, value!.model));
+  if (!valid.length) return undefined;
+  // Prefer newer wording by editing time, then fill its missing IDs from older
+  // compatible progress. Stable sorting makes persisted text win on tied times.
+  valid.sort((left, right) => Date.parse(right.updatedAt) - Date.parse(left.updatedAt));
+  const newest = valid[0];
+  const byId = new Map<string, FullChanges['items'][number]>();
+  for (const value of valid.filter(value => value.model === newest.model && value.formatVersion === newest.formatVersion)) {
+    for (const item of value.items) if (!byId.has(item.id)) byId.set(item.id, item);
+  }
+  const items = extractChangeItems(source).flatMap(item => byId.has(item.id) ? [byId.get(item.id)!] : []);
+  return { ...newest, items, status: items.length === newest.sourceCount ? 'ready' : 'pending' };
+}
+
 function mergeEntry(previous: Entry, incoming: Entry): Entry {
   const previousPrimary = isPrimaryRelease(previous);
   const incomingPrimary = isPrimaryRelease(incoming);
@@ -72,6 +93,7 @@ function mergeEntry(previous: Entry, incoming: Entry): Entry {
     firstSeenAt: [previous.firstSeenAt, incoming.firstSeenAt].sort()[0],
     references: mergeReferences(source, other),
   };
+  merged.fullChanges = retainedFullChanges(merged, previous.fullChanges, incoming.fullChanges);
   if (previous.contentHash !== incoming.contentHash) return merged;
 
   // Source verification and explanation editing are independent clocks.
@@ -171,6 +193,8 @@ export async function collectOnce(options: CollectOptions): Promise<CollectionRu
   const previous = new Map(deduplicateReleases(prior.snapshot.entries.map(canonicalEntry)).map(entry => [entry.id, entry]));
   const needsModelRefresh = (entry: Entry) => options.refreshModel === true && Boolean(options.modelId)
     && entry.explanationModel !== options.modelId;
+  const needsFullChanges = (entry: Entry) => Boolean(options.expandChanges)
+    && !isFullChangesComplete(entry.fullChanges, entry, options.modelId);
   const statuses: SourceStatus[] = [];
   const candidates = new Map<string, Candidate>();
   const historyReadSince = new Map<string, number>();
@@ -266,7 +290,7 @@ export async function collectOnce(options: CollectOptions): Promise<CollectionRu
   }
   // Discovery limits do not expire retries or model refreshes of verified material.
   for (const [id, entry] of previous) {
-    if ((entry.explanationStatus === 'pending' || needsModelRefresh(entry)) && !queued.has(id)) {
+    if ((entry.explanationStatus === 'pending' || needsModelRefresh(entry) || needsFullChanges(entry)) && !queued.has(id)) {
       queued.set(id, { candidate: entry, checkedAt: entry.checkedAt });
     }
   }
@@ -286,6 +310,11 @@ export async function collectOnce(options: CollectOptions): Promise<CollectionRu
     failedSources: statuses.filter(source => source.state === 'error').map(source => source.id),
   };
   const additions: Entry[] = [];
+  function remember(entry: Entry) {
+    const index = additions.findIndex(value => value.id === entry.id);
+    if (index < 0) additions.push({ ...entry });
+    else additions[index] = { ...entry };
+  }
   let current = prior;
   const wallStarted = Date.now();
   async function persist(includeRun: boolean) {
@@ -300,7 +329,7 @@ export async function collectOnce(options: CollectOptions): Promise<CollectionRu
           } : source) : statuses;
         const snapshot = merge(current.snapshot, additions, committedStatuses, run, includeRun);
         if (includeRun) {
-          const incomplete = snapshot.entries.some(entry => entry.explanationStatus === 'pending' || needsModelRefresh(entry));
+          const incomplete = snapshot.entries.some(entry => entry.explanationStatus === 'pending' || needsModelRefresh(entry) || needsFullChanges(entry));
           run.status = sources.length > 0 && run.failedSources.length === sources.length ? 'failed'
             : run.failedSources.length || incomplete ? 'partial' : 'success';
           snapshot.runs = snapshot.runs.map(item => item.id === run.id ? { ...run } : item);
@@ -314,7 +343,14 @@ export async function collectOnce(options: CollectOptions): Promise<CollectionRu
       }
     }
   }
+  let saving = Promise.resolve();
+  function save(includeRun: boolean) {
+    const operation = saving.then(() => persist(includeRun));
+    saving = operation.catch(() => {});
+    return operation;
+  }
   let summariesAttempted = 0;
+  let fullChangesAttempted = 0;
   // Interleave products so the initial budget always includes all three.
   const sorted = [...queued.entries()].sort((a, b) => b[1].candidate.publishedAt.localeCompare(a[1].candidate.publishedAt));
   const queues = new Map<string, typeof sorted>();
@@ -341,6 +377,7 @@ export async function collectOnce(options: CollectOptions): Promise<CollectionRu
         explanation: old.explanation, explanationModel: old.explanationModel,
         editorialVersion: old.editorialVersion, explanationEditedAt: old.explanationEditedAt,
       } : {}),
+      fullChanges: !changed ? old?.fullChanges : undefined,
     };
     // Ready explanations remain visible until a replacement is generated successfully.
     const needsSummary = entry.explanationStatus === 'pending' || needsModelRefresh(entry);
@@ -367,18 +404,42 @@ export async function collectOnce(options: CollectOptions): Promise<CollectionRu
         options.onWarning?.({ id, message: error instanceof Error ? error.message.slice(0, 220) : '해설 생성 실패' });
       }
     }
+    if (options.expandChanges && needsFullChanges(entry)) {
+      try {
+        if (!isFullChangesProgress(entry.fullChanges, entry, options.modelId)) {
+          entry.fullChanges = {
+            status: 'pending', sourceHash: fullChangesSourceHash(entry), model: options.modelId || DEFAULT_MODEL_ID,
+            formatVersion: FULL_CHANGES_VERSION, updatedAt: clock().toISOString(),
+            sourceCount: extractChangeItems(entry).length, items: [],
+          };
+        }
+        if (fullChangesAttempted < (options.maxFullChanges ?? 80) && Date.now() - wallStarted < 14 * 60_000) {
+          fullChangesAttempted++;
+          const expanded = await options.expandChanges(candidate, entry.fullChanges, async progress => {
+            if (!isFullChangesProgress(progress, entry, options.modelId)) throw new Error('전체 변경의 중간 결과가 원문 항목과 일치하지 않습니다.');
+            entry.fullChanges = structuredClone(progress);
+            remember(entry);
+            await save(false);
+          });
+          if (!isFullChangesComplete(expanded, entry, options.modelId)) throw new Error('전체 변경의 모든 항목을 처리하지 못했습니다.');
+          entry.fullChanges = expanded;
+        }
+      } catch (error) {
+        options.onWarning?.({ id, message: error instanceof Error ? error.message.slice(0, 220) : '전체 변경 설명 생성 실패' });
+      }
+    }
     return entry;
   }
   let checkpointSize = 0;
   for (let index = 0; index < work.length; index += summaryConcurrency) {
     const batch = await Promise.all(work.slice(index, index + summaryConcurrency).map(prepareEntry));
-    additions.push(...batch);
+    batch.forEach(remember);
     // Only persist after the whole batch settles; writes never compete with one another.
     if (additions.length - checkpointSize >= 5 && summariesAttempted > 0) {
-      await persist(false);
+      await save(false);
       checkpointSize = additions.length;
     }
   }
-  await persist(true);
+  await save(true);
   return run;
 }

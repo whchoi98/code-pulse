@@ -1,0 +1,120 @@
+{
+  "checkedAt": "2026-10-08T11:05:16.716Z",
+  "requestedSince": "2026-01-01",
+  "entries": 613,
+  "ready": 613,
+  "pending": 0,
+  "fullChangeRecords": 613,
+  "pendingFullChangeRecords": 0,
+  "sourceChangeItems": 20027,
+  "explainedChangeItems": 20027,
+  "remainingModelRefresh": 0,
+  "models": {
+    "global.anthropic.claude-haiku-5-5": 613
+  },
+  "editorialVersions": {
+    "human-ton-1": 613
+  },
+  "products": {
+    "claude-code": 241,
+    "codex": 199,
+    "kiro": 173
+  },
+  "months": {
+    "2026-01": 48,
+    "2026-02": 70,
+    "2026-03": 57,
+    "2026-04": 55,
+    "2026-05": 60,
+    "2026-06": 70,
+    "2026-07": 75,
+    "2026-08": 77,
+    "2026-09": 84,
+    "2026-10": 17
+  },
+  "firstPublication": "2026-01-06",
+  "latestPublication": "2026-10-08",
+  "duplicateIds": 0,
+  "duplicateCliVersions": 0,
+  "sources": [
+    {
+      "id": "claude-releases",
+      "product": "claude-code",
+      "name": "Claude Code 공식 릴리스",
+      "url": "https://github.com/anthropics/claude-code/releases",
+      "checkedAt": "2026-10-08T11:02:02.362Z",
+      "state": "ok",
+      "lastSuccessAt": "2026-10-08T11:02:02.362Z",
+      "entryCount": 231,
+      "latestPublishedDate": "2026-10-08"
+    },
+    {
+      "id": "codex-releases",
+      "product": "codex",
+      "name": "Codex 공식 GitHub 릴리스",
+      "url": "https://github.com/openai/codex/releases",
+      "checkedAt": "2026-10-08T11:02:02.362Z",
+      "historySince": "2026-01-01T00:00:00.000Z",
+      "state": "ok",
+      "lastSuccessAt": "2026-10-08T11:02:02.362Z",
+      "entryCount": 26,
+      "latestPublishedDate": "2026-10-07"
+    },
+    {
+      "id": "codex-changelog",
+      "product": "codex",
+      "name": "Codex 공식 변경 기록",
+      "url": "https://developers.openai.com/codex/changelog/",
+      "checkedAt": "2026-10-08T11:02:02.362Z",
+      "state": "ok",
+      "lastSuccessAt": "2026-10-08T11:02:02.362Z",
+      "entryCount": 106,
+      "latestPublishedDate": "2026-10-07"
+    },
+    {
+      "id": "kiro-changelog",
+      "product": "kiro",
+      "name": "Kiro 공식 변경 기록",
+      "url": "https://kiro.dev/changelog/",
+      "checkedAt": "2026-10-08T11:02:02.362Z",
+      "state": "ok",
+      "lastSuccessAt": "2026-10-08T11:02:02.362Z",
+      "entryCount": 173,
+      "latestPublishedDate": "2026-10-05"
+    },
+    {
+      "id": "claude-changelog",
+      "product": "claude-code",
+      "name": "Claude Code 공식 변경 기록 (영문)",
+      "url": "https://code.claude.com/docs/en/changelog",
+      "checkedAt": "2026-10-08T11:02:02.362Z",
+      "state": "ok",
+      "lastSuccessAt": "2026-10-08T11:02:02.362Z",
+      "entryCount": 240,
+      "latestPublishedDate": "2026-10-08"
+    },
+    {
+      "id": "claude-whats-new",
+      "product": "claude-code",
+      "name": "Claude Code 새 소식 (한국어 주간 요약)",
+      "url": "https://code.claude.com/docs/ko/whats-new",
+      "checkedAt": "2026-10-08T11:02:02.362Z",
+      "state": "ok",
+      "lastSuccessAt": "2026-10-08T11:02:02.362Z",
+      "entryCount": 146
+    }
+  ],
+  "weeklyReferences": 146,
+  "latestRun": {
+    "id": "366caa08-71b9-47f2-983b-454680443440",
+    "startedAt": "2026-10-08T11:02:02.362Z",
+    "completedAt": "2026-10-08T11:03:57.871Z",
+    "status": "success",
+    "newEntries": 0,
+    "updatedEntries": 0,
+    "summarizedEntries": 0,
+    "failedSources": []
+  },
+  "validationErrors": [],
+  "complete": true
+}

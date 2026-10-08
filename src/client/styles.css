@@ -351,7 +351,9 @@ button, a, input, select, summary { outline-offset: 4px; }
 .detail-meta .product-mark { height: 23px; width: 23px; }
 .detail-meta .category-tag { margin-left: auto; }
 .detail-article h1 { font-size: 32px; font-weight: 600; line-height: 1.6; letter-spacing: -1.25px; margin-top: 23px; word-break: keep-all; overflow-wrap: anywhere; }
-.detail-lead { font-size: 15px; color: var(--muted); line-height: 2; margin-top: 17px; word-break: keep-all; overflow-wrap: anywhere; }
+.detail-summary { margin-top: 17px; }
+.summary-label { color: var(--accent-dark); font-size: 11px; font-weight: 500; }
+.detail-lead { font-size: 15px; color: var(--muted); line-height: 2; margin-top: 8px; word-break: keep-all; overflow-wrap: anywhere; }
 .detail-dates { display: flex; gap: 32px; margin-top: 29px; padding-top: 22px; border-top: 1px solid var(--soft-line); }
 .detail-dates > div { display: grid; gap: 6px; }
 .detail-dates > div > span { font-size: 10px; color: var(--faint); }
@@ -369,6 +371,18 @@ button, a, input, select, summary { outline-offset: 4px; }
 .section-label { font-family: "IBM Plex Mono", monospace; color: var(--accent); font-size: 9px; letter-spacing: 1px; margin-bottom: 10px; }
 .detail-section h2 { font-size: 22px; font-weight: 550; letter-spacing: -0.7px; line-height: 1.5; margin-bottom: 18px; }
 .detail-section > p, .highlight > p { font-size: 15px; line-height: 2; color: var(--muted); word-break: keep-all; overflow-wrap: anywhere; }
+.full-changes-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-bottom: 13px; }
+.full-changes-heading h2 { margin-bottom: 0; }
+.full-changes-count { border-radius: 5px; padding: 4px 8px; background: var(--accent-wash); color: var(--accent-dark); font-size: 11px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.full-changes-count.is-pending { background: var(--subtle); color: var(--muted); }
+.full-changes-pending { display: flex; align-items: flex-start; gap: 10px; background: var(--subtle); border-radius: 8px; padding: 14px 16px; margin: 17px 0; color: var(--muted); font-size: 12px; line-height: 1.9; word-break: keep-all; overflow-wrap: anywhere; }
+.full-changes-pending > svg { margin-top: 3px; }
+.full-changes-pending p + p { margin-top: 4px; }
+.full-changes-list { margin: 0; padding-left: 2.6rem; list-style-type: decimal; }
+.full-change-item { padding: 17px 0 17px 8px; border-bottom: 1px solid var(--soft-line); font-size: 15px; line-height: 2; color: var(--ink); word-break: keep-all; overflow-wrap: anywhere; white-space: pre-wrap; }
+.full-change-item:last-child { border-bottom: 0; }
+.full-change-item::marker { color: var(--accent-dark); font-family: "IBM Plex Mono", monospace; font-size: 12px; font-weight: 500; }
+.full-change-item code { font-family: "IBM Plex Mono", "Noto Sans KR", monospace; font-size: 0.85em; background: var(--subtle); border-radius: 3px; padding: 2px 4px; box-decoration-break: clone; -webkit-box-decoration-break: clone; overflow-wrap: anywhere; }
 .audience-label { display: flex; gap: 10px; font-size: 11px; color: var(--muted); margin-top: 17px; line-height: 1.8; }
 .audience-label > span { color: var(--faint); flex-shrink: 0; }
 .highlight + .highlight { margin-top: 26px; }
@@ -566,7 +580,9 @@ button, a, input, select, summary { outline-offset: 4px; }
   .detail-meta .product-name { font-size: 12px; }
   .detail-meta .category-tag { margin-left: 0; }
   .detail-article h1 { font-size: 25px; line-height: 1.65; letter-spacing: -0.9px; margin-top: 20px; }
-  .detail-lead { font-size: 14px; line-height: 1.95; margin-top: 14px; }
+  .detail-summary { margin-top: 14px; }
+  .summary-label { font-size: 10px; }
+  .detail-lead { font-size: 14px; line-height: 1.95; margin-top: 7px; }
   .detail-dates { gap: 15px; margin-top: 21px; padding-top: 19px; }
   .detail-dates time { font-size: 10px; }
   .detail-dates > div > span, .detail-dates small { font-size: 9px; }
@@ -581,6 +597,12 @@ button, a, input, select, summary { outline-offset: 4px; }
   .section-label { font-size: 8px; margin-bottom: 9px; }
   .detail-section h2 { font-size: 19px; margin-bottom: 14px; }
   .detail-section > p, .highlight > p { font-size: 14px; line-height: 2; }
+  .full-changes-heading h2 { margin-bottom: 0; }
+  .full-changes-count { font-size: 10px; }
+  .full-changes-pending { padding: 12px 13px; font-size: 11px; }
+  .full-changes-list { padding-left: 2rem; }
+  .full-change-item { font-size: 14px; padding: 14px 0 14px 6px; }
+  .full-change-item::marker { font-size: 11px; }
   .audience-label { font-size: 10px; }
   .highlight h3 { font-size: 15px; }
   .evidence { padding-left: 12px; margin-top: 14px; }

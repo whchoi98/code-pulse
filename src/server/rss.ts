@@ -52,6 +52,12 @@ function itemXml(entry: FeedEntry, baseUrl: string): string {
     `<p>원문 발표일: ${escapeXml(entry.publishedDate)} (${escapeXml(precision)})</p>`,
     `<p>${escapeXml(explanation.summary)}</p>`,
     `<p>${escapeXml(explanation.whyItMatters)}</p>`,
+    ...(entry.fullChanges ? [
+      `<h3>전체 변경 사항 (${entry.fullChanges.sourceCount}개)</h3>`,
+      ...(entry.fullChanges.status !== 'ready'
+        ? [`<p>전체 ${entry.fullChanges.sourceCount}개 중 ${entry.fullChanges.items.length}개의 한국어 설명을 준비했습니다.</p>`] : []),
+      `<ol>${entry.fullChanges.items.map(item => `<li>${escapeXml(item.text)}</li>`).join('')}</ol>`,
+    ] : []),
     `<p><a href="${escapeXml(link)}">해설 전체 읽기</a>${sourceUrl
       ? ` | <a href="${escapeXml(sourceUrl)}">공식 원문</a>` : ''}</p>`,
   ].join('');

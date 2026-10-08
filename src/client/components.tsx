@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Bookmark, BookOpen, Check, Clock3, ExternalLink, Info, LoaderCircle, RefreshCw, X } from 'lucide-react';
-import { PRODUCT_IDS, type Entry, type Feed, type FeedEntry, type ProductId } from '../shared/types';
-import { categories, channels, displayDate, displayTimestamp, entryTitle, getCollectionState, lastSevenDays, officialHref, products } from './lib';
+import { PRODUCT_IDS, type Feed, type FeedEntry, type ProductId, type PublicFullChanges } from '../shared/types';
+import { categories, channels, displayDate, displayTimestamp, entryTitle, getCollectionState, getFullChangesState, lastSevenDays, officialHref, products } from './lib';
 
 export function BrandMark({ small = false }: { small?: boolean }) {
   return <svg className={small ? 'brand-mark small' : 'brand-mark'} viewBox="0 0 40 40" fill="none" aria-hidden="true">
@@ -73,7 +73,9 @@ export function CollectionStatus({ feed }: { feed: Feed }) {
         ? <p>이번 수집에서 모든 출처를 확인하지 못했습니다.{feed.entries.length > 0 && ' 이전에 확인한 글을 보여드립니다.'}</p>
         : state.sourceErrors && <p>일부 출처를 확인하지 못했습니다. 확인된 글은 계속 읽을 수 있습니다.</p>}
       {state.sourcePending && !state.runFailed && <p>{state.initialPending ? '첫 출처 확인을 기다리고 있습니다.' : '아직 확인을 마치지 않은 출처가 있습니다.'}</p>}
-      {state.pendingExplanations && <p>일부 글은 아직 한국어 해설이 없습니다. 공식 원문을 먼저 확인할 수 있습니다.</p>}
+      {state.pendingExplanations && <p>{state.pendingShortExplanations
+        ? '일부 글은 아직 한국어 해설이 없습니다. 공식 원문을 먼저 확인할 수 있습니다.'
+        : '일부 글의 전체 변경 사항 해설을 준비하고 있습니다. 요약과 공식 원문은 계속 확인할 수 있습니다.'}</p>}
     </div>
   </div>;
 }
@@ -219,8 +221,43 @@ export function FeedAside({ feed, onSources }: { feed: Feed; onSources: () => vo
   </aside>;
 }
 
+function ChangeText({ text }: { text: string }) {
+  // Only inline code is formatted. React escapes both the code and all prose;
+  // source-looking HTML and Markdown links remain literal text.
+  const delimiters = [...text.matchAll(/`+/g)];
+  const parts: ReactNode[] = [];
+  let position = 0;
+  for (let index = 0; index < delimiters.length; index++) {
+    const opening = delimiters[index];
+    let closingIndex = index + 1;
+    while (closingIndex < delimiters.length && delimiters[closingIndex][0] !== opening[0]) closingIndex++;
+    // Do not reinterpret an unfinished span's inner backticks as delimiters.
+    if (closingIndex === delimiters.length) break;
+    const closing = delimiters[closingIndex];
+    parts.push(text.slice(position, opening.index));
+    parts.push(<code key={opening.index}>{text.slice(opening.index + opening[0].length, closing.index)}</code>);
+    position = closing.index + closing[0].length;
+    index = closingIndex;
+  }
+  parts.push(text.slice(position));
+  return <>{parts}</>;
+}
+
+function FullChangesSection({ fullChanges }: { fullChanges?: PublicFullChanges }) {
+  const state = getFullChangesState(fullChanges);
+  const items = fullChanges?.items ?? [];
+  return <section className="detail-section full-changes-section" aria-labelledby="full-changes-title">
+    <div className="section-label">ALL CHANGES</div>
+    <div className="full-changes-heading"><h2 id="full-changes-title">전체 변경 사항</h2><span className={`full-changes-count${state.complete ? '' : ' is-pending'}`}>{state.countLabel}</span></div>
+    {!state.complete && <div className="full-changes-pending" role="status">
+      <Clock3 size={17} aria-hidden="true" /><div><p>전체 변경 사항의 한국어 해설 준비 중입니다.</p><p>{items.length ? '준비된 항목부터 보여드립니다. 전체 내용은 공식 원문에서 확인할 수 있습니다.' : '공식 원문에서 변경 내용을 먼저 확인할 수 있습니다.'}</p></div>
+    </div>}
+    {items.length > 0 && <ol className="full-changes-list">{items.map((item, index) => <li className="full-change-item" key={`${index}-${item.id}`}><ChangeText text={item.text} /></li>)}</ol>}
+  </section>;
+}
+
 export function EntryDetail({ entry, saved, read, onSave, onRead, onBack, onShare, adjacent, href, onAdjacent }: {
-  entry: Entry;
+  entry: FeedEntry;
   saved: boolean;
   read: boolean;
   onSave: () => void;
@@ -241,14 +278,15 @@ export function EntryDetail({ entry, saved, read, onSave, onRead, onBack, onShar
     <article className="detail-article" aria-labelledby="detail-title">
       <div className="entry-meta detail-meta"><span className="product-name"><ProductMark product={entry.product} />{products[entry.product].name}</span><span className="channel-label">{channels[entry.channel]}</span>{entry.version && <span className="version-label">{entry.version}</span>}{entry.explanation && <span className={`category-tag ${entry.explanation.category}`}>{categories[entry.explanation.category]}</span>}</div>
       <h1 ref={heading} tabIndex={-1} id="detail-title">{title}</h1>
-      {entry.explanation && <p className="detail-lead">{entry.explanation.summary}</p>}
+      {entry.explanation && <div className="detail-summary"><p className="summary-label">짧은 요약</p><p className="detail-lead">{entry.explanation.summary}</p></div>}
       <div className="detail-dates"><div><span>공식 발표일</span><time data-testid="publication-date" dateTime={entry.datePrecision === 'day' ? entry.publishedDate : entry.publishedAt}>{displayDate(entry.publishedDate)}</time>{entry.datePrecision === 'timestamp' && <small>한국 시간 {displayTimestamp(entry.publishedAt)}</small>}</div><div><span>출처 확인</span><time dateTime={entry.checkedAt}>{displayTimestamp(entry.checkedAt)}</time><small>한국 시간</small></div></div>
       {entry.datePrecision === 'day' && <p className="date-precision-note">원문이 발표 시각을 제공하지 않아 날짜만 표시합니다.</p>}
       <div className="detail-actions"><External href={entry.sourceUrl} className="primary-button" aria-label="공식 원문 읽기">공식 원문 읽기<ArrowUpRight size={16} aria-hidden="true" /></External><SaveButton saved={saved} onClick={onSave} withText /><button className="secondary-button" onClick={onShare}><ExternalLink size={15} aria-hidden="true" />글 주소 복사</button>{entry.explanationStatus === 'ready' && entry.explanation && <button className="secondary-button reading-toggle" aria-pressed={read} onClick={onRead}>{read ? <Check size={15} aria-hidden="true" /> : <BookOpen size={15} aria-hidden="true" />}{read ? '읽지 않음으로 표시' : '읽음으로 표시'}</button>}</div>
+      {(entry.explanation || Boolean(entry.fullChanges?.items.length)) && <div className="ai-disclosure"><span>AI 해설</span><p>공식 자료를 바탕으로 정리했습니다. 적용 전에 원문의 조건과 범위를 확인하세요.</p></div>}
+      <FullChangesSection fullChanges={entry.fullChanges} />
       {entry.explanation ? <>
-        <div className="ai-disclosure"><span>AI 해설</span><p>공식 자료를 바탕으로 정리했습니다. 적용 전에 원문의 조건과 범위를 확인하세요.</p></div>
         <section className="detail-section why-section"><div className="section-label">WHY IT MATTERS</div><h2>왜 중요한가요?</h2><p>{entry.explanation.whyItMatters}</p>{entry.explanation.audience.length > 0 && <div className="audience-label"><span>이런 분께</span>{entry.explanation.audience.join(', ')}</div>}</section>
-        <section className="detail-section"><div className="section-label">WHAT CHANGED</div><h2>어떤 점이 달라졌나요?</h2><div className="highlights">{entry.explanation.highlights.map((highlight, index) => <div className="highlight" key={`${index}-${highlight.title}`}><h3>{highlight.title}</h3><p>{highlight.detail}</p><div className="evidence"><span>원문 근거</span><blockquote>{highlight.evidence}</blockquote><External href={entry.sourceUrl}>공식 발표에서 확인<ArrowUpRight size={13} aria-hidden="true" /></External></div></div>)}</div></section>
+        <section className="detail-section"><div className="section-label">HIGHLIGHTS</div><h2>주요 변경 요약</h2><div className="highlights">{entry.explanation.highlights.map((highlight, index) => <div className="highlight" key={`${index}-${highlight.title}`}><h3>{highlight.title}</h3><p>{highlight.detail}</p><div className="evidence"><span>원문 근거</span><blockquote>{highlight.evidence}</blockquote><External href={entry.sourceUrl}>공식 발표에서 확인<ArrowUpRight size={13} aria-hidden="true" /></External></div></div>)}</div></section>
         {entry.explanation.actionItems.length > 0 && <section className="detail-section"><div className="section-label">BEFORE YOU START</div><h2>적용 전에 확인하세요</h2><ul className="action-items">{entry.explanation.actionItems.map((item, index) => <li key={`${index}-${item}`}><ArrowRight size={17} aria-hidden="true" /><span>{item}</span></li>)}</ul></section>}
       </> : <section className="pending-explanation"><Clock3 size={22} aria-hidden="true" /><h2>한국어 해설을 준비하고 있습니다.</h2><p>수집한 공식 발표의 해설을 아직 마치지 못했습니다. 위의 공식 원문에서 변경 내용을 먼저 확인할 수 있습니다.</p></section>}
       <section className="detail-section references-section"><h2>공식 출처</h2><External href={entry.sourceUrl} className="reference-link"><div><span>공식 발표</span><strong>{entry.originalTitle}</strong></div><ArrowUpRight size={18} aria-hidden="true" /></External>{references.map(reference => <External key={reference.url} href={reference.url} className="reference-link"><div><span>{reference.kind === 'blog' ? '공식 블로그' : '변경 기록'}</span><strong>{reference.title}</strong></div><ArrowUpRight size={18} aria-hidden="true" /></External>)}</section>

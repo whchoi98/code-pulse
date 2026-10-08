@@ -44,6 +44,8 @@ Entries include the stable `id`, product and channel, optional version, publicat
 
 The feed omits `originalText`, `contentHash` and `explanationModel`. The detail route also excludes the model identifier, but retains `originalText` and `contentHash` as empty strings for compatibility. It does not return the archived source body.
 
+`fullChanges` contains `status`, `sourceCount`, ordered `items` with `id` and Korean `text`, `formatVersion` and `updatedAt`. Its source hash and model are private. A ready short overview does not imply a complete full list. Pending lists expose only the prepared items and an honest source count; legacy records may omit the field. The server verifies full readiness against the current source inventory.
+
 Filtering and pagination are browser behavior. `/api/feed` returns the whole snapshot; parameters such as `product`, `q`, `from`, `to`, `saved` and `unread` belong to the website URL, not a server-side feed filtering contract.
 
 ### RSS
@@ -51,6 +53,8 @@ Filtering and pagination are browser behavior. `/api/feed` returns the whole sna
 Only `product` is accepted as an RSS parameter. Omit it for all products, or supply exactly one of `claude-code`, `codex`, `kiro`. Empty, repeated, unknown or additional parameters return 400.
 
 RSS includes only ready explanations with valid, non-future publication times, ordered newest first with stable-ID tie-breaking. Each item contains a title, original `pubDate`, Korean summary and meaning, an explanation link and an allowed official source link. A day-only date is labelled as lacking an announcement time. The canonical detail URL is also the item GUID. Visitor information and internal model metadata are excluded. See [rss.ts](../../src/server/rss.ts).
+
+When available, RSS also includes all Korean full-change items in an ordered list. The 50-record subscription limit does not truncate the changes within a record. Incomplete lists state how many source items have been prepared.
 
 ### Presence and caching
 
@@ -104,6 +108,8 @@ curl --fail --silent --show-error 'https://code-pulse.whchoi.net/feed.xml?produc
 
 피드에서는 `originalText`, `contentHash`, `explanationModel`을 제외합니다. 상세 응답도 모델 식별자를 제외하지만 호환성을 위해 `originalText`와 `contentHash`는 빈 문자열로 남깁니다. 보관한 원문 본문은 반환하지 않습니다.
 
+`fullChanges`에는 `status`, `sourceCount`, 원문 순서의 `items`(`id`와 한국어 `text`), `formatVersion`, `updatedAt`이 들어 있습니다. 원문 해시와 모델은 비공개입니다. 짧은 개요가 준비됐어도 전체 목록은 미완성일 수 있습니다. 준비 중인 목록은 생성한 항목과 실제 원문 개수를 표시하며, 이전 형식의 글은 이 필드가 없을 수 있습니다. 서버는 현재 원문 항목과 대조해 전체 완료 여부를 확인합니다.
+
 필터와 페이지 구분은 브라우저가 처리합니다. `/api/feed`는 전체 스냅샷을 반환합니다. `product`, `q`, `from`, `to`, `saved`, `unread`는 웹사이트 주소에서 사용하는 조건이며 서버 피드 필터 계약이 아닙니다.
 
 ### RSS
@@ -111,6 +117,8 @@ curl --fail --silent --show-error 'https://code-pulse.whchoi.net/feed.xml?produc
 RSS 매개변수는 `product`만 허용합니다. 생략하면 전체 제품을, 지정하면 `claude-code`, `codex`, `kiro` 중 하나를 제공합니다. 빈 값, 중복 지정, 알 수 없는 값이나 추가 매개변수는 400을 반환합니다.
 
 해설이 준비됐고 발표 시각이 유효한 글 중 미래 발표를 제외합니다. 최신 발표순으로 정렬하고 시각이 같으면 고정 ID로 순서를 정합니다. 항목에는 제목, 원문 `pubDate`, 한국어 요약과 의미, 해설 링크와 허용된 공식 원문 링크를 담습니다. 날짜만 있는 글에는 발표 시각이 제공되지 않았음을 표시합니다. 공개 도메인의 상세 주소를 GUID로도 사용합니다. 방문 정보와 내부 모델 메타데이터는 포함하지 않습니다. 구현은 [rss.ts](../../src/server/rss.ts)에 있습니다.
+
+전체 목록이 있으면 모든 한국어 항목을 순서 있는 목록으로 RSS에도 넣습니다. 구독 피드의 글 50개 제한으로 한 글의 변경 목록을 자르지 않습니다. 미완성 목록에는 원문 항목 중 준비한 개수를 표시합니다.
 
 ### 방문 집계와 캐시
 

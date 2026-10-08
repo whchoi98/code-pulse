@@ -1,0 +1,25 @@
+{
+  "checkedAt": "2026-10-08T11:02:47.424Z",
+  "base": "https://code-pulse.whchoi.net",
+  "version": "1.2.0",
+  "entries": 613,
+  "rss": {
+    "all": 50,
+    "claude-code": 50,
+    "codex": 50,
+    "kiro": 50
+  },
+  "exportedEntries": 1,
+  "checks": [
+    "RSS parsing and canonical URLs",
+    "product-specific RSS and original dates",
+    "read persistence and unread filter",
+    "manual unread after rerender and reload",
+    "same-product adjacent records",
+    "original list filters and focus",
+    "filtered saved Markdown download",
+    "RSS clipboard",
+    "320px dark layout"
+  ],
+  "errors": []
+}

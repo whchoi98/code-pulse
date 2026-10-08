@@ -1,5 +1,5 @@
 import type { FeedEntry } from '../shared/types';
-import { categories, channels, products, validDate } from './lib';
+import { categories, channels, getFullChangesState, products, validDate } from './lib';
 
 function markdownText(value: string): string {
   return value.replace(/[\u0000-\u001f\u007f]+/g, ' ')
@@ -36,16 +36,30 @@ export function buildSavedMarkdown(entries: readonly FeedEntry[], siteOrigin: st
       `- 구분: ${explanation ? categories[explanation.category] : '한국어 해설 준비 중'}`, '',
     );
     if (explanation) {
+      if (entry.fullChanges) lines.push('### 짧은 요약', '');
       lines.push(markdownText(explanation.summary), '', '### 왜 중요한가요?', '', markdownText(explanation.whyItMatters), '');
       if (explanation.highlights.length) {
-        lines.push('### 달라진 점', '', ...explanation.highlights.map(item =>
+        lines.push(entry.fullChanges ? '### 주요 변경 요약' : '### 달라진 점', '', ...explanation.highlights.map(item =>
           `- **${markdownText(item.title)}**: ${markdownText(item.detail)}`), '');
       }
       if (explanation.actionItems.length) {
         lines.push('### 적용 전 확인', '', ...explanation.actionItems.map(item => `- ${markdownText(item)}`), '');
       }
     }
-    lines.push(`[공식 원문](<${sourceLink(entry.sourceUrl)}>)`, '', '---', '');
+    if (entry.fullChanges) {
+      const state = getFullChangesState(entry.fullChanges);
+      lines.push('### 전체 변경 사항', '', state.countLabel, '');
+      if (!state.complete) lines.push('전체 변경 사항의 한국어 해설 준비 중입니다. 준비된 항목부터 보여드립니다.', '');
+      lines.push(...entry.fullChanges.items.map((item, index) => `${index + 1}. ${markdownText(item.text)}`), '');
+    }
+    lines.push(`[공식 원문](<${sourceLink(entry.sourceUrl)}>)`, '');
+    const linked = new Set([entry.sourceUrl]);
+    for (const reference of entry.references) {
+      if (linked.has(reference.url)) continue;
+      linked.add(reference.url);
+      lines.push(`[${markdownText(reference.title)}](<${sourceLink(reference.url)}>)`, '');
+    }
+    lines.push('---', '');
   }
   return `${lines.join('\n')}\n`;
 }

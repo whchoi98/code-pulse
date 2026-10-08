@@ -26,6 +26,23 @@ export interface Explanation {
   impact: 'high' | 'medium' | 'low';
 }
 
+export interface FullChangeItem {
+  id: string;
+  text: string;
+}
+
+export interface FullChanges {
+  status: 'ready' | 'pending';
+  sourceHash: string;
+  model: string;
+  formatVersion: string;
+  updatedAt: string;
+  sourceCount: number;
+  items: FullChangeItem[];
+}
+
+export type PublicFullChanges = Omit<FullChanges, 'sourceHash' | 'model'>;
+
 export interface Entry {
   id: string;
   product: ProductId;
@@ -48,6 +65,7 @@ export interface Entry {
   explanationModel?: string;
   editorialVersion?: string;
   explanationEditedAt?: string;
+  fullChanges?: FullChanges;
 }
 
 export interface SourceStatus {
@@ -84,7 +102,9 @@ export interface Snapshot {
   runs: CollectionRun[];
 }
 
-export type FeedEntry = Omit<Entry, 'originalText' | 'contentHash' | 'explanationModel'>;
+export type FeedEntry = Omit<Entry, 'originalText' | 'contentHash' | 'explanationModel' | 'fullChanges'> & {
+  fullChanges?: PublicFullChanges;
+};
 export interface Feed {
   generatedAt: string;
   entries: FeedEntry[];

@@ -1,8 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { collectOnce, type CollectOptions } from '../src/collector/engine.js';
 import { emptySnapshot, WriteConflict, type SnapshotStore } from '../src/collector/store.js';
-import type { SourceDefinition } from '../src/collector/sources.js';
+import type { Candidate, SourceDefinition } from '../src/collector/sources.js';
 import type { Explanation, Snapshot } from '../src/shared/types.js';
+import { extractChangeItems } from '../src/collector/change-items.js';
+import { FULL_CHANGES_VERSION, fullChangesSourceHash } from '../src/collector/full-changes.js';
 
 const source: SourceDefinition = {
   id: 'claude-releases', product: 'claude-code', name: 'Claude Code 공식 릴리스',
@@ -127,6 +129,16 @@ async function runCli(concurrency?: string) {
     },
     EDITORIAL_VERSION: 'test-editorial',
   }));
+  vi.doMock('../src/collector/full-changes.js', () => ({
+    BedrockChangeExplainer: class {
+      constructor(readonly modelId: string) {}
+      async explain(candidate: Candidate) {
+        const items = extractChangeItems(candidate).map(item => ({ id: item.id, text: '작업 실행 수의 설정을 추가했습니다.' }));
+        return { status: 'ready', sourceHash: fullChangesSourceHash(candidate), model: this.modelId,
+          formatVersion: FULL_CHANGES_VERSION, updatedAt: h.options.now!().toISOString(), sourceCount: items.length, items };
+      }
+    },
+  }));
   vi.doMock('../src/collector/official-fetch.js', () => ({ fetchOfficial: h.options.fetchDocument }));
   vi.doMock('../src/collector/store.js', () => ({ configuredStore: () => h.store }));
   try {
@@ -141,6 +153,7 @@ async function runCli(concurrency?: string) {
     error.mockRestore();
     vi.doUnmock('../src/collector/engine.js');
     vi.doUnmock('../src/collector/explanation.js');
+    vi.doUnmock('../src/collector/full-changes.js');
     vi.doUnmock('../src/collector/official-fetch.js');
     vi.doUnmock('../src/collector/store.js');
     vi.resetModules();

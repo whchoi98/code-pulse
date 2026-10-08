@@ -1,0 +1,34 @@
+{
+  "checkedAt": "2026-10-08T11:05:16.318372+00:00",
+  "previousPublishedRecords": 612,
+  "publishedRecords": 613,
+  "missingPreviousIds": [],
+  "changedOriginalsOrPublicationDates": [],
+  "workerChangedFullLists": [],
+  "checkedFields": [
+    "originalTitle",
+    "originalText",
+    "contentHash",
+    "publishedDate",
+    "publishedAt"
+  ],
+  "newRecords": [
+    {
+      "id": "claude-code-7742de6497a4907625ea",
+      "product": "claude-code",
+      "version": "2.1.294",
+      "publishedDate": "2026-10-08"
+    }
+  ],
+  "latestRun": {
+    "id": "366caa08-71b9-47f2-983b-454680443440",
+    "startedAt": "2026-10-08T11:02:02.362Z",
+    "completedAt": "2026-10-08T11:03:57.871Z",
+    "status": "success",
+    "newEntries": 0,
+    "updatedEntries": 0,
+    "summarizedEntries": 0,
+    "failedSources": []
+  },
+  "complete": true
+}

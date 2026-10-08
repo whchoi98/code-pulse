@@ -1,0 +1,59 @@
+{
+  "reviewedItems": 256,
+  "v2_1_293ReviewedItems": 56,
+  "otherClaudeItems": 100,
+  "codexAndKiroItems": 100,
+  "correctionEntries": 8,
+  "correctionItems": 23,
+  "reviewScope": "원문의 조건, 부정, 동작 순서, 예시 범위와 코드 표기를 대조한 표본 검토. 모든 항목의 자연어 의미를 자동으로 보증하는 검사는 아닙니다.",
+  "independentFindings": [
+    {
+      "entryId": "claude-code-d65fdce44bc68c4cf170",
+      "itemId": "change-51c044608b98c58c35715a7a-1",
+      "reason": "원문은 이미 재개된 서브에이전트와 팀원이 실행 중 메시지를 받은 뒤 이전 추론과 캐시를 잃는 문제입니다. 기존 문장은 메시지를 받은 뒤 에이전트를 재개한 것으로 사건 순서를 바꿉니다."
+    },
+    {
+      "entryId": "claude-code-6754ed1bdacd4b04f1ed",
+      "itemId": "change-ab735bf4761a73ce3e19c746-1",
+      "reason": "원인은 훅이 기록한 값을 처리하는 행의 렌더링 오류인데, 기존 설명은 훅 자체가 오류를 던지는 것으로 바꿉니다. 원문의 해결 동작도 실패한 행을 그대로 직접 그리는 것이 아니라 엔진 자체 행으로 대체하는 것입니다."
+    },
+    {
+      "entryId": "claude-code-2152fac3398d5d3fd577",
+      "itemId": "change-06083115904a59143c3bcd0c-1",
+      "reason": "원문에서 루트와 홈 디렉터리를 대상으로 하는 명령은 위험한 rm의 예시입니다. 기존 설명은 수정 대상이 그 두 경로에 대한 명령인 것으로 범위를 좁혀 예시라는 조건을 잃었습니다."
+    },
+    {
+      "entryId": "claude-code-2152fac3398d5d3fd577",
+      "itemId": "change-b1b7778cd99073eba734a0fc-1",
+      "reason": "원문은 도구 전체의 Bash 허용 규칙과 허용 결정을 내리는 훅 모두에 대해 보호 대상 파일의 셸 쓰기를 즉시 실행하는 대신 확인을 요청하도록 바꾼 내용입니다. 기존 설명은 도구 전체 허용 규칙에 적용되는 동작을 누락하고, 반드시 거쳐야 하는 확인을 훅이 사용할 수 있는 기능으로 약화합니다."
+    },
+    {
+      "entryId": "codex-8321ccd6ce11901bcbdb",
+      "itemId": "change-74b14c30784e40421c8f3321-1",
+      "reason": "원문은 샌드박스 설정 전에 Windows 데스크톱 제거 소유권을 등록하도록 순서를 바꿨다는 내용입니다. 설치 순서에 따라 제거 동작이 달라질 수 있다는 두 번째 문장은 원문에 없는 동작 설명을 추가합니다."
+    },
+    {
+      "entryId": "codex-690f513d3b667b483e61",
+      "itemId": "change-2eb120aa3ed19124eeabb8bc-1",
+      "reason": "terminal turn failures는 턴이 최종 실패 상태로 끝나는 경우를 뜻합니다. 현재 문장은 이를 터미널 턴의 실패로 옮겨 자동 계속을 중단하는 조건을 잘못 전달합니다. 명령 이름 /goal edit의 edit도 번역되어 원래 명령 표기가 사라졌습니다."
+    },
+    {
+      "entryId": "kiro-b7a32bd13bdbd6772c7a",
+      "itemId": "change-6edad2cf37bf6a9f768d9282-1",
+      "reason": "원문의 조건은 최종 응답이 콘텐츠 필터에 의해 차단된 경우입니다. 콘텐츠 필터링을 거치면이라는 표현은 검사만 거친 정상 응답까지 refusal을 반환하는 것으로 조건을 넓힙니다."
+    },
+    {
+      "entryId": "kiro-5a6fc0f3312932a01728",
+      "itemId": "change-42a21e220a5b641c68cf5cec-1",
+      "reason": "현재 설명에는 마지막 복구 문장만 남아 있습니다. 6번째 문서에서 새 첨부가 막히던 오류와 문서 5개 제한이 세션 누적이 아닌 메시지별로 적용된다는 핵심 변경이 모두 빠졌습니다."
+    },
+    {
+      "entryId": "kiro-5a6fc0f3312932a01728",
+      "itemId": "change-aa7c328c48ea35e3f055d2dd-1",
+      "reason": "현재 설명은 절전이나 네트워크 변경 뒤의 결과만 남기고, 백그라운드 탭으로 돌아올 때 재연결한다는 조건과 그동안 도착한 세션 활동을 재생한다는 동작을 빠뜨렸습니다."
+    }
+  ],
+  "correctionsAppliedAt": "2026-10-08T10:50:55.284Z",
+  "correctionsAppliedItems": 23,
+  "applicationScope": "최종 전체 목록 생성 뒤 원문 해시와 항목 ID를 대조해 로컬 이관본에 적용했습니다. 발표일과 다른 항목은 유지했습니다."
+}

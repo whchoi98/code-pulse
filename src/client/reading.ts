@@ -20,6 +20,7 @@ export type ReadingStore = ReadingState & {
 /** A local change marker shared by feed and detail responses, never a security hash. */
 export function entryRevision(entry: FeedEntry | Entry): string {
   const explanation = entry.explanation;
+  const fullChanges = entry.fullChanges;
   // Fixed field order ignores JSON property order and collection/editorial clocks.
   // Private source hashes are absent from the feed; updatedAt tracks source changes.
   const visible = JSON.stringify([
@@ -33,6 +34,10 @@ export function entryRevision(entry: FeedEntry | Entry): string {
       explanation.actionItems, explanation.audience, explanation.category, explanation.impact,
       explanation.highlights.map(highlight => [highlight.title, highlight.detail, highlight.evidence]),
     ] : null,
+    // Keep legacy fingerprints unchanged until a list arrives. Generation clocks,
+    // model, source hash and format version do not describe a reader-visible edit.
+    ...(fullChanges ? [[fullChanges.status, fullChanges.sourceCount,
+      fullChanges.items.map(item => [item.id, item.text])]] : []),
   ]);
   let first = 0x811c9dc5;
   let second = 0x9e3779b9;

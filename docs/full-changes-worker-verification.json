@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-10-08T11:06:18.414110+00:00",
+  "taskArn": "arn:aws:ecs:ap-northeast-2:061525506239:task/CodePulse-ClusterEB0386A7-vgzNxE18nT12/00aa408c7604499d8f7736b95387fe8b",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:061525506239:task-definition/CodePulseWorkerTask14FE9E2F:4",
+  "observedStates": [
+    "PROVISIONING",
+    "PENDING",
+    "RUNNING",
+    "DEPROVISIONING",
+    "STOPPED"
+  ],
+  "guardDutyObservedRunning": true,
+  "exitCode": 0,
+  "collection": {
+    "event": "collection_completed",
+    "id": "366caa08-71b9-47f2-983b-454680443440",
+    "startedAt": "2026-10-08T11:02:02.362Z",
+    "completedAt": "2026-10-08T11:03:57.871Z",
+    "status": "success",
+    "newEntries": 0,
+    "updatedEntries": 0,
+    "summarizedEntries": 0,
+    "failedSources": []
+  },
+  "summaryGenerationEvents": 0,
+  "fullChangeGenerationEvents": 0,
+  "metrics": {
+    "CollectionSuccess": 1,
+    "CollectionFailure": 0
+  },
+  "finalSnapshot": {
+    "ETag": "\"653cb018358fe79d03aac215cdfd72fa\"",
+    "LastModified": "2026-10-08T11:04:02+00:00",
+    "Bytes": 8629753
+  }
+}

@@ -1,6 +1,35 @@
 # 배포 검증
 
-최종 확인일은 2026년 10월 8일 UTC다. 공개 주소는 `https://code-pulse.whchoi.net`이며 앱 버전은 1.1.0이다.
+최종 확인일은 2026년 10월 8일 UTC다. 공개 주소는 `https://code-pulse.whchoi.net`이며 앱 버전은 1.2.0이다.
+
+## v1.2.0 전체 변경 사항
+
+짧은 개요와 주요 변경 요약을 유지하고, 각 공식 원문의 모든 항목을 한국어 목록으로 추가했다. 오류 수정과 작은 개선도 포함한다. 원문 순서와 항목 ID를 보존하며, 긴 글을 개수나 글자 수로 자르지 않는다. 생성 중인 글은 전체 항목 수와 준비한 수를 표시한다.
+
+| 항목 | 확인한 결과 | 근거 |
+| --- | --- | --- |
+| 전체 이력 | 613개 기록의 20,027개 항목 완료. Claude Code 241개 기록과 6,651개 항목, Codex 199개와 11,200개, Kiro 173개와 2,176개. 준비 중 0개 | `docs/full-changes-verification.json`, `docs/full-changes-data-verification.json` |
+| Claude Code 2.1.293 | 보관한 공식 원문의 56개 목록을 ID와 순서까지 대조. 실제 화면과 저장한 Markdown, 전체 및 Claude Code RSS에서 56개 모두 확인 | `docs/full-changes-verification.json`, `docs/screenshots/full-production/full-changes-report.json` |
+| 큰 목록과 검색 | Codex 0.156.0의 546개와 Kiro 1.0.52의 80개를 끝까지 표시. 짧은 개요와 처음 20개에 없는 검색어로 56번째 항목을 찾음 | `docs/screenshots/full-production/full-changes-report.json` |
+| RSS와 내보내기 | 네 피드 각각 최신 50개 글을 제공하며 글 안의 전체 항목을 유지. 실제 저장 파일에 1번부터 56번까지 포함 | `docs/screenshots/full-production/full-changes-report.json`, `docs/screenshots/full-production/saved-export.md` |
+| 공개 데이터 | API의 전체 목록에는 허용한 필드만 노출. 원문 본문과 전체 목록의 모델, 원문 해시는 공개하지 않음 | `tests/full-coverage.test.ts`, `docs/screenshots/full-production/full-changes-report.json` |
+| 한국어 대조 | 2.1.293의 56개와 다른 제품 및 버전의 200개를 표본 검토. 8개 기록의 23개 교정을 원문 해시와 항목 ID에 맞춰 최종 생성 뒤 적용 | `docs/full-changes-content-review.json`, `docs/full-changes-editorial.json` |
+| 기존 읽기 기능 | 읽음 상태 유지, 수동 읽지 않음 처리, 같은 제품의 이전과 다음 글, 검색 조건 복원과 저장 글 내보내기 통과 | `docs/screenshots/full-reading-production/reading-report.json` |
+| 모바일 | 320px 다크 모드에서 56개와 마지막 항목을 확인. 화면 밖으로 나간 텍스트나 코드, 잘린 본문, 브라우저 오류 없음 | `docs/screenshots/full-production/full-changes-report.json` |
+| 방문과 도메인 | 서명 쿠키의 반복 요청과 복원한 클라이언트에서 누적 방문 유지. 사용자 도메인 HTTPS와 기존 주소의 308 이동, 경로와 검색어 보존 | `docs/full-changes-presence-verification.json`, `docs/full-changes-domain-verification.json` |
+| 코드와 배포 | 단위 및 인프라 테스트 595개, Chromium 테스트 77개, 타입 검사, 빌드, CDK 합성 통과. 스택 UPDATE_COMPLETE, CloudFront Deployed, 정상 웹 대상 1개 | `docs/full-changes-build-verification.json`, `docs/full-changes-infrastructure-verification.json` |
+
+초안과 별도 한국어 윤문에는 모두 Claude Haiku 5.5를 사용했다. 복합 문장은 내부 부분으로 나누어 조건이 빠지지 않도록 처리한 뒤 원래 항목 ID로 합쳤다. 원문의 인라인 코드와 기술 식별자는 공백과 유니코드 표기까지 대조한다. 20,027개 전체에 대해 구조, ID, 코드와 원문 행의 보존을 검사했으며, 자연어 의미 전체를 사람이 전수 검토했다는 뜻은 아니다.
+
+전체 이관은 명시적으로 선택한 로컬 FileStore에서 수행했다. 검증한 묶음마다 중간 저장하고 실패한 부분만 이어서 처리했다. 마지막 코드 표기 문제는 같은 검증을 적용한 개별 생성과 윤문으로 해결했다. 2026-10-08T10:52:33.745Z에 완료한 실제 공식 재수집은 여섯 출처가 모두 정상이며 신규, 수정과 추가 개요 생성은 0개였다.
+
+모델과 원문 해시를 제외하는 새 API를 먼저 배포했다. 웹과 수집기 태스크 정의는 revision 4이며, 기존 VPC와 네트워크, 역할은 유지했다. 이후 2026-10-08T10:59:52.540Z에 원문을 비공개 보관하고 ETag 조건부 병합으로 613개 기록을 게시했다. 게시 직후 ETag는 `8e424501df40b625d1670215846d1ae7`이며, 당시 공개돼 있던 612개 기록을 모두 보존했다. 원문과 발표일의 최종 대조 결과는 `docs/full-changes-preservation.json`에 있다.
+
+새 revision 4 수집 태스크 `00aa408c7604499d8f7736b95387fe8b`를 실제 실행했다. 11:02:02 UTC에 수집을 시작해 11:03:57 UTC에 success로 완료했고 컨테이너 종료 코드는 0이었다. 실행 중 GuardDuty를 확인했으며, 신규와 수정 기록, 추가 개요와 전체 목록 생성은 없었다. CollectionSuccess=1과 CollectionFailure=0이 기록됐다. 이후 S3의 613개 전체 목록과 원문, 발표일을 다시 대조해 변경이나 누락이 없음을 확인했다. 최종 객체 갱신 시각은 `2026-10-08T11:04:02Z`, ETag는 `653cb018358fe79d03aac215cdfd72fa`다. 근거는 `docs/full-changes-worker-verification.json`과 `docs/full-changes-preservation.json`에 있다.
+
+실제 데이터 화면 검사에서 코드 배경 여백이 목록 안쪽 폭을 2px 넘은 사례를 발견했다. 문서와 본문은 320px였고 텍스트와 코드는 화면 안에 있었다. 검증 도구가 실제 텍스트와 코드 조각의 화면 경계를 확인하도록 보완했으며, 의도적으로 만든 가로 넘침은 계속 탐지한다. 이 보완으로 앱의 CSS나 코드 표기를 바꾸지 않았다.
+
+`package.json`, 잠금 파일과 릴리스 문서를 1.2.0으로 동기화하고 이전 1.1.0과 1.0.0 기록을 유지했다. 실행 의존성 취약점은 0개다. 마지막 도구 보완에는 구문 검사와 실제 브라우저 검사를 새로 수행했고, 변경하지 않은 앱 코드의 단위 테스트와 빌드 결과는 재사용했다. Git 태그나 별도 원격 릴리스는 만들지 않았다.
 
 ## v1.1.0 배포와 도메인 확인
 

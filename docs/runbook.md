@@ -53,6 +53,7 @@ GitHub HTML 요청은 2초 간격을 유지합니다. 서버가 Retry-After를 �
 | --- | --- |
 | `collection_started` | 실행 시작, 시작일 또는 최근 일수, 모델 ID |
 | `entry_explained` | 해설을 만든 제품과 제목 |
+| `entry_changes_progress` | 전체 목록의 제품, 버전, 준비한 항목 수와 원문 항목 수 |
 | `explanation_pending` | 근거 검증이나 모델 호출 실패 |
 | `collection_completed` | 신규, 수정, 해설 수와 최종 상태 |
 | `collection_failed` | 저장소나 실행 오류 |
@@ -76,6 +77,10 @@ Scheduler DLQ에는 태스크 시작 요청이 실패했을 때 메시지가 들
 GitHub 릴리스 API에는 첨부 파일 메타데이터도 포함됩니다. 응답이 커져 수집 제한을 넘으면 페이지 크기와 실제 안정판 범위를 함께 확인합니다. 빈 응답을 정상 확인으로 처리해서는 안 됩니다.
 
 ## 해설 편집
+
+짧은 개요와 전체 변경 목록은 따로 생성합니다. `--max-summaries`와 `--max-full-changes`는 각각 처리할 글 수이며 기본 80개, 허용 범위는 0~300개입니다. `--no-ai`에서는 두 생성 작업을 모두 실행하지 않습니다. 전체 목록이 미완성이면 짧은 개요가 준비돼 있어도 수집 결과는 `partial`입니다.
+
+전체 목록은 원문 항목을 결정적으로 나누고, 각 ID에 한국어 설명이 정확히 하나 있는지 검사합니다. Haiku 5.5의 초안과 별도 윤문을 거친 묶음만 중간 저장합니다. 재실행은 같은 원문 해시와 모델, 형식에서 검증한 항목을 재사용합니다. 원문이 바뀌면 이전 목록을 현재 내용의 완성본으로 표시하지 않습니다.
 
 `tools/polish-content.ts`는 기존 해설에 현재 human-ton 편집 기준을 적용합니다. 원문 발표일을 바꾸지 않으며 같은 내용 해시에만 편집을 적용합니다.
 
@@ -103,6 +108,24 @@ node --import tsx tools/apply-editorial.ts docs/initial-editorial.json
 ```
 
 이 도구도 `DATA_BUCKET`을 지정하면 AWS 데이터를 갱신하므로 대상 저장소를 먼저 확인합니다. `docs/initial-editorial.json`에는 초기 기록을 공식 원문과 직접 대조한 편집이 들어 있습니다.
+
+전체 목록의 과거 이력을 처리할 때는 검증용 로컬 스냅샷 폴더를 명시합니다. 아래 도구는 `DATA_BUCKET`이 있어도 FileStore만 사용합니다. 실제 Bedrock 호출은 발생합니다. 로컬 이관의 동시도는 기본 3, 최대 12이며 일일 수집의 최대 6과 별개입니다.
+
+```bash
+node --import tsx tools/backfill-full-changes.ts --data-dir ./data/full-changes --concurrency 12
+DATA_DIR=./data/full-changes node --import tsx tools/verify-full-changes.ts
+```
+
+진행 로그에는 ID와 개수, 상태만 기록합니다. `--entry <ID>`로 한 글을 지정하거나 `--max-entries <수>`로 이번 처리량을 제한할 수 있습니다. 전체 이관 완료는 선택한 일부 글의 성공이 아니라 전수 검증의 `pendingRecords: 0`과 정상 출처 확인으로 판단합니다. 검증 명령은 `configuredStore`를 사용하므로 로컬 확인 시 `DATA_BUCKET`은 지정하지 않습니다.
+
+검토한 문구 교정은 `entryId`, `sourceHash`, 항목별 `id`와 `text`가 있는 JSON 배열로 작성합니다. 원문이 달라졌거나 항목이 없으면 적용을 중단합니다.
+
+```bash
+node --import tsx tools/apply-full-editorial.ts --data-dir ./data/full-changes --input docs/full-changes-editorial.json
+node --import tsx tools/apply-full-editorial.ts --data-dir ./data/full-changes --input docs/full-changes-editorial.json --write
+```
+
+첫 명령은 미리보기이며 두 번째 명령이 로컬 파일을 갱신합니다. 발표일, 출처 확인 시각과 다른 항목은 보존합니다. 전체 목록의 모델과 원문 해시를 제외하는 API를 먼저 배포한 뒤 검증한 스냅샷을 조건부 병합으로 공개합니다.
 
 전체 해설, 모델 ID, 날짜와 공식 출처를 점검하려면 `node --import tsx tools/verify-data.ts`를 실행합니다. 갱신 중인 상태를 조회할 때만 `--allow-pending`을 붙입니다.
 

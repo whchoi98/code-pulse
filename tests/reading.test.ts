@@ -4,6 +4,7 @@ import {
   createReadingStore, entryRevision, parseReadRecord, readingKey,
   type ReadingStorage,
 } from '../src/client/reading';
+import { fullChangesFixture } from './fixtures/full-changes';
 
 // Synthetic records used only to exercise browser reading preferences.
 function entry(overrides: Partial<Entry> = {}): Entry {
@@ -99,6 +100,39 @@ describe('entry reading revision', () => {
     });
     expect(entryRevision(reordered)).toBe(entryRevision(original));
   });
+
+  it('changes when a legacy record gains a full list', () => {
+    expect(entryRevision(entry({ fullChanges: fullChangesFixture() }))).not.toBe(entryRevision(entry()));
+  });
+
+  it.each([
+    ['last item text', fullChangesFixture({ items: fullChangesFixture().items.map(item => item.id === 'change-56'
+      ? { ...item, text: '마지막 변경의 적용 조건을 바로잡았습니다.' } : item) })],
+    ['last item ID', fullChangesFixture({ items: fullChangesFixture().items.map(item => item.id === 'change-56'
+      ? { ...item, id: 'revised-change-56' } : item) })],
+    ['item order', fullChangesFixture({ items: fullChangesFixture().items.toReversed() })],
+    ['missing item', fullChangesFixture({ items: fullChangesFixture().items.slice(0, 55) })],
+    ['source count', fullChangesFixture({ sourceCount: 57 })],
+    ['pending status', fullChangesFixture({ status: 'pending' })],
+    ['removed list', undefined],
+  ])('changes when the full list %s changes without a timestamp change', (_name, fullChanges) => {
+    expect(entryRevision(entry({ fullChanges }))).not.toBe(entryRevision(entry({ fullChanges: fullChangesFixture() })));
+  });
+
+  it('ignores full-list generation timestamps and private metadata', () => {
+    const original = entry({ fullChanges: fullChangesFixture() });
+    const changed = entry({ fullChanges: fullChangesFixture({
+      updatedAt: '2026-10-08T01:00:00Z', model: 'new-model', sourceHash: 'new-source-hash', formatVersion: 'new-format',
+    }) });
+    expect(entryRevision(changed)).toBe(entryRevision(original));
+  });
+
+  it('shares the same full-list revision between private records and public responses', () => {
+    const detail = entry({ fullChanges: fullChangesFixture() });
+    const { originalText: _text, contentHash: _hash, explanationModel: _model, fullChanges, ...publicEntry } = detail;
+    const { sourceHash: _source, model: _fullModel, ...publicFullChanges } = fullChanges!;
+    expect(entryRevision({ ...publicEntry, fullChanges: publicFullChanges })).toBe(entryRevision(detail));
+  });
 });
 
 class MemoryStorage implements ReadingStorage {
@@ -152,6 +186,24 @@ describe('stored reading metadata', () => {
 });
 
 describe('reading preferences', () => {
+  it('retains read markers from before full lists were added for unchanged legacy entries', () => {
+    const storage = new MemoryStorage();
+    storage.setItem(readingKey('release-one'), JSON.stringify({ id: 'release-one', revision: 'fba13fff4822d70f' }));
+    expect(createReadingStore(() => storage).isRead(entry())).toBe(true);
+  });
+
+  it('keeps full-list reads after metadata refresh and makes a changed tail unread', () => {
+    const storage = new MemoryStorage();
+    const reading = createReadingStore(() => storage);
+    const original = entry({ fullChanges: fullChangesFixture() });
+    reading.markRead(original);
+    expect(reading.isRead(entry({ fullChanges: fullChangesFixture({ updatedAt: '2026-10-08T01:00:00Z' }) }))).toBe(true);
+    const revised = entry({ fullChanges: fullChangesFixture({ items: fullChangesFixture().items.map(item => item.id === 'change-56'
+      ? { ...item, text: '마지막 변경의 적용 범위를 수정했습니다.' } : item) }) });
+    expect(reading.isRead(revised)).toBe(false);
+    expect(createReadingStore(() => storage).isRead(revised)).toBe(false);
+  });
+
   it('starts unread, remembers the read revision, and supports marking unread', () => {
     const storage = new MemoryStorage();
     const reading = createReadingStore(() => storage);

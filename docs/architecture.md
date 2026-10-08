@@ -43,6 +43,8 @@ Collection begins at `2026-01-01` by default. Publication dates, source checks a
 
 The server caches a snapshot for 60 seconds. A storage failure serves the previous cached snapshot with `no-store`; without a readable snapshot it returns 503. Feed freshness also considers each source's last successful check. RSS includes at most 50 ready records and keeps their original publication dates.
 
+Each record also stores a complete ordered inventory in `fullChanges`, separate from the short overview. [Extraction](../src/collector/change-items.ts) preserves every source item; [generation](../src/collector/full-changes.ts) fills the IDs in bounded batches with a separate polish pass. Full readiness requires the current source hash, model and format plus exact item coverage. [Public serialization](../src/server/public-entry.ts) removes the source hash and model and recomputes the current inventory status. Search, read revisions, Markdown and RSS consume the full Korean list.
+
 Read state and saved IDs stay in browser storage. Rechecking a source alone does not reset read state; visible content changes do. Markdown export runs in the browser. Visitor counts instead use signed cookies and persistent DynamoDB records, with a separate permanent first-visit marker and an expiring activity record. Local development uses an in-memory presence store.
 
 ### Deployment constraints
@@ -93,6 +95,8 @@ flowchart TB
 기본 수집 시작일은 `2026-01-01`입니다. 발표일, 출처 확인 시각과 편집 시각은 별도 필드로 보관합니다. 출처를 읽지 못하면 이전 기록을 유지하고, 해설 생성에 실패한 글은 준비 상태로 남깁니다. Haiku 5.5가 초안과 윤문을 수행하며 공개 전에 원문 근거를 검사합니다. S3는 ETag 조건부 쓰기를, 로컬 파일은 잠금과 원자적 교체를 사용합니다. 재시도, 중간 저장과 과거 자료 수집은 [운영 안내](runbook.md)를 참고합니다.
 
 서버는 스냅샷을 60초 동안 캐시합니다. 저장소를 읽지 못하면 이전 캐시를 `no-store`로 제공하고, 읽을 수 있는 스냅샷이 없으면 503을 반환합니다. 피드의 최신성은 출처별 마지막 성공 시각도 확인합니다. RSS에는 해설이 준비된 글을 최대 50개 담으며 원문 발표일을 유지합니다.
+
+각 글은 짧은 개요와 별도로 `fullChanges`에 원문 순서의 전체 목록을 저장합니다. [추출기](../src/collector/change-items.ts)가 모든 항목을 보존하고, [생성기](../src/collector/full-changes.ts)가 나누어 설명한 뒤 별도로 윤문합니다. 현재 원문의 해시, 모델과 형식이 맞고 모든 ID가 설명에 연결돼야 완료입니다. [공개 응답 처리](../src/server/public-entry.ts)는 원문 해시와 모델을 제외하고 현재 항목 기준으로 상태를 확인합니다. 검색, 읽음 변경 표식, Markdown과 RSS도 전체 한국어 목록을 사용합니다.
 
 읽음 상태와 저장한 글 ID는 브라우저에 보관합니다. 출처를 다시 확인한 것만으로 읽음 상태를 초기화하지 않으며, 표시 내용이 바뀌면 읽지 않은 글로 돌아갑니다. Markdown 파일도 브라우저에서 만듭니다. 방문 집계는 서명 쿠키와 DynamoDB를 사용하고, 영구 첫 방문 표식과 만료되는 활동 기록을 나누어 저장합니다. 로컬 개발의 방문 집계는 메모리 저장소를 사용합니다.
 

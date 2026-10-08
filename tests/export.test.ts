@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildSavedMarkdown, downloadSavedMarkdown } from '../src/client/export.js';
 import type { FeedEntry } from '../src/shared/types.js';
+import { fullChangesFixture } from './fixtures/full-changes';
 
 const entry = (id: string, date: string): FeedEntry => ({
   id, product: 'codex', sourceId: 'codex-releases', channel: 'cli', version: '0.161.0',
@@ -80,5 +81,82 @@ describe('saved article Markdown export', () => {
     const result = buildSavedMarkdown([source], 'https://code.example');
     expect(result).toContain('[공식 원문](<https://kiro.dev/changelog/?first=1&amp;copy;=2#part%5C_one>)');
     expect(result).not.toContain('](<https://kiro.dev/changelog/?first=1&copy;=');
+  });
+
+  it('exports all 56 numbered changes alongside the short overview and official links', () => {
+    const source = {
+      ...entry('full-list', '2026-10-07'),
+      fullChanges: fullChangesFixture(),
+      references: [{ title: '공식 사용 안내', url: 'https://developers.openai.com/codex/', kind: 'blog' as const }],
+    };
+    const result = buildSavedMarkdown([source], 'https://code.example');
+    expect(result).toContain('### 전체 변경 사항');
+    expect(result).toContain('총 56개');
+    expect(result.match(/^\d+\. /gm)).toHaveLength(56);
+    expect(result).toContain('1. 첫 번째 변경: 작업 공간 설정을 유지합니다.');
+    expect(result).toContain('56. 마지막 변경: 잔여세션정리 오류를 고쳤습니다.');
+    for (const item of source.fullChanges.items) expect(result).toContain(item.text);
+    expect(result).toContain(source.explanation!.summary);
+    expect(result).toContain(source.explanation!.whyItMatters);
+    expect(result).toContain(source.sourceUrl);
+    expect(result).toContain('[공식 사용 안내](<https://developers.openai.com/codex/>)');
+    expect(result).not.toMatch(/PRIVATE_FULL_SOURCE_HASH|PRIVATE_FULL_MODEL|test-full-changes-v1/);
+  });
+
+  it('exports every available pending change without claiming the complete list is ready', () => {
+    const source = {
+      ...entry('partial-list', '2026-10-07'),
+      fullChanges: fullChangesFixture({ status: 'pending', items: fullChangesFixture().items.slice(0, 24) }),
+    };
+    const result = buildSavedMarkdown([source], 'https://code.example');
+    expect(result).toContain('### 전체 변경 사항');
+    expect(result).toContain('56개 중 24개 준비');
+    expect(result).toContain('준비 중');
+    expect(result.match(/^\d+\. /gm)).toHaveLength(24);
+    expect(result).toContain('24. 변경 24:');
+    expect(result).not.toContain('총 56개');
+  });
+
+  it.each([
+    fullChangesFixture({ items: fullChangesFixture().items.slice(0, 55) }),
+    fullChangesFixture({ items: Array.from({ length: 56 }, () => fullChangesFixture().items[0]) }),
+    fullChangesFixture({ items: [], sourceCount: 0 }),
+  ])('does not label inconsistent ready metadata as complete (%#)', fullChanges => {
+    const result = buildSavedMarkdown([{ ...entry('incomplete', '2026-10-07'), fullChanges }], 'https://code.example');
+    expect(result).toContain('준비 중');
+    expect(result).not.toMatch(/총 (56|0)개/);
+  });
+
+  it('exports a full list even if the short explanation is still pending', () => {
+    const source = {
+      ...entry('full-without-summary', '2026-10-07'),
+      explanation: undefined, explanationStatus: 'pending' as const, fullChanges: fullChangesFixture(),
+    };
+    const result = buildSavedMarkdown([source], 'https://code.example');
+    expect(result).toContain('한국어 해설 준비 중');
+    expect(result).toContain('56. 마지막 변경: 잔여세션정리 오류를 고쳤습니다.');
+    expect(result).not.toContain('왜 중요한가요');
+  });
+
+  it('escapes each complete item without allowing Markdown or HTML injection', () => {
+    const source = {
+      ...entry('unsafe-item', '2026-10-07'),
+      fullChanges: fullChangesFixture({ sourceCount: 1, items: [{
+        id: 'unsafe', text: '설정 `--flag`를 확인하세요.\n# 가짜 제목\n[링크](javascript:alert(1)) <img src=x onerror=bad>',
+      }] }),
+    };
+    const result = buildSavedMarkdown([source], 'https://code.example');
+    expect(result).toContain('1. 설정');
+    expect(result).toContain('--flag');
+    expect(result).toContain('&lt;img');
+    expect(result).not.toMatch(/<img|\n# 가짜 제목|\]\(javascript:/);
+  });
+
+  it('keeps legacy exports usable without claiming full coverage', () => {
+    const source = entry('legacy', '2026-10-07');
+    const result = buildSavedMarkdown([source], 'https://code.example');
+    expect(result).toContain(source.explanation!.summary);
+    expect(result).toContain(source.sourceUrl);
+    expect(result).not.toContain('전체 변경 사항');
   });
 });

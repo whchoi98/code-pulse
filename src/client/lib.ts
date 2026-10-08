@@ -1,4 +1,4 @@
-import type { Category, Channel, Feed, FeedEntry, ProductId } from '../shared/types';
+import type { Category, Channel, Feed, FeedEntry, ProductId, PublicFullChanges } from '../shared/types';
 
 export const products: Record<ProductId, { name: string; logo: string }> = {
   'claude-code': { name: 'Claude Code', logo: '/brand/claude-code.png' },
@@ -83,6 +83,10 @@ export function lastSevenDays(today = todayInSeoul()) {
   });
 }
 
+function hasPendingFullChanges(entry: FeedEntry) {
+  return entry.fullChanges !== undefined && !getFullChangesState(entry.fullChanges).complete;
+}
+
 export function getCollectionState(feed: Feed) {
   const successfulChecks = feed.sources
     .map(source => source.lastSuccessAt ? Date.parse(source.lastSuccessAt) : NaN)
@@ -99,9 +103,11 @@ export function getCollectionState(feed: Feed) {
     && !sourcePending && !sourceErrors;
   const initialPending = !feed.latestRun && !successfulChecks.length && !feed.entries.length
     && feed.sources.every(source => source.state === 'pending');
-  const pendingExplanations = feed.entries.some(entry => entry.explanationStatus === 'pending');
+  const pendingShortExplanations = feed.entries.some(entry => entry.explanationStatus === 'pending');
+  const pendingFullChanges = feed.entries.some(hasPendingFullChanges);
+  const pendingExplanations = pendingShortExplanations || pendingFullChanges;
 
-  return { sourcePending, sourceErrors, runFailed, oldData, statusUnavailable, initialPending, pendingExplanations };
+  return { sourcePending, sourceErrors, runFailed, oldData, statusUnavailable, initialPending, pendingExplanations, pendingShortExplanations, pendingFullChanges };
 }
 
 function comparePublication(left: FeedEntry, right: FeedEntry) {
@@ -114,7 +120,7 @@ export function filterEntries(entries: FeedEntry[], filters: Filters, savedIds: 
   const query = filters.query.trim().normalize('NFC').toLocaleLowerCase();
   return entries.filter(entry => {
     if (filters.product !== 'all' && entry.product !== filters.product) return false;
-    if (filters.category === 'pending' && entry.explanationStatus !== 'pending') return false;
+    if (filters.category === 'pending' && entry.explanationStatus !== 'pending' && !hasPendingFullChanges(entry)) return false;
     if (filters.category !== 'all' && filters.category !== 'pending' && entry.explanation?.category !== filters.category) return false;
     if (filters.from && entry.publishedDate < filters.from) return false;
     if (filters.to && entry.publishedDate > filters.to) return false;
@@ -125,9 +131,23 @@ export function filterEntries(entries: FeedEntry[], filters: Filters, savedIds: 
       products[entry.product].name, entry.version, entry.originalTitle,
       entry.explanation?.title, entry.explanation?.summary, entry.explanation?.whyItMatters,
       ...(entry.explanation?.highlights.flatMap(highlight => [highlight.title, highlight.detail]) ?? []),
+      ...(entry.fullChanges?.items.map(item => item.text) ?? []),
     ].join(' ').normalize('NFC').toLocaleLowerCase();
     return searchable.includes(query);
   }).sort(comparePublication);
+}
+
+export function getFullChangesState(fullChanges?: PublicFullChanges) {
+  const items = fullChanges?.items ?? [];
+  const total = fullChanges && Number.isInteger(fullChanges.sourceCount) && fullChanges.sourceCount > 0
+    ? fullChanges.sourceCount : null;
+  const complete = fullChanges?.status === 'ready' && total === items.length
+    && items.every(item => item.id.trim() && item.text.trim())
+    && new Set(items.map(item => item.id)).size === items.length;
+  const countLabel = complete ? `총 ${items.length}개`
+    : total !== null ? `${total}개 중 ${items.length}개 준비`
+      : items.length ? `${items.length}개 준비` : '준비 중';
+  return { complete, countLabel };
 }
 
 export function adjacentEntries(entries: FeedEntry[], current: FeedEntry) {

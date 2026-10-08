@@ -12,6 +12,7 @@ Code Pulse publishes Korean explanations of official Claude Code, Codex and Kiro
 | HTTP and RSS | `src/server/index.ts`, `src/server/app.ts`, `src/server/rss.ts`; see `docs/reference/api.md` |
 | Visitor counts | `src/server/presence.ts`, `src/server/presence-store.ts`, `src/client/presence.ts` |
 | Collection | `src/collector/run.ts`, `src/collector/engine.ts`, `src/collector/sources.ts`, `src/collector/explanation.ts` |
+| Complete changes | `src/collector/change-items.ts`, `src/collector/full-changes.ts`, `tools/backfill-full-changes.ts` |
 | Persistence | `src/collector/store.ts`; local files or conditional S3 writes |
 | Shared contracts | `src/shared/types.ts`, `src/shared/app-release.json` |
 | Infrastructure | `infra/bin/app.ts`, `infra/lib/stack.ts`, `Dockerfile` |
@@ -25,6 +26,8 @@ Use source files as implementation evidence. `dist/`, `cdk.out/`, `node_modules/
 - Keep the existing VPC, subnets, NAT and routing. The web path is CloudFront, its prefix-list security group, ALB and private Fargate.
 - Collect official Claude Code, Codex and Kiro records from 2026-01-01 through the actual collection time. Keep publication dates separate from checks and editing times.
 - Preserve stable IDs and previous data when a source fails. Do not invent publication dates, mark partial history complete, or publish preview releases as stable.
+- Keep a complete source-item inventory alongside the short overview. Do not select only important changes or truncate source bodies. Full completion requires one validated Korean item for every source ID, with the current source hash, model and generation format.
+- Keep full-change source hashes and model identifiers private. Public responses expose only the ordered Korean items, count, state and editing metadata. Preserve inline code, compound conditions and alternative outcomes.
 - Use Claude Haiku 5.5 for both explanation generation and Korean editing. Keep evidence validation, scoped background material and bounded generation.
 - Polish Korean prose with the available Korean editing skills. Do not use em dashes or middle dots in authored Korean; preserve code, identifiers and direct source quotes.
 - Use the official local product logos and preserve their provenance in public/brand/SOURCES.md.
@@ -54,6 +57,8 @@ For documentation-only changes, check affected links, commands, facts and versio
 The collector and server have different privileges. Only the collector may invoke the explanation model or write published content; the web role may update its separate visitor table.
 
 Keep S3 conditional writes, generation checkpoints, first-visit deduplication and explicit unavailable states. Verify real task completion and the public HTTPS endpoint after deployment. Never expose origin header values, signing secrets or credentials in logs or reports.
+
+Full-history generation runs in an explicitly selected local FileStore through `tools/backfill-full-changes.ts`. The local migration permits up to 12 workers; scheduled collection retains its separate 1–6 limit. Validate `tools/verify-full-changes.ts` before conditional publication. Reviewed wording corrections use source-bound item IDs; do not rewrite publication dates or unrelated records.
 
 ## Documentation maintenance
 

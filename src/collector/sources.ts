@@ -122,7 +122,7 @@ export function parseGithubReleases(body: string, source: SourceDefinition): Can
         originalTitle: release.name || release.tag_name,
         version: release.tag_name.replace(/^(?:rust-)?v/, ''),
         publishedAt, publishedDate: publishedAt.slice(0, 10), datePrecision: 'timestamp' as const,
-        sourceUrl, originalText: text.slice(0, 30_000),
+        sourceUrl, originalText: text,
         references: [{ title: source.name, url: sourceUrl, kind: 'release' as const }, ...blogReferences(text, sourceUrl)],
       };
     });
@@ -153,7 +153,7 @@ export function parseCodexFeed(body: string): Candidate[] {
     return [{
       product: 'codex' as const, sourceId: 'codex-changelog', channel,
       originalTitle: title, version, publishedAt, publishedDate: publishedAt.slice(0, 10),
-      datePrecision: 'day' as const, sourceUrl, originalText: text.slice(0, 30_000),
+      datePrecision: 'day' as const, sourceUrl, originalText: text,
       references: [{ title: 'Codex 공식 변경 기록', url: sourceUrl, kind: 'changelog' as const }, ...blogReferences(content, sourceUrl)],
     }];
   });
@@ -185,7 +185,7 @@ export function parseKiroChangelog(body: string): Candidate[] {
     entries.push({
       product: 'kiro', sourceId: 'kiro-changelog', channel, version,
       originalTitle, publishedAt, publishedDate: publishedAt.slice(0, 10), datePrecision: 'day',
-      sourceUrl, originalText: originalText.slice(0, 30_000),
+      sourceUrl, originalText,
       references: [{ title: 'Kiro 공식 변경 기록', url: sourceUrl, kind: 'changelog' }, ...blogReferences(html, sourceUrl)],
     });
   });

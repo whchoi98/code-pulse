@@ -50,10 +50,10 @@ With Bedrock credentials available, this command reads recent official sources a
 
 ```bash
 env -u DATA_BUCKET DATA_DIR=./data AWS_REGION=ap-northeast-2 \
-  npm run collect -- --days 7 --max-summaries 3
+  npm run collect -- --days 7 --max-summaries 3 --max-full-changes 3
 ```
 
-It writes local data and invokes `global.anthropic.claude-haiku-5-5` for drafting and polishing. Existing records are retained. Add `--no-ai` to collect without model calls; explanations remain pending where missing. Exit code 2 means a partial run, including unfinished explanations, while 1 means failure. See the [runbook](runbook.md) for full history, retry and model-refresh procedures.
+It writes local data and invokes `global.anthropic.claude-haiku-5-5` for drafting and polishing both the overview and the complete item list. The two limits count records, not individual changes. Existing records are retained. Add `--no-ai` to collect without model calls; explanations remain pending where missing. Exit code 2 means a partial run, including unfinished full lists, while 1 means failure. See the [runbook](runbook.md) for full history, retry and model-refresh procedures.
 
 ### Verify a change
 
@@ -118,10 +118,10 @@ Bedrock 자격 증명이 준비돼 있으면 다음 명령으로 최근 공식 �
 
 ```bash
 env -u DATA_BUCKET DATA_DIR=./data AWS_REGION=ap-northeast-2 \
-  npm run collect -- --days 7 --max-summaries 3
+  npm run collect -- --days 7 --max-summaries 3 --max-full-changes 3
 ```
 
-이 명령은 로컬 데이터를 갱신하고 초안과 윤문에 `global.anthropic.claude-haiku-5-5`를 호출합니다. 기존 기록은 유지합니다. 모델 호출 없이 수집하려면 `--no-ai`를 추가하며, 해설이 없는 글은 준비 상태로 남습니다. 종료 코드 2는 미완성 해설 등을 포함한 부분 완료, 1은 실패입니다. 전체 기간 수집과 재시도, 모델 갱신은 [운영 안내](runbook.md)를 참고합니다.
+이 명령은 로컬 데이터를 갱신하고 개요와 전체 목록의 초안, 윤문에 `global.anthropic.claude-haiku-5-5`를 호출합니다. 두 한도는 개별 변경 항목 수가 아니라 글 수를 셉니다. 기존 기록은 유지합니다. 모델 호출 없이 수집하려면 `--no-ai`를 추가하며, 해설이 없는 글은 준비 상태로 남습니다. 종료 코드 2는 전체 목록 미완성 등을 포함한 부분 완료, 1은 실패입니다. 전체 기간 수집과 재시도, 모델 갱신은 [운영 안내](runbook.md)를 참고합니다.
 
 ### 변경 검증
 

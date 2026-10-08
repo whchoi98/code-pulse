@@ -5,6 +5,8 @@ import { DEFAULT_MODEL_ID, EDITORIAL_VERSION, validateExplanation } from '../src
 import { isOfficialUrl } from '../src/collector/official-fetch.js';
 import { SOURCES } from '../src/collector/sources.js';
 import { configuredStore } from '../src/collector/store.js';
+import { extractChangeItems } from '../src/collector/change-items.js';
+import { isFullChangesComplete, isFullChangesProgress } from '../src/collector/full-changes.js';
 
 const { values } = parseArgs({
   options: {
@@ -28,6 +30,7 @@ for (const entry of entries) {
       assert.ok(entry.explanation, 'Ready entry has no explanation.');
       validateExplanation(entry.explanation, entry);
     }
+    if (entry.fullChanges) assert.ok(isFullChangesProgress(entry.fullChanges, entry), 'Invalid full-change inventory.');
   } catch (error) {
     errors.push({ id: entry.id, error: error instanceof Error ? error.message : String(error) });
   }
@@ -37,12 +40,17 @@ const canonicalKeys = entries.map(entry => entry.channel === 'cli' && entry.vers
 const pending = entries.filter(entry => entry.explanationStatus !== 'ready' || !entry.explanation);
 const oldModel = entries.filter(entry => entry.explanationModel !== DEFAULT_MODEL_ID);
 const oldEditorial = entries.filter(entry => entry.editorialVersion !== EDITORIAL_VERSION);
+const pendingFullChanges = entries.filter(entry => !isFullChangesComplete(entry.fullChanges, entry));
 const report = {
   checkedAt: new Date().toISOString(),
   requestedSince: '2026-01-01',
   entries: entries.length,
   ready: entries.length - pending.length,
   pending: pending.length,
+  fullChangeRecords: entries.length - pendingFullChanges.length,
+  pendingFullChangeRecords: pendingFullChanges.length,
+  sourceChangeItems: entries.reduce((sum, entry) => sum + extractChangeItems(entry).length, 0),
+  explainedChangeItems: entries.reduce((sum, entry) => sum + (entry.fullChanges?.items.length ?? 0), 0),
   remainingModelRefresh: oldModel.length,
   models: counts(entries.map(entry => entry.explanationModel ?? 'pending')),
   editorialVersions: counts(entries.map(entry => entry.editorialVersion ?? 'pending')),
@@ -56,7 +64,7 @@ const report = {
   weeklyReferences: entries.filter(entry => entry.references.some(reference => reference.url === 'https://code.claude.com/docs/ko/whats-new')).length,
   latestRun: snapshot.runs[0],
   validationErrors: errors,
-  complete: pending.length === 0 && oldModel.length === 0 && oldEditorial.length === 0
+  complete: pending.length === 0 && pendingFullChanges.length === 0 && oldModel.length === 0 && oldEditorial.length === 0
     && errors.length === 0 && snapshot.sources.length === SOURCES.length
     && snapshot.sources.every(source => source.state === 'ok') && snapshot.runs[0]?.status === 'success',
 };

@@ -32,7 +32,7 @@ export function parseClaudeChangelog(body: string): Candidate[] {
     entries.push({
       product: 'claude-code', sourceId: 'claude-changelog', channel: 'cli', version,
       originalTitle: `Claude Code ${version}`, publishedAt, publishedDate: publishedAt.slice(0, 10),
-      datePrecision: 'day', sourceUrl: CLAUDE_CHANGELOG_URL, originalText: block.body.slice(0, 30_000),
+      datePrecision: 'day', sourceUrl: CLAUDE_CHANGELOG_URL, originalText: block.body,
       references: [{ title: 'Claude Code 공식 변경 기록', url: CLAUDE_CHANGELOG_URL, kind: 'changelog' }],
     });
   }

@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-08T10:49:43.724006+00:00",
+  "version": "1.2.0",
+  "baseCommit": "f05536d5c366306fe9c8f22d073d61fc34734860",
+  "verifiedInputsSha256": "6907c92d8b62785d113944e1f99248b1bf83fc811d5815bf9398e590ca6ac7b2",
+  "unit": {
+    "files": 30,
+    "tests": 595,
+    "passed": true
+  },
+  "browser": {
+    "tests": 77,
+    "passed": true
+  },
+  "typecheck": "passed",
+  "releaseCheck": "passed",
+  "build": "passed",
+  "runtimeDependencyVulnerabilities": 0,
+  "cdk": {
+    "synth": "passed",
+    "lookups": false,
+    "diffResourceTypes": [
+      "AWS::ECS::TaskDefinition"
+    ],
+    "changedResources": [
+      "WebTask51ED7374",
+      "WorkerTaskCBB1FEE3"
+    ],
+    "change": "Container image update only",
+    "imageAsset": "c35fe5478c74569354c9bdc34b9d1f27a2fd5428df3b82713ff587010a401f50"
+  },
+  "browserAssets": [
+    "index-BnBVsUYr.css",
+    "index-CPQpLd6T.js"
+  ],
+  "independentReview": "No blocking finding remained after exact-code preservation, concurrent wording merge and response normalization re-review.",
+  "postBuildToolVerification": {
+    "checkedAt": "2026-10-08T10:55:18.532847+00:00",
+    "file": "tools/verify-full-changes-browser.mjs",
+    "reason": "Cloned inline code decoration may extend into the list gutter while all content stays inside the viewport.",
+    "syntaxCheck": "passed",
+    "realBrowserReport": "docs/screenshots/full-local/full-changes-report.json",
+    "viewportWidth": 320,
+    "documentWidth": 320,
+    "bodyWidth": 320,
+    "clippingAncestors": false,
+    "injectedOverflowDetected": true,
+    "applicationSourcesChanged": false
+  }
+}

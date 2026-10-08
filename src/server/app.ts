@@ -8,6 +8,7 @@ import { SOURCES } from '../collector/sources.js';
 import { PRODUCT_IDS, type Entry, type Feed, type FeedEntry, type ProductId, type Snapshot, type SourceStatus } from '../shared/types.js';
 import { registerPresenceApi, type PresenceOptions } from './presence.js';
 import { renderRss, resolvePublicBaseUrl } from './rss.js';
+import { publicEntry } from './public-entry.js';
 
 export interface ServerOptions {
   staticDirectory?: string | false;
@@ -23,17 +24,13 @@ export const CSP = [
   "base-uri 'self'", "form-action 'self'", "frame-ancestors 'none'",
 ].join('; ');
 
-function publicEntry(entry: Entry): FeedEntry {
-  const { originalText: _originalText, contentHash: _hash, explanationModel: _model, ...visible } = entry;
-  return visible;
-}
-
 export async function createServer(store: SnapshotStore, options: ServerOptions = {}) {
   const publicBaseUrl = resolvePublicBaseUrl(options.publicBaseUrl ?? process.env.PUBLIC_BASE_URL);
   const app = Fastify({ logger: process.env.NODE_ENV === 'production', bodyLimit: 16 * 1024, requestTimeout: 30_000 });
   const clock = options.now ?? (() => new Date());
   const ttl = options.cacheTtlMs ?? 60_000;
   let cached: Snapshot | undefined;
+  let publicEntries = new WeakMap<Entry, FeedEntry>();
   let expiresAt = 0;
   let reading: Promise<{ snapshot: Snapshot; storageStale: boolean }> | undefined;
 
@@ -44,6 +41,7 @@ export async function createServer(store: SnapshotStore, options: ServerOptions 
         try {
           const { snapshot } = await store.read();
           cached = snapshot;
+          publicEntries = new WeakMap();
           expiresAt = clock().getTime() + ttl;
           return { snapshot, storageStale: false };
         } catch (error) {
@@ -57,6 +55,15 @@ export async function createServer(store: SnapshotStore, options: ServerOptions 
   }
   function unavailable(reply: FastifyReply) {
     return reply.code(503).header('Cache-Control', 'no-store').send({ error: '변경 기록을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.' });
+  }
+  function serializeEntry(entry: Entry): FeedEntry {
+    // The full inventory is checked once per loaded snapshot, not on every
+    // reader request. A fresh store read also clears this derived cache.
+    const existing = publicEntries.get(entry);
+    if (existing) return existing;
+    const visible = publicEntry(entry);
+    publicEntries.set(entry, visible);
+    return visible;
   }
   app.addHook('onRequest', async (_request, reply) => {
     reply.header('Content-Security-Policy', CSP);
@@ -84,7 +91,7 @@ export async function createServer(store: SnapshotStore, options: ServerOptions 
     }
     try {
       const { snapshot, storageStale } = await current();
-      const body = renderRss(snapshot.entries, {
+      const body = renderRss(snapshot.entries.map(serializeEntry), {
         publicBaseUrl, now: clock(), product: product as ProductId | undefined,
       });
       return reply.type('application/rss+xml; charset=utf-8')
@@ -101,7 +108,7 @@ export async function createServer(store: SnapshotStore, options: ServerOptions 
       const stale = storageStale || sources.some(source =>
         !source.lastSuccessAt || clock().getTime() - Date.parse(source.lastSuccessAt) > 26 * 60 * 60_000);
       const feed: Feed = {
-        generatedAt: snapshot.generatedAt, entries: snapshot.entries.map(publicEntry), sources,
+        generatedAt: snapshot.generatedAt, entries: snapshot.entries.map(serializeEntry), sources,
         latestRun: snapshot.runs[0], schedule: { timezone: 'Asia/Seoul', hour: 9 }, stale,
       };
       reply.header('Cache-Control', storageStale ? 'no-store' : 'public, max-age=30, s-maxage=60');
@@ -114,7 +121,7 @@ export async function createServer(store: SnapshotStore, options: ServerOptions 
       const entry = snapshot.entries.find(item => item.id === request.params.id);
       if (!entry) return reply.code(404).header('Cache-Control', 'no-store').send({ error: '이 변경 기록을 찾을 수 없습니다.' });
       reply.header('Cache-Control', storageStale ? 'no-store' : 'public, max-age=30, s-maxage=60');
-      return { ...publicEntry(entry), originalText: '', contentHash: '' };
+      return { ...serializeEntry(entry), originalText: '', contentHash: '' };
     } catch { return unavailable(reply); }
   });
   app.get('/robots.txt', async (_request, reply) => {

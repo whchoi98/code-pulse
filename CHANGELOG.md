@@ -12,6 +12,18 @@ These entries describe application builds. Git tags and hosted releases are veri
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-08
+
+### Added
+
+- Show every official change in Korean alongside the short overview, including fixes and smaller updates.
+- Validate one explanation per source item and resume polished batches after interrupted generation.
+- Include complete change lists in search, read state, Markdown exports and RSS.
+
+### Fixed
+
+- Preserve complete source bodies instead of cutting long release records.
+
 ## [1.1.0] - 2026-10-08
 
 ### Added
@@ -45,6 +57,18 @@ These entries describe application builds. Git tags and hosted releases are veri
 아래 내용은 앱 빌드의 변경 기록입니다. Git 태그와 원격 릴리스는 릴리스 워크플로에서 별도로 확인하며 저장소 주소를 임의로 만들지 않습니다.
 
 ## [Unreleased]
+
+## [1.2.0] - 2026-10-08
+
+### Added
+
+- 핵심 요약과 함께 오류 수정과 작은 개선을 포함한 공식 변경 사항 전체를 한국어로 표시
+- 원문 항목과 한국어 설명을 대조하고 중단된 생성 작업을 중간 저장부터 재개
+- 검색, 읽음 상태, Markdown 내보내기와 RSS에 전체 변경 목록 반영
+
+### Fixed
+
+- 긴 릴리스 원문이 글자 수 제한으로 잘리던 문제 수정
 
 ## [1.1.0] - 2026-10-08
 

@@ -1,0 +1,95 @@
+{
+  "checkedAt": "2026-10-08T11:01:39.937Z",
+  "publicOrigin": "https://code-pulse.whchoi.net",
+  "distributionDomain": "dxdh24n4uucjz.cloudfront.net",
+  "cname": [
+    "dxdh24n4uucjz.cloudfront.net"
+  ],
+  "certificate": {
+    "authorized": true,
+    "protocol": "TLSv1.3",
+    "subject": "*.whchoi.net",
+    "subjectAlternativeNames": "DNS:*.whchoi.net",
+    "validFrom": "Aug 11 00:00:00 2026 GMT",
+    "validTo": "Feb 24 23:59:59 2027 GMT"
+  },
+  "checks": [
+    {
+      "url": "https://code-pulse.whchoi.net/",
+      "method": "GET",
+      "status": 200,
+      "location": null,
+      "contentType": "text/html; charset=utf-8"
+    },
+    {
+      "url": "https://code-pulse.whchoi.net/healthz",
+      "method": "GET",
+      "status": 200,
+      "location": null,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "url": "https://code-pulse.whchoi.net/api/feed",
+      "method": "GET",
+      "status": 200,
+      "location": null,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "url": "https://code-pulse.whchoi.net/feed.xml",
+      "method": "GET",
+      "status": 200,
+      "location": null,
+      "contentType": "application/rss+xml; charset=utf-8"
+    },
+    {
+      "url": "https://code-pulse.whchoi.net/feed.xml?product=kiro",
+      "method": "GET",
+      "status": 200,
+      "location": null,
+      "contentType": "application/rss+xml; charset=utf-8"
+    },
+    {
+      "url": "https://dxdh24n4uucjz.cloudfront.net/",
+      "method": "GET",
+      "status": 308,
+      "location": "https://code-pulse.whchoi.net/",
+      "contentType": null
+    },
+    {
+      "url": "https://dxdh24n4uucjz.cloudfront.net/?product=codex&q=%ED%95%9C%EA%B8%80%20%26%20a%2Bb&unread=1",
+      "method": "GET",
+      "status": 308,
+      "location": "https://code-pulse.whchoi.net/?product=codex&unread=1&q=%ED%95%9C%EA%B8%80%20%26%20a%2Bb",
+      "contentType": null
+    },
+    {
+      "url": "https://dxdh24n4uucjz.cloudfront.net/feed.xml?product=kiro",
+      "method": "GET",
+      "status": 308,
+      "location": "https://code-pulse.whchoi.net/feed.xml?product=kiro",
+      "contentType": null
+    },
+    {
+      "url": "https://dxdh24n4uucjz.cloudfront.net/?q=one&q=two%2Fthree&saved=1",
+      "method": "GET",
+      "status": 308,
+      "location": "https://code-pulse.whchoi.net/?saved=1&q=one&q=two%2Fthree",
+      "contentType": null
+    },
+    {
+      "url": "https://dxdh24n4uucjz.cloudfront.net/feed.xml?product=codex",
+      "method": "HEAD",
+      "status": 308,
+      "location": "https://code-pulse.whchoi.net/feed.xml?product=codex",
+      "contentType": null
+    },
+    {
+      "url": "http://code-pulse.whchoi.net/?product=kiro",
+      "method": "GET",
+      "status": 301,
+      "location": "https://code-pulse.whchoi.net/?product=kiro",
+      "contentType": "text/html"
+    }
+  ]
+}

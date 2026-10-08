@@ -18,6 +18,7 @@ Start with the [project overview](../README.md) and [contributor instructions](.
 | Maintain versions and release notes | [Version workflow](versioning.md) |
 | Inspect application build history | [Changelog](../CHANGELOG.md) and the release links in the project overview |
 | Inspect deployment evidence | [Verification](verification.md), currently in Korean |
+| Inspect complete-change coverage | [Full inventory verification](full-changes-verification.json), [content review](full-changes-content-review.json) |
 | Check logo provenance | [Brand sources](../public/brand/SOURCES.md) |
 
 ### Historical context
@@ -42,6 +43,7 @@ The [RSS implementation notes](rss-implementation.md) and [final review](final-r
 | 버전과 릴리스 노트 관리 | [버전 정책](versioning.md) |
 | 앱 빌드 이력 확인 | [변경 기록](../CHANGELOG.md)과 프로젝트 소개의 릴리스 링크 |
 | 배포 검증 근거 확인 | [검증 기록](verification.md), 한국어 문서 |
+| 전체 변경 항목의 포함 여부 확인 | [전체 항목 검증](full-changes-verification.json), [내용 대조 기록](full-changes-content-review.json) |
 | 로고 출처 확인 | [브랜드 자료](../public/brand/SOURCES.md) |
 
 ### 과거 작업 기록

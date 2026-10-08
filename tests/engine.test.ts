@@ -4,6 +4,8 @@ import { emptySnapshot, type SnapshotStore, WriteConflict } from '../src/collect
 import { SOURCES } from '../src/collector/sources.js';
 import type { Candidate } from '../src/collector/sources.js';
 import type { Explanation, Snapshot } from '../src/shared/types.js';
+import { extractChangeItems } from '../src/collector/change-items.js';
+import { FULL_CHANGES_VERSION, fullChangesSourceHash } from '../src/collector/full-changes.js';
 
 // These fixtures represent responses served at the requested URL. Transport
 // redirects and pagination have their own source-reader tests.
@@ -696,6 +698,16 @@ describe('opt-in explanation model refresh', () => {
       },
       EDITORIAL_VERSION: 'target-editorial',
     }));
+    vi.doMock('../src/collector/full-changes.js', () => ({
+      BedrockChangeExplainer: class {
+        constructor(readonly modelId: string) {}
+        async explain(candidate: Candidate) {
+          const items = extractChangeItems(candidate).map(item => ({ id: item.id, text: '하위 에이전트의 작업 강도를 설정하도록 개선했습니다.' }));
+          return { status: 'ready', sourceHash: fullChangesSourceHash(candidate), model: this.modelId,
+            formatVersion: FULL_CHANGES_VERSION, updatedAt: nextDay().toISOString(), sourceCount: items.length, items };
+        }
+      },
+    }));
     vi.doMock('../src/collector/official-fetch.js', () => ({ fetchOfficial: async () => document(release()) }));
     vi.doMock('../src/collector/store.js', () => ({ configuredStore: () => store }));
     try {
@@ -715,6 +727,7 @@ describe('opt-in explanation model refresh', () => {
       error.mockRestore();
       vi.doUnmock('../src/collector/engine.js');
       vi.doUnmock('../src/collector/explanation.js');
+      vi.doUnmock('../src/collector/full-changes.js');
       vi.doUnmock('../src/collector/official-fetch.js');
       vi.doUnmock('../src/collector/store.js');
       vi.resetModules();

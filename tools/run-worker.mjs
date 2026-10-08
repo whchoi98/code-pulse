@@ -14,10 +14,11 @@ const { values } = parseArgs({
     days: { type: 'string' },
     concurrency: { type: 'string' },
     'max-summaries': { type: 'string' },
+    'max-full-changes': { type: 'string' },
   },
 });
 if (values.since && values.days) throw new Error('--since와 --days는 함께 지정할 수 없습니다.');
-for (const [name, min, max] of [['days', 1, 365], ['max-summaries', 0, 300], ['concurrency', 1, 6]]) {
+for (const [name, min, max] of [['days', 1, 365], ['max-summaries', 0, 300], ['max-full-changes', 0, 300], ['concurrency', 1, 6]]) {
   if (values[name] !== undefined && (!/^\d+$/.test(values[name]) || Number(values[name]) < min || Number(values[name]) > max)) {
     throw new Error(`${name} 값은 ${min}~${max} 범위의 정수여야 합니다.`);
   }
@@ -44,7 +45,7 @@ const network = {
 };
 const command = ['node', 'dist/collector/run.js'];
 for (const name of ['refresh-model', 'no-ai']) if (values[name]) command.push(`--${name}`);
-for (const name of ['since', 'days', 'max-summaries', 'concurrency']) if (values[name] !== undefined) command.push(`--${name}`, values[name]);
+for (const name of ['since', 'days', 'max-summaries', 'max-full-changes', 'concurrency']) if (values[name] !== undefined) command.push(`--${name}`, values[name]);
 const input = {
   cluster: outputs.ClusterName, taskDefinition: outputs.WorkerTaskDefinitionArn,
   launchType: 'FARGATE', count: 1, networkConfiguration: network,
