@@ -1,0 +1,14 @@
+node_modules/
+dist/
+cdk.out/
+data/
+test-results/
+playwright-report/
+.env*
+*.log
+cdk-outputs.json
+.superpowers/
+.aws/
+.codex/
+.agents/
+.claude/

@@ -1,0 +1,16 @@
+{
+  "base": "https://dxdh24n4uucjz.cloudfront.net",
+  "checkedAt": "2026-10-08T00:07:04.797Z",
+  "pages": 2,
+  "issuedVisitorCookies": 1,
+  "sharedVisitorCookies": 1,
+  "version": "1.0.0",
+  "counts": "접속 1\n누적 방문 2",
+  "checks": [
+    "real HTTPS footer",
+    "two-tab Web Lock bootstrap",
+    "live server counts",
+    "manifest version"
+  ],
+  "errors": []
+}

@@ -1,0 +1,1157 @@
+[
+  {
+    "id": "claude-code-49586dd1fa093bbfa486",
+    "contentHash": "8f088ac9ede26fb3bbf388e7faf8314bdc92ebb8c15df11260ffabe4f89e57f8",
+    "explanation": {
+      "title": "Claude Code 2.1.273, 게이트웨이 요청 헤더 추가와 권한 검사 우회 수정",
+      "summary": "Claude Code 2.1.273은 LLM 게이트웨이가 요청의 성격을 구분할 수 있도록 헤더 다섯 개를 추가했습니다. 이 헤더는 CLAUDE_CODE_GATEWAY_HINT_HEADERS=1을 설정해야 전송됩니다. 권한 검사기가 완전히 분석하지 못한 Bash 명령이 확인 창 없이 실행되던 문제와, 조직이 Skills를 끈 뒤에도 claude.ai에서 동기화된 스킬이 남아 있던 문제도 함께 고쳤습니다.",
+      "whyItMatters": "게이트웨이를 운영하는 팀은 요청 헤더로 요청 종류, 에이전트 유형, 컨텍스트 압축 여부를 구분할 수 있습니다. 권한 검사기가 분석하지 못한 Bash 명령의 확인 요청 누락과 bypass 모드에서 서브셸이 위험한 rm을 숨기던 문제도 고쳤습니다. permissions.blockReadsOutsideWorkingDirectories를 켠 경우에는 저장소 설정으로 지정된 메모리 디렉터리를 프롬프트에 불러오거나 검색에 사용하지 않습니다.",
+      "actionItems": [
+        "게이트웨이 로그에서 이 헤더를 쓰려면 CLAUDE_CODE_GATEWAY_HINT_HEADERS=1을 설정하고, 요청에 헤더 값이 실제로 들어오는지 확인하세요.",
+        "permissions.blockReadsOutsideWorkingDirectories를 쓰는 환경에서는 분석하기 어려운 Bash 명령에도 확인 요청이 나오는지 점검하세요. bypass 모드에서는 서브셸에 숨겨진 위험한 rm을 놓치던 문제가 수정됐습니다.",
+        "이번 버전은 Bedrock, Vertex, Foundry의 auto 모드에서 당분간 로컬 분류기를 기본으로 사용합니다. 플랫폼의 서버 측 분류기를 쓰려면 CLAUDE_CODE_AUTO_MODE_SERVER=1을 설정하세요."
+      ],
+      "highlights": [
+        {
+          "title": "게이트웨이 요청 헤더 다섯 개 추가",
+          "detail": "x-claude-code-request-class, x-claude-code-agent-type, x-claude-code-prev-tool-durations, x-claude-code-compaction, x-claude-code-context-compacted 헤더가 추가되었습니다. CLAUDE_CODE_GATEWAY_HINT_HEADERS=1을 설정한 경우에만 전송됩니다.",
+          "evidence": "Added `x-claude-code-request-class`, `x-claude-code-agent-type`"
+        },
+        {
+          "title": "권한 검사 우회 수정",
+          "detail": "권한 검사기가 완전히 분석하지 못한 Bash 명령이 blockReadsOutsideWorkingDirectories 설정에서 확인 없이 통과하던 문제를 고쳤습니다. bypass 모드에서는 서브셸 안에 숨겨진 위험한 rm도 같은 방식으로 통과하던 문제가 있었습니다.",
+          "evidence": "Fixed Bash commands the permission checker cannot fully"
+        },
+        {
+          "title": "Skills 비활성화 후 스킬 잔존 수정",
+          "detail": "조직이 Skills를 끈 뒤에도 claude.ai에서 동기화된 스킬이 계속 사용 가능하던 문제를 고쳤습니다. 이제 해당 스킬은 복구 가능한 휴지통으로 이동합니다.",
+          "evidence": "Fixed skills synced from claude.ai staying available after"
+        }
+      ],
+      "audience": [
+        "LLM 게이트웨이를 운영하는 플랫폼 팀",
+        "Claude Code를 팀 설정으로 관리하는 개발자",
+        "Bedrock, Vertex, Foundry에서 Claude Code를 쓰는 개발자"
+      ],
+      "category": "security",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 메모리 디렉터리를 불러오지 않는 변경은 permissions.blockReadsOutsideWorkingDirectories 조건에 한정된다. bypass 모드의 수정도 모든 복잡한 Bash 명령이 아니라 서브셸에 숨겨진 위험한 rm에 관한 내용이다."
+  },
+  {
+    "id": "codex-049089805d5ffd13c821",
+    "contentHash": "d38269b2919bc4ab9a583ad2ead366740b640b02a53433d18e9e201de7b1f1c6",
+    "explanation": {
+      "title": "GPT-5.5는 10월 14일 ChatGPT와 Codex에서 지원이 종료될 예정입니다",
+      "summary": "2026년 10월 14일부터 GPT-5.5를 ChatGPT, ChatGPT Work, Codex에서 쓸 수 없습니다. 개인, Business, Enterprise, Edu 등 모든 요금제가 대상이며 OpenAI API에는 적용되지 않습니다.",
+      "whyItMatters": "ChatGPT 로그인으로 Codex를 쓰는 개발자는 종료일 전에 사용할 대체 모델을 선택해야 합니다. 워크스페이스 기본값과 저장된 설정뿐 아니라 관리형 구성, 커스텀 에이전트, 예약 작업, 스크립트에 남은 gpt-5.5 지정도 함께 바꿔야 합니다.",
+      "actionItems": [
+        "요금제와 클라이언트에서 선택할 수 있는 대체 모델을 확인하고, 종료 전에 사용 모델을 옮겨 둡니다.",
+        "워크스페이스 기본값, 저장된 모델 설정, 관리형 구성, 커스텀 에이전트, 예약 작업, 스크립트에서 gpt-5.5를 선택한 부분을 찾아 수정합니다.",
+        "OpenAI API를 직접 호출하는 코드는 이 종료 안내의 대상이 아니므로 따로 확인합니다."
+      ],
+      "highlights": [
+        {
+          "title": "2026년 10월 14일부터 ChatGPT와 Codex에서 빠짐",
+          "detail": "GPT-5.5는 이 날짜부터 ChatGPT, ChatGPT Work, Codex에서 제공되지 않습니다. 종료 범위는 모든 요금제이며 API는 제외됩니다.",
+          "evidence": "On October 14, 2026, GPT-5.5 will retire from"
+        },
+        {
+          "title": "ChatGPT 로그인 Codex 사용자는 다른 모델을 선택해야 함",
+          "detail": "ChatGPT 로그인으로 Codex를 쓰는 경우 요금제와 클라이언트에서 쓸 수 있는 다른 모델을 골라야 합니다.",
+          "evidence": "For Codex with ChatGPT sign-in, choose an available"
+        },
+        {
+          "title": "gpt-5.5를 지정한 설정을 찾아 바꿔야 함",
+          "detail": "워크스페이스 기본값, 관리형 구성, 커스텀 에이전트, 예약 작업, 스크립트에 남아 있는 gpt-5.5 지정을 종료일 전에 바꿔야 합니다.",
+          "evidence": "custom agents, scheduled tasks, and scripts that still"
+        }
+      ],
+      "audience": [
+        "ChatGPT 로그인으로 Codex를 사용하는 개발자",
+        "워크스페이스 모델 설정을 관리하는 팀 관리자",
+        "예약 작업이나 자동화 스크립트를 운영하는 엔지니어"
+      ],
+      "category": "breaking",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 10월14일은 검토일보다 미래다. 원문에 없는 자동 대체 모델 실행 가능성을 제거하고 지원 종료 예정과 설정 교체 범위만 남겼다. 제목의 ChatGPT과도 바로잡았다."
+  },
+  {
+    "id": "kiro-ee0abf21f645443637f1",
+    "contentHash": "02512c12089c5585a6d9832da9bef27a41070b401227e705b6b8888870d5c498",
+    "explanation": {
+      "title": "GPT-5.6 Sol, Terra, Luna의 Kiro 컨텍스트 창이 1M 토큰으로 늘어남",
+      "summary": "Kiro IDE, CLI, Web에서 GPT-5.6 Sol, Terra, Luna의 컨텍스트 창이 272K 토큰에서 1M 토큰으로 늘어났습니다. 전체 코드베이스, 긴 문서, 여러 턴에 걸친 에이전트 기록을 한 번의 요청에 담을 수 있습니다.",
+      "whyItMatters": "저장소 규모의 리팩터링이나 여러 파일과 실행 로그를 함께 살펴보는 디버깅처럼 맥락이 긴 작업에서, 앞선 내용을 잘라내지 않고 이어서 진행할 수 있습니다. 다만 1M 컨텍스트는 Pro, Pro+, Pro Max, Power 고객을 대상으로 점진적으로 여는 실험적 지원이라 모든 사용자가 바로 쓸 수 있는 것은 아닙니다. 과금은 요청 크기에 따라 나뉩니다. 272K 토큰 이하 요청은 원문에 안내된 짧은 컨텍스트의 크레딧 배율을 따르고, 272K를 넘는 요청은 그 배율의 두 배가 적용됩니다.",
+      "actionItems": [
+        "Kiro IDE나 CLI를 재시작하거나 Kiro Web을 새로고침한 뒤 모델 목록에서 GPT-5.6 모델이 보이는지 확인하세요.",
+        "272K 토큰을 넘는 요청을 보내기 전에 Kiro 크레딧 배율을 확인하고, 긴 컨텍스트 작업의 비용을 미리 가늠하세요."
+      ],
+      "highlights": [
+        {
+          "title": "1M 토큰 컨텍스트 창",
+          "detail": "GPT-5.6 Sol, Terra, Luna가 272K 대신 1M 토큰을 지원합니다. 전체 코드베이스나 긴 문서를 한 요청에 넣고 청크로 나누지 않고 작업할 수 있습니다.",
+          "evidence": "GPT-5.6 Sol, Terra, and Luna upgraded to 1M"
+        },
+        {
+          "title": "모델별 크레딧 배율 변경",
+          "detail": "GPT-5.6 계열의 크레딧 배율이 새로 정해졌습니다. 272K 이하 요청은 Sol 4.4배, Terra 2.2배, Luna 1.1배가 적용되고, 272K를 넘는 요청은 이 배율의 두 배가 적용됩니다.",
+          "evidence": "Credit multipliers for the GPT-5.6 family are updated"
+        },
+        {
+          "title": "점진적 실험 지원과 적용 방법",
+          "detail": "1M 컨텍스트는 Pro, Pro+, Pro Max, Power 고객을 대상으로 실험적으로 열리고 있습니다. 업데이트된 모델은 IDE나 CLI를 재시작하거나 Kiro Web을 새로고침해야 보입니다.",
+          "evidence": "Restart your IDE or CLI, or refresh Kiro"
+        }
+      ],
+      "audience": [
+        "Kiro로 대규모 코드베이스를 리팩터링하거나 마이그레이션하는 개발자",
+        "긴 세션의 에이전트 작업을 운영하는 개발자",
+        "Kiro 크레딧 사용량을 관리하는 팀 관리자"
+      ],
+      "category": "feature",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 원문은 출시와 함께 크레딧 배율이 갱신됐다고 명시한다. 272K 이하 요청에 기존 배율이 유지된다는 표현은 다른 필드의 새 배율 안내와도 어긋난다."
+  },
+  {
+    "id": "codex-298a8357a1cfc64e58d6",
+    "contentHash": "b6a0ec9672e1254d8ea5740a36cea6f9e2b0fc6292c260479866a0a8fa5531f4",
+    "explanation": {
+      "title": "Codex CLI 0.154.0에서 실험 워크트리와 GPT-6-Astra 모델 추가",
+      "summary": "Codex CLI 0.154.0은 모델 선택 목록과 Amazon Bedrock 카탈로그에 GPT-6-Astra를 추가합니다. 실험 기능으로 --worktree 또는 /worktree를 쓰면 새 세션이나 포크된 세션마다 격리된 작업 복사본을 만들고, 이를 찾아보거나 다시 열 수 있습니다. 같은 버전에서 Codex가 작업하는 동안 질문에 답하는 기능과 Vim 편집, 복사 기능도 바뀌었습니다.",
+      "whyItMatters": "여러 작업을 동시에 진행하는 개발자는 워크트리로 변경 사항을 나눠 관리할 수 있습니다. 원격 작업을 재개하거나 포크할 때 저장된 권한이 유지됩니다. 자동 승인 검토는 맥락 압축 후에도 승인 근거를 보존하고, 새 사용자 지시나 답변으로 효력을 잃은 승인은 거부하도록 개선되었습니다.",
+      "actionItems": [
+        "실험적인 워크트리 지원을 사용하려면 --worktree 또는 /worktree로 새 세션이나 포크된 세션의 작업 복사본을 만들고 다시 열 수 있는지 확인하세요.",
+        "원격 작업을 재개하거나 포크한 뒤 저장된 권한이 기대한 대로 유지되는지 확인하세요.",
+        "Codex CLI를 0.154.0으로 업데이트하고 모델 선택 목록에 GPT-6-Astra가 나타나는지 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "실험 워크트리로 세션을 분리",
+          "detail": "실험적인 워크트리 지원으로 --worktree 또는 /worktree를 사용해 새 세션이나 포크된 세션의 격리된 체크아웃을 만들고, 찾아보거나 다시 열 수 있습니다.",
+          "evidence": "Experimental worktree support lets you create isolated checkouts"
+        },
+        {
+          "title": "작업 중에도 질문에 답변",
+          "detail": "Codex가 계속 작업하는 동안 제안된 선택지를 고르거나 직접 입력해 질문에 답할 수 있습니다. 작성 중인 메인 입력은 사라지지 않습니다.",
+          "evidence": "Answer questions inline while Codex continues working"
+        },
+        {
+          "title": "원격 재개와 포크에서 권한 보존",
+          "detail": "원격 재개와 포크 작업이 저장된 권한을 유지합니다. 새 세션과 포크는 명시적으로 덮어쓰지 않는 한 서버의 모델 기본값을 따릅니다.",
+          "evidence": "Remote resume and fork operations preserve saved permissions;"
+        }
+      ],
+      "audience": [
+        "Claude Code, Codex, Kiro를 여러 작업에 나눠 쓰는 개발자",
+        "Windows나 macOS 터미널에서 Codex CLI를 쓰는 개발자",
+        "MCP 서버와 OAuth 인증을 함께 쓰는 팀"
+      ],
+      "category": "feature",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. authorization context를 인증 정보로 번역해 승인 근거와 자격 증명을 혼동했다. 실험 기능이라는 이유로 별도 설정 활성화가 필요하다는 절차도 원문에 없다."
+  },
+  {
+    "id": "claude-code-bbd70aba1ce8f94e1422",
+    "contentHash": "f1e410bd197b6a24c8a72f4cec83cb3831d9284e0b9f3a5d9333d7a033b97e44",
+    "explanation": {
+      "title": "Claude Code 2.1.266, 게이트웨이 설정 회귀 수정",
+      "summary": "2.1.265에서 CLAUDE_CODE_USE_GATEWAY를 API 키, apiKeyHelper 또는 사용자 지정 인증 헤더와 함께 설정한 게이트웨이 구성이 모든 요청에 인증 오류를 내던 문제를 고쳤습니다. ANTHROPIC_BASE_URL과 ANTHROPIC_AUTH_TOKEN이 함께 설정되지 않으면 이 환경 변수는 다시 무시됩니다.",
+      "whyItMatters": "2.1.265에서는 API 키, apiKeyHelper, 사용자 지정 인증 헤더와 함께 이 변수를 설정해 둔 환경에서 \"Not signed in to the Cloud gateway\" 오류로 모든 요청이 실패했습니다. 2.1.266으로 올리면 설정을 바꾸지 않아도 요청이 다시 처리됩니다.",
+      "actionItems": [
+        "LLM 게이트웨이나 프록시를 통해 Claude Code를 쓰는 환경이라면 2.1.266 이상으로 업데이트합니다.",
+        "2.1.265를 쓰던 중 \"Not signed in to the Cloud gateway\" 오류가 났다면 업데이트 후 설정을 바꾸지 말고 같은 작업을 다시 실행해 확인합니다."
+      ],
+      "highlights": [
+        {
+          "title": "CLAUDE_CODE_USE_GATEWAY 단독 설정 시 동작 복구",
+          "detail": "2.1.265부터 이 변수만 설정해도 Cloud 게이트웨이 로그인이 강제되었습니다. 2.1.266에서는 ANTHROPIC_BASE_URL과 ANTHROPIC_AUTH_TOKEN이 함께 설정되지 않은 경우 이 변수를 다시 무시합니다.",
+          "evidence": "The variable on its own is ignored again;"
+        }
+      ],
+      "audience": [
+        "LLM 게이트웨이나 프록시를 통해 Claude Code를 사용하는 개발자",
+        "API 키나 사용자 지정 인증 헤더를 함께 쓰는 팀 환경 관리자"
+      ],
+      "category": "fix",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 모든 게이트웨이와 프록시 구성의 요청이 실패한 것으로 요약하지 않도록, 문제가 발생한 CLAUDE_CODE_USE_GATEWAY 설정 조건을 요약에 명시했다."
+  },
+  {
+    "id": "claude-code-2f054404e7fc12e0e975",
+    "contentHash": "f9be7152d1b77593e381b1670d06e60688169d62fdf923dcfb23d583bf846a94",
+    "explanation": {
+      "title": "Claude Code 2.1.257, Fable 5.1 기본 모델과 자동 모드 보호 규칙 추가",
+      "summary": "Claude Code 2.1.257에서 claude-fable-5-1이 추가되었고 Fable 기본 모델로 설정되었습니다. 자동 모드에는 클라우드 메타데이터 자격 증명 요청, 송신 우회, 테넌트 간 접근을 환경에서 예상된 동작으로 표시하지 않는 한 자동 승인하지 않는 Containment Escape 규칙이 추가되었습니다.",
+      "whyItMatters": "클라우드 환경에서 자동 모드로 작업할 때 이전에는 통과하던 일부 네트워크 요청이 이제 확인 대상이 됩니다. 장시간 자동화 작업이 중간에 멈추는 경우 이 규칙이 원인일 수 있습니다. 반대로 메타데이터 자격 증명을 정상적으로 쓰는 워크플로라면 환경 설정에서 예상된 동작으로 표시해야 계속 자동으로 진행됩니다. 시간 표기 설정(timeFormat, timeZone)으로 턴 종료 시각과 대화 기록의 타임스탬프 형식을 맞출 수도 있습니다.",
+      "actionItems": [
+        "자동 모드에서 클라우드 메타데이터 자격 증명 요청, 외부 통신 제한 우회, 테넌트 간 접근이 멈춘다면 Containment Escape 규칙의 적용 여부를 확인하세요. 환경에서 예상된 동작으로 표시된 경우만 이 규칙의 자동 승인 예외가 됩니다.",
+        "Fable 5.1을 쓰려면 /model에서 직접 고르세요. 게이트웨이 세션에서 fable이나 best를 지정하면 아직 Fable 5로 연결됩니다.",
+        "서브에이전트 모델을 하나로 고정하려면 CLAUDE_CODE_SUBAGENT_MODEL_FORCE 설정을 검토하세요. 이 설정은 서브에이전트별 모델 지정을 무시합니다."
+      ],
+      "highlights": [
+        {
+          "title": "Fable 5.1 기본 모델 추가",
+          "detail": "claude-fable-5-1이 추가되었고 Fable 기본 모델이 되었습니다. 1M 컨텍스트를 지원하며 입력 10달러, 출력 50달러(백만 토큰 기준), 캐시 읽기 0.25달러로 안내되어 있습니다.",
+          "evidence": "Added Claude Fable 5.1 (`claude-fable-5-1`), now the default"
+        },
+        {
+          "title": "자동 모드 Containment Escape 규칙",
+          "detail": "클라우드 메타데이터 자격 증명 요청, 송신 우회, 테넌트 간 접근은 환경에서 예상된 것으로 표시되지 않는 한 자동 승인되지 않습니다. 자동 모드에서 이전과 다르게 확인 요청이 뜰 수 있습니다.",
+          "evidence": "Added a Containment Escape rule to auto mode"
+        },
+        {
+          "title": "시간 표기 설정 추가",
+          "detail": "timeFormat과 timeZone으로 12시간, 24시간, UTC 24시간, strftime 패턴 중 하나를 골라 턴 종료 시각과 대화 기록 타임스탬프에 적용할 수 있습니다.",
+          "evidence": "Added \"Time format\" (`timeFormat`) and `timeZone` settings"
+        }
+      ],
+      "audience": [
+        "자동 모드로 클라우드 작업을 자동화하는 개발자",
+        "여러 에이전트와 서브에이전트를 운영하는 팀",
+        "Fable 모델을 기본으로 쓰는 개발자"
+      ],
+      "category": "security",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. Containment Escape의 대상인 egress evasion을 일반 외부 접속으로 넓혀 안내했다. 자동 승인 예외를 설정할 대상도 원문에 명시된 요청 종류로 한정했다."
+  },
+  {
+    "id": "kiro-fae327313651aa6e0f4f",
+    "contentHash": "e622b76b75a830ffaf617849875537aa7dde1aee2575a0196ed29cd84c28e604",
+    "explanation": {
+      "title": "Kiro Crew 0.5.0, AWS 계정을 한곳에서 관리하고 세션 탭으로 병렬 작업",
+      "summary": "Kiro Crew 0.5.0은 연결된 AWS 계정의 상태와 접근 권한, 비용을 한 화면에서 보는 AWS Control 앱을 추가했습니다. 세션을 탭으로 열어 여러 작업을 나란히 다룰 수 있고, 에이전트가 세션 사이에서 메시지를 주고받으며 작업을 나눠 맡을 수 있습니다. 로컬 받아쓰기는 별도 음성 인식 프로그램을 설치하지 않아도 동작합니다.",
+      "whyItMatters": "여러 세션을 동시에 돌리는 개발자는 세션 탭과 여러 승인 요청을 한 번에 처리하는 기능으로 오가는 시간을 줄일 수 있습니다. 다만 S3 스냅샷 백업 명령과 Kiro CLI 번들 경로 재정의가 제거되었으므로, 이를 쓰던 스크립트는 업그레이드 전에 고쳐야 합니다. 셸 명령 승인도 다시 요청될 수 있습니다.",
+      "actionItems": [
+        "S3로 스냅샷을 백업하던 스크립트가 있다면 kirocrew snapshot --to s3://... 사용을 멈추고 AWS Control 앱의 클라우드 백업으로 옮기세요.",
+        "이전 버전에서 Kiro CLI 번들 경로를 환경 변수로 지정했다면 해당 재정의가 더 이상 읽히지 않는다는 점을 확인하세요. Kiro Crew는 이제 Kiro CLI가 제공하는 relay를 사용합니다.",
+        "로컬 받아쓰기 설정이 whisper, mlx, parakeet, faster 중 하나였다면 local로 바뀌며 첫 사용 때 모델을 내려받습니다. kirocrew doctor로 저장된 기본값을 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "AWS 계정 통합 관리",
+          "detail": "AWS Control 앱에서 연결된 계정의 상태, 접근 권한, 비용을 확인하고 클라우드 백업을 실행할 수 있습니다. 변경에는 동의가 필요하며 감사 로그에 남고, 스냅샷 복원은 선택한 구성 요소를 교체하거나 병합하면서 되돌리기 원장도 함께 기록합니다.",
+          "evidence": "Restore a snapshot into the running install by"
+        },
+        {
+          "title": "세션 탭과 임시 채팅",
+          "detail": "여러 세션을 탭으로 열어 두고 각 탭의 실시간 상태를 확인할 수 있습니다. + New 메뉴의 임시 채팅은 Incognito에서 메모리를 읽기만 하고 쓰지 않으며, Temporary에서는 메모리를 읽지도 쓰지도 않습니다.",
+          "evidence": "Middle-click or modifier-click a sidebar row to open"
+        },
+        {
+          "title": "세션 사이의 에이전트 작업 조율",
+          "detail": "에이전트가 다른 세션에 메시지를 보내 그 세션의 다음 턴으로 처리하게 할 수 있습니다. 내장 conductor는 큰 목표를 작업 항목으로 나누고 세션마다 시작해 결과를 점검하며, 워크플로는 버전이 붙은 전역 라이브러리에 올려 /workflow로 호출할 수 있습니다.",
+          "evidence": "Agents can send a message into another session"
+        }
+      ],
+      "audience": [
+        "Kiro를 여러 세션에서 병렬로 쓰는 개발자",
+        "AWS 계정을 Kiro와 함께 관리하는 개발자와 관리자",
+        "보안 정책과 MCP 레지스트리를 배포하는 조직 관리자"
+      ],
+      "category": "feature",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. Crew의 기능을 Kiro 전체의 변경으로 읽지 않도록 제품 범위를 명시했다. 번들 경로 재정의가 사라진 뒤 필요한 것으로 서술한 불명확한 설정 절차도 실제 공개 relay 안내로 바꿨다."
+  },
+  {
+    "id": "kiro-1df4bbfffb37e8733015",
+    "contentHash": "c451fa5810bb2cf30ff958fd6d977a9efcb48b8a28734f97121d56e3d49ab945",
+    "explanation": {
+      "title": "Kiro Crew 0.4.0, Windows와 Linux 설치 지원 및 암호화된 비밀 값 보관소 추가",
+      "summary": "Kiro Crew 0.4.0은 Windows 설치 파일과 Linux 패키지 설치 지원을 확장하고, 설정 파일의 비밀 값을 암호화된 보관소로 옮길 수 있게 했습니다. 대시보드에서는 도구가 바꾼 파일을 항상 보이는 diff 카드로 확인하고 직접 편집할 수 있습니다.",
+      "whyItMatters": "Windows에서는 서명된 설치 파일을 제공하고 stable 채널에서 앱 내 자동 업데이트를 받을 수 있으며, Linux 데스크톱 앱은 .deb 또는 .rpm으로 설치합니다. MCP 서버가 쓰는 API 키나 토큰은 설정 파일 대신 보관소에 두고 secret://NAME으로 참조할 수 있어, 설정 파일을 공유하거나 커밋할 때 값이 노출될 위험이 줄어듭니다. 도구가 파일을 수정하면 접힌 세부 정보 안이 아니라 항상 보이는 diff 카드로 나타나 변경 내용을 바로 확인할 수 있습니다.",
+      "actionItems": [
+        "Linux 데스크톱 앱은 glibc 2.34 이상이 필요합니다. 호스트의 glibc 버전이 낮으면 데스크톱 앱 대신 한 줄 CLI 설치를 사용하세요.",
+        "MCP 서버 설정 파일에 평문으로 적힌 API 키나 토큰이 있다면 Settings > Secrets 페이지에 옮기고, 서버 환경 변수에서 secret://NAME 형태로 참조하도록 바꾸세요."
+      ],
+      "highlights": [
+        {
+          "title": "Windows 서명 설치 파일과 Linux 패키지 설치",
+          "detail": "Windows에는 서명된 설치 파일과 stable 채널의 앱 내 자동 업데이트가 제공됩니다. Linux 데스크톱 앱은 .deb 또는 .rpm으로 설치하며, Kiro Crew는 UI Automation으로 Windows 네이티브 앱을 읽고 조작할 수 있습니다.",
+          "evidence": "Windows now ships a signed installer with in-app"
+        },
+        {
+          "title": "암호화된 비밀 값 보관소",
+          "detail": "비밀 값은 암호화된 보관소에 저장되고 Settings > Secrets 페이지에서 관리합니다. 값은 마스킹되어 브라우저로 전송되지 않고, MCP 서버는 secret://NAME으로 참조해 프로세스를 실행할 때 보관소에서 값을 읽습니다.",
+          "evidence": "An MCP server's environment can reference a stored"
+        },
+        {
+          "title": "대시보드에서 diff 확인과 파일 편집",
+          "detail": "대화 기록에서 나란히 보기 diff를 보고 파일별로 직접 편집할 수 있으며, 프로젝트 파일 트리는 사이드 패널에 표시됩니다. 도구가 만든 파일 수정은 항상 보이는 diff 카드로 나타납니다.",
+          "evidence": "The transcript gains side-by-side diff rendering, per-file editing"
+        }
+      ],
+      "audience": [
+        "Windows나 Linux에서 Kiro를 쓰는 개발자",
+        "MCP 서버에 API 키나 토큰을 설정하는 개발자",
+        "Kiro 대시보드에서 코드 변경을 검토하는 개발자"
+      ],
+      "category": "feature",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 변경 대상은 Kiro Crew이며 Windows의 앱 내 자동 업데이트는 stable 채널에 한정된다. first-class 설치 지원을 제품 전반의 정식 지원으로 넓히지 않았다."
+  },
+  {
+    "id": "codex-80b369e4774953919bee",
+    "contentHash": "0fd94c637418ea3aabf3d8b4fb59f207c8ab7752dbd9f0a5512576665dfee025",
+    "explanation": {
+      "title": "Codex의 mcp-server 명령이 제거되어 app-server로 옮겨야 합니다",
+      "summary": "codex mcp-server 명령은 2026년 8월 24일 릴리스에서 deprecated 처리되었습니다. 2026년 9월 5일 업데이트에서는 이 명령과 독립 실행 바이너리 codex-mcp-server가 제거되었다고 안내되었습니다. 이 명령을 호출하던 설정이나 스크립트는 현재 그대로 동작하지 않을 수 있습니다.",
+      "whyItMatters": "공식 안내는 codex mcp-server 대신 Codex app server를 사용하도록 권합니다. 기존 명령으로 Codex를 실행하는 설정과 스크립트가 있다면 업데이트할 때 연동 방식을 함께 확인해야 합니다.",
+      "actionItems": [
+        "codex mcp-server 호출이 들어 있는 스크립트, CI 설정, MCP 클라이언트 설정을 찾아 목록으로 정리하세요.",
+        "변경 안내의 마이그레이션 문서를 읽고 Codex app server 방식으로 연동 구성을 옮기세요.",
+        "codex-mcp-server 바이너리를 직접 실행하던 환경이라면 실행 경로와 배포 스크립트에서 해당 항목을 제거하세요."
+      ],
+      "highlights": [
+        {
+          "title": "codex mcp-server 명령 deprecated 처리",
+          "detail": "2026년 8월 24일 릴리스에서 codex mcp-server 명령이 deprecated 처리되었습니다. 이후 사용은 권장되지 않으며 Codex app server 사용이 안내되었습니다.",
+          "evidence": "The `codex mcp-server` command is now deprecated."
+        },
+        {
+          "title": "명령과 독립 바이너리 제거",
+          "detail": "2026년 9월 5일에 추가된 안내는 codex mcp-server 명령과 독립 실행 바이너리 codex-mcp-server의 제거를 알립니다. 기존 명령으로 실행하는 연동은 이전 방법을 확인해야 합니다.",
+          "evidence": "binary have been removed."
+        },
+        {
+          "title": "마이그레이션 문서 확인",
+          "detail": "제거 이후의 연동 방법은 마이그레이션 안내 문서에 정리되어 있습니다. 기존 호출을 교체하기 전에 이 문서를 먼저 확인하세요.",
+          "evidence": "See the [migration guidance](/codex/mcp-server)."
+        }
+      ],
+      "audience": [
+        "Codex를 MCP 서버로 연동해 사용하는 개발자",
+        "CI나 자동화 스크립트에서 codex mcp-server를 호출하는 팀"
+      ],
+      "category": "breaking",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 제거 안내 날짜 이후 모든 기존 호출이 무조건 작동하지 않는다는 단정을 제거했다. 원문은 명령과 바이너리 제거 및 이전 안내를 제공한다."
+  },
+  {
+    "id": "kiro-0a8554ffc659ce07e9aa",
+    "contentHash": "a4dec0d7ed68b13b8aa328fea0a9cf25d6310df707169cbbf8c7a20b5886eea7",
+    "explanation": {
+      "title": "Kiro Crew 0.3.0, Crew Mode로 여러 작업 스레드를 동시에 진행하고 대시보드 브라우저를 에이전트가 직접 조작",
+      "summary": "Kiro Crew 0.3.0에서 Crew Mode가 추가되어 이전 응답을 기다리지 않고 다음 메시지를 보낼 수 있습니다. 주제별 병렬 하위 세션이 각자 답하므로 한 채팅에서 여러 작업이 동시에 진행됩니다. 대시보드의 Browser 패널은 에이전트가 직접 탐색, 클릭, 입력, 스크린샷을 수행하도록 바뀌었고, Linux ARM64 빌드와 Windows 지원도 함께 들어왔습니다.",
+      "whyItMatters": "한 채팅에서 서로 다른 작업을 나눠 맡길 때 Crew Mode가 실제로 쓸모가 있습니다. 웹 화면을 확인하거나 폼을 채우는 일은 에이전트가 브라우저를 직접 다루므로 사용자가 옮겨 다닐 일이 줄어듭니다. 다만 업그레이드 전에 Node.js 22 이상, Telegram 단일 계정 제약, 지식 자동 수집의 옵트인 전환을 확인해야 합니다.",
+      "actionItems": [
+        "Node.js 버전이 22 이상인지 확인하세요. 원문은 24 LTS를 권장하며, Node 20 환경은 빌드 도중이 아니라 설치 단계에서 거부됩니다.",
+        "Telegram 봇 토큰이 여러 개였다면 사용할 토큰을 telegram.bot_token 항목으로 옮기세요. 기존 설정은 보존되지만 계정 맵은 더 이상 읽히지 않습니다.",
+        "kirocrew logout은 리프레시 토큰을 폐기하므로 로그아웃하면 모든 기기에서 세션이 끝난다는 점을 고려하세요. 새로 설치한 환경에서는 지식 자동 수집이 기본으로 꺼져 있으니 필요하면 직접 켜세요."
+      ],
+      "highlights": [
+        {
+          "title": "Crew Mode로 병렬 작업 진행",
+          "detail": "이전 응답이 끝나기를 기다리지 않고 다음 메시지를 보낼 수 있습니다. 주제별로 병렬 하위 세션이 생겨 각자 독립적으로 답하므로, 한 채팅에서 여러 작업이 동시에 진행됩니다.",
+          "evidence": "Crew Mode dispatches topics to parallel sub-sessions"
+        },
+        {
+          "title": "에이전트가 직접 다루는 대시보드 브라우저",
+          "detail": "대시보드의 Browser 패널에서 에이전트가 페이지를 탐색하고 클릭, 입력, 스크린샷을 수행합니다. 개인용 브라우저 빌드는 자동으로 내려받으며, 네이티브 데스크톱 자동화(Computer Use)는 macOS에서 제공됩니다.",
+          "evidence": "The dashboard's Browser panel is now something the"
+        },
+        {
+          "title": "세션 요약 탭과 빠른 재개",
+          "detail": "사이드 패널 탭이 각 스레드의 목표와 현재 상태를 요약하며, 미완료 항목을 위에 표시합니다. 이 기능은 옵트인이고 켜기 전에 토큰 비용이 표시됩니다. 이전 채팅은 백그라운드에서 재개되어 첫 메시지가 콜드 스타트 없이 바로 전송됩니다.",
+          "evidence": "A side-panel tab summarizes what each thread of"
+        }
+      ],
+      "audience": [
+        "Claude Code, Codex, Kiro를 업무에 쓰는 개발자",
+        "여러 작업을 병렬로 맡기는 팀 리더",
+        "사내 MCP 서버나 Telegram 봇을 운영하는 관리자"
+      ],
+      "category": "feature",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. Kiro Crew의 변경임을 명확히 하고, 지식 자동 수집이 기본으로 꺼지는 설명을 원문에 명시된 새 설치로 한정했다."
+  },
+  {
+    "id": "claude-code-c3c4476a457ac1bea0c5",
+    "contentHash": "0c90a32145e9642f52d76760da5fa5c43a445b04a214e0f72bb2fae839a262a1",
+    "explanation": {
+      "title": "Claude Code v2.1.232, 서브에이전트가 대화 맥락을 이어받고 세션끼리 직접 메시지를 주고받음",
+      "summary": "subagent_type을 fork로 지정한 서브에이전트가 전체 대화와 프롬프트 캐시를 상속하도록 기본 설정이 바뀌었습니다. 대화형 세션에서 팀원이 아닌 에이전트를 만들면 기본적으로 백그라운드에서 실행됩니다. 프롬프트에 @를 입력해 다른 Claude 세션을 이름으로 부르면 Claude가 SendMessage로 그 세션에 메시지를 직접 보냅니다.",
+      "whyItMatters": "여러 작업을 나눠 맡길 때 fork 서브에이전트가 앞선 대화와 프롬프트 캐시를 이어받을 수 있습니다. 대화형 세션의 백그라운드 실행 중에는 메인 세션이 다른 작업을 계속할 수 있습니다. 같은 기기에서 세션 이름이 겹치면 구분된 이름이 붙으며, 실행 중인 세션 하나와 정확히 일치하는 이름은 ref로 다시 확인하지 않고 SendMessage의 대상으로 쓸 수 있습니다. 수신 허용, 보류, 거부는 별도 설정에서 정합니다.",
+      "actionItems": [
+        "대화형 세션에서 서브에이전트를 띄웠을 때 백그라운드로 실행되는지 확인하고, 결과를 기다리던 작업 흐름이 그대로 맞는지 점검하세요.",
+        "/config에서 Dialog expiry와 Messages from your other sessions 항목을 확인해 다른 세션에서 오는 메시지를 수락할지, 보류할지, 거부할지 정하세요.",
+        "엔터프라이즈 정책을 쓰는 경우 managed settings 승인 대화상자에 나오는 엔드포인트 URL과 sandbox 바이너리 재정의 항목을 검토하세요."
+      ],
+      "highlights": [
+        {
+          "title": "서브에이전트 포크가 대화 맥락을 상속하고 백그라운드에서 실행됨",
+          "detail": "subagent_type이 fork인 서브에이전트는 전체 대화와 프롬프트 캐시를 상속합니다. 대화형 세션에서 팀원이 아닌 에이전트 생성도 기본적으로 백그라운드에서 실행됩니다.",
+          "evidence": "Subagent forking is now on by default: a"
+        },
+        {
+          "title": "@ 멘션으로 다른 세션에 직접 메시지 전달",
+          "detail": "프롬프트에 @를 입력해 다른 Claude 세션을 이름으로 언급하면 Claude가 SendMessage로 연락합니다. 이름이 실행 중인 세션 하나와 정확히 일치하면 ref로 다시 확인할 필요 없이 그 이름을 대상으로 사용할 수 있습니다.",
+          "evidence": "Type `@` in the prompt to mention another"
+        },
+        {
+          "title": "GitLab 토큰 마스킹과 마켓플레이스 지원 추가",
+          "detail": "여러 GitLab 토큰 계열이 비밀값으로 마스킹되고, 라우팅 가능한 glpat-와 gldt- 토큰은 전체가 가려집니다. 플러그인 마켓플레이스에서는 베어 gitlab.com 저장소 URL을 github.com과 같은 방식으로 복제합니다.",
+          "evidence": "Added GitLab support to plugin marketplaces: bare `gitlab.com`"
+        }
+      ],
+      "audience": [
+        "서브에이전트와 여러 세션을 함께 쓰는 개발자",
+        "GitLab 저장소와 플러그인 마켓플레이스를 쓰는 팀",
+        "관리자 정책과 샌드박스 설정을 관리하는 엔터프라이즈 운영자"
+      ],
+      "category": "feature",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 생략되는 것은 수신 승인 전체가 아니라 정확히 일치하는 세션 이름을 ref로 다시 확인하는 단계다. 수신 허용·보류·거부 설정과 혼동되지 않도록 범위를 좁혔다."
+  },
+  {
+    "id": "kiro-db5a870778c6f8a22b0e",
+    "contentHash": "217d347a1f317ebacc193a1cfa398c86bacf68adaa9115023c36584fbde24f77",
+    "explanation": {
+      "title": "Kiro CLI 2.18.0, 음성 입력과 스펙 검토 화면 추가",
+      "summary": "Kiro CLI 2.18.0에서 /voice로 프롬프트를 음성으로 입력할 수 있게 됐습니다. V3 스펙 실행에는 단계 문서를 읽고 줄 단위 코멘트를 모아 수정 요청을 보내는 검토 화면이 생겼습니다. V3 클라우드 세션은 관리자가 명시적으로 켜야 사용할 수 있습니다.",
+      "whyItMatters": "음성 받아쓰기는 기본적으로 Whisper로 사용자 컴퓨터에서 처리되므로 음성이 외부로 전송되지 않고 클라우드 API 키도 필요하지 않습니다. 다만 모델은 처음 사용할 때 확인 후 한 번 내려받습니다. V3 클라우드 세션 설정을 한 적이 없는 조직은 관리자가 활성화하기 전까지 세션을 쓸 수 없으니 사전에 확인해야 합니다.",
+      "actionItems": [
+        "조직에서 V3 클라우드 세션을 쓴다면 Kiro 콘솔의 Cloud Sessions 설정을 확인하고 필요하면 관리자가 켜세요.",
+        "/voice 또는 Space 키를 길게 눌러 음성 입력을 시험해 보세요. 처음 사용할 때 모델 다운로드 확인 창이 뜹니다.",
+        "V3 스펙 실행의 단계 체크포인트에서 Ctrl+X를 눌러 문서를 읽고 코멘트를 남기세요. 체크포인트 질문에 답하면 코멘트가 한 번에 수정 요청으로 전달됩니다."
+      ],
+      "highlights": [
+        {
+          "title": "/voice 음성 받아쓰기",
+          "detail": "/voice로 녹음을 시작하거나 Space 키를 누른 채 말하면 말하는 동안 입력창에 텍스트가 나타납니다. Enter를 누르거나 침묵이 감지되면 녹음이 끝납니다. 기본 설정에서는 음성이 기기 밖으로 나가지 않습니다.",
+          "evidence": "Speak your prompts instead of typing them."
+        },
+        {
+          "title": "스펙 검토 화면과 줄 단위 코멘트",
+          "detail": "V3에서 Ctrl+X로 스펙 단계 문서를 같은 화면에서 읽고 고치고 싶은 줄에 코멘트를 남길 수 있습니다. 체크포인트 질문에 답하면 모은 코멘트가 하나의 수정 요청으로 에이전트에 전달됩니다.",
+          "evidence": "Press Ctrl+X at a spec phase checkpoint to"
+        },
+        {
+          "title": "클라우드 세션의 옵트인 전환",
+          "detail": "V3 클라우드 세션은 관리자가 Kiro 콘솔에서 Cloud Sessions를 명시적으로 켜야 사용할 수 있습니다. 설정을 한 번도 하지 않은 조직은 관리자가 켜기 전까지 사용할 수 없습니다.",
+          "evidence": "Cloud sessions are now disabled unless an administrator"
+        }
+      ],
+      "audience": [
+        "Kiro CLI를 업무에 쓰는 개발자",
+        "조직의 Kiro 설정과 클라우드 세션을 관리하는 관리자"
+      ],
+      "category": "breaking",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 원문에서 클라우드 세션 옵트인과 스펙 검토 화면은 v3로 한정되어 있으나 한국어 설명에서 이 범위가 빠졌다."
+  },
+  {
+    "id": "codex-d82a2c298a64a106d71c",
+    "contentHash": "6b762052e99b3b37643d3408080e4ce132d00a68e6bf5fc1ad03003ddb9de36e",
+    "explanation": {
+      "title": "Codex CLI 0.146.1, 사이버 기능 모델의 자동 검토 기본값을 더 안전하게 조정",
+      "summary": "Codex CLI 0.146.1은 사이버 기능을 갖춘 모델에 적용되는 자동 검토 기본값을 더 안전한 쪽으로 조정했습니다. 터미널 인터페이스에서 권한 변경 이유도 더 명확하게 설명합니다. 변경 목록에는 해당 수정이 백포트로 기록되어 있습니다.",
+      "whyItMatters": "사이버 기능을 갖춘 모델을 쓴다면 자동 검토가 기본값으로 더 보수적으로 동작합니다. 권한 변경 사유가 터미널에 표시되므로 작업 중 권한이 달라졌을 때 원인을 바로 확인할 수 있습니다. 다만 기본값의 구체적인 항목과 설정 방법은 원문에 없으므로 전체 변경 목록을 함께 확인해야 합니다.",
+      "actionItems": [
+        "사용하는 모델이 사이버 기능을 갖춘 모델에 해당하는지 확인하세요.",
+        "자동 검토 기본값이 바뀌었을 때 기존 작업 흐름에 영향이 있는지 전체 변경 목록에서 확인하세요.",
+        "터미널에 권한 변경 메시지가 나오면 표시된 사유를 읽고 필요한 조치를 판단하세요."
+      ],
+      "highlights": [
+        {
+          "title": "사이버 기능 모델의 자동 검토 기본값 강화",
+          "detail": "사이버 기능을 갖춘 모델에 대해 자동 검토 기본값이 더 안전한 쪽으로 적용됩니다. 원문에는 기본값의 세부 내용이 나오지 않으므로 정확한 동작은 변경 목록에서 확인해야 합니다.",
+          "evidence": "Apply safer automatic-review defaults for cyber-capable models and"
+        },
+        {
+          "title": "터미널에서 권한 변경 사유 표시",
+          "detail": "권한이 바뀔 때 터미널 인터페이스가 그 이유를 설명하도록 개선되었습니다. 작업 중 권한 변화를 이해하는 데 도움이 됩니다.",
+          "evidence": "#37057 [0.146] Backport safer cyber-model auto-review defaults @anp-oai"
+        }
+      ],
+      "audience": [
+        "터미널에서 Codex CLI를 사용하는 개발자",
+        "사이버 기능을 갖춘 모델로 자동 검토를 사용하는 팀"
+      ],
+      "category": "security",
+      "impact": "medium"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 백포트 표기만으로 수정이 0.146 버전에서 0.146.1로 옮겨졌다고 출발 버전을 단정할 수 없다."
+  },
+  {
+    "id": "claude-code-ca790e1f8dd8067d3d43",
+    "contentHash": "e4bc4085f4f487ba56562c6795944c40cc1b1f610998c451817ddc745a0ec5f7",
+    "explanation": {
+      "title": "worktree 세션의 메인 체크아웃 보호 확대와 Remote Control 자동 시작 제한",
+      "summary": "v2.1.222에서 worktree 격리 세션과 서브에이전트가 메인 체크아웃에 파괴적인 git 명령을 실행하지 못하도록 격리 범위가 파일 편집과 Bash 전반으로 넓어졌습니다. 저장소 로컬 설정 파일로는 Remote Control 자동 시작을 켤 수 없게 바뀌었고, 끄는 것은 여전히 가능합니다.",
+      "whyItMatters": "worktree로 나눠 병렬 작업하는 개발자는 서브에이전트가 메인 체크아웃의 git 상태를 건드릴 위험이 줄어듭니다. 프로젝트 설정 파일을 공유받은 팀원은 Remote Control이 의도치 않게 켜지지 않으며, 켜려면 사용자 범위의 /config에서 설정해야 합니다. 자동 모드에서는 SendMessage로 다른 세션에 보낸 메시지가 전달 전에 권한 분류기의 평가를 거치므로, 전달이 막히는 경우가 생길 수 있습니다.",
+      "actionItems": [
+        "worktree로 병렬 작업 중이라면 서브에이전트가 메인 체크아웃을 건드리지 않는지 실제 작업으로 확인합니다.",
+        "Remote Control을 쓰려면 저장소 설정 대신 /config에서 사용자 범위로 켭니다.",
+        "자동 모드에서 SendMessage 전달이 막히면 권한 분류기 평가 때문인지 확인합니다."
+      ],
+      "highlights": [
+        {
+          "title": "worktree 격리 범위가 모든 세션 유형으로 확대",
+          "detail": "worktree 격리 세션과 서브에이전트가 메인 체크아웃에 파괴적인 git 명령을 실행하던 문제를 고쳤습니다. 이제 모든 세션 유형에서 파일 편집과 Bash에 격리가 적용됩니다.",
+          "evidence": "Fixed worktree-isolated sessions and their subagents being able"
+        },
+        {
+          "title": "저장소 설정으로는 Remote Control 자동 시작을 켤 수 없음",
+          "detail": ".claude/settings.json이나 .claude/settings.local.json으로는 Remote Control 자동 시작을 켤 수 없게 바뀌었습니다. 끄는 것은 가능하며, 켜려면 사용자 범위의 /config를 사용해야 합니다.",
+          "evidence": "Changed Remote Control auto-start so repo-local settings"
+        },
+        {
+          "title": "SendMessage 메시지의 권한 분류기 평가",
+          "detail": "자동 모드에서 SendMessage로 다른 에이전트 세션에 보낸 메시지가 전달 전에 권한 분류기의 평가를 거치도록 바뀌었습니다.",
+          "evidence": "Improved auto mode safety: messages sent to other"
+        }
+      ],
+      "audience": [
+        "worktree와 서브에이전트로 병렬 작업하는 Claude Code 사용자",
+        "팀 저장소의 설정 파일을 관리하는 개발자",
+        "Remote Control과 자동 모드를 사용하는 개발자"
+      ],
+      "category": "security",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. main checkout은 메인 브랜치가 아니라 원래의 작업 사본을 뜻한다. 보호 대상이 특정 브랜치인 것처럼 읽히는 표현을 바로잡았다."
+  },
+  {
+    "id": "codex-8769cfcc71fc555c80bc",
+    "contentHash": "c5cb31c4fbff2802648fdff49e92542d653797081918bbf38baaaecb2cdd4bac",
+    "explanation": {
+      "title": "ChatGPT 로그인 Codex에서 GPT-5.4와 GPT-5.4 mini 지원이 종료됐습니다",
+      "summary": "2026년 8월 31일부로 ChatGPT 계정으로 로그인한 Codex에서 GPT-5.4와 GPT-5.4 mini 지원이 종료됐습니다. 두 모델은 OpenAI API와 API 키로 인증한 Codex 세션에서는 계속 사용할 수 있다고 원문이 안내합니다.",
+      "whyItMatters": "기존 설정이 gpt-5.4나 gpt-5.4-mini를 가리키고 있다면 종료일 이후 ChatGPT 로그인 환경의 작업이 모델 오류로 실패할 수 있습니다. 워크스페이스 기본값, 저장된 모델 설정, 관리형 구성, 커스텀 에이전트, 예약 작업을 함께 점검해야 합니다.",
+      "actionItems": [
+        "gpt-5.4를 쓰는 곳은 gpt-5.6-terra로, gpt-5.4-mini를 쓰는 곳은 gpt-5.6-luna로 바꿀 수 있는지 확인하세요.",
+        "워크스페이스 기본값, 저장된 모델 설정, 관리형 구성, 커스텀 에이전트, 예약 작업에 기존 모델 지정이 남아 있다면 원문이 안내한 대체 모델로 바꾸세요."
+      ],
+      "highlights": [
+        {
+          "title": "ChatGPT 로그인 환경에서 종료되는 모델",
+          "detail": "8월 31일 이후 ChatGPT 계정으로 로그인한 Codex에서는 GPT-5.4와 GPT-5.4 mini를 선택할 수 없습니다. 같은 모델은 OpenAI API와 API 키로 인증한 Codex 세션에서는 계속 쓸 수 있습니다.",
+          "evidence": "On August 31, 2026, GPT-5.4 and GPT-5.4 mini"
+        },
+        {
+          "title": "권장 대체 모델 지정",
+          "detail": "원문은 gpt-5.4 대신 gpt-5.6-terra를, gpt-5.4-mini 대신 gpt-5.6-luna를 사용하라고 안내합니다.",
+          "evidence": "Replace `gpt-5.4` with `gpt-5.6-terra` (GPT-5.6 Terra)."
+        },
+        {
+          "title": "남아 있는 모델 지정 점검",
+          "detail": "원문은 종료 전에 워크스페이스 기본값, 저장된 모델 설정, 관리형 구성, 커스텀 에이전트, 예약 작업을 바꾸도록 안내했습니다. 아직 두 모델 지정이 남아 있다면 교체해야 합니다.",
+          "evidence": "Before the cutoff, update workspace defaults, saved model"
+        }
+      ],
+      "audience": [
+        "ChatGPT 계정으로 Codex를 사용하는 개발자",
+        "Codex 워크스페이스나 관리형 구성을 관리하는 팀 관리자",
+        "예약 작업과 커스텀 에이전트에 기존 모델을 지정한 개발자"
+      ],
+      "category": "breaking",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 검토 시점에는 8월 31일이 이미 지났다. 종료 전까지 수정하라는 행동 지침을 남은 모델 지정을 지금 교체하는 안내로 고쳤다."
+  },
+  {
+    "id": "kiro-169f16cff35317b6bb33",
+    "contentHash": "953284f0638a617aab1d3183cbb9fe80ffa196aa094fd25fc2f03fbf2188d4a4",
+    "explanation": {
+      "title": "Kiro CLI 2.15.1, 훅 확인 옵션 추가와 정책 규칙 및 쓰기 차단 수정",
+      "summary": "Kiro CLI 2.15.1의 V3에서 훅이 confirmCommand를 지원해 동적인 확인 옵션을 제시할 수 있게 되었습니다. 워크스페이스 정책 규칙은 서로 다른 경로 형식에서도 유지되고, /tools 목록은 도구 탐색 뒤 갱신됩니다. V3 정책 엔진은 디렉터리 깊이와 관계없이 .kiroignore 파일 자체에 대한 에이전트 쓰기를 차단합니다.",
+      "whyItMatters": "V3에서 훅의 확인 절차를 조정하려면 confirmCommand 지원을 검토할 수 있습니다. 경로 형식에 따라 정책 규칙이 사라지거나 발견된 도구가 목록에 나타나지 않던 문제도 고쳤습니다. .kiroignore 파일은 하위 디렉터리에 있어도 에이전트가 수정할 수 없도록 보호됩니다.",
+      "actionItems": [
+        "V3 훅 설정에서 confirmCommand를 사용할 곳이 있는지 살펴보고, 확인 옵션이 의도대로 나오는지 점검하세요.",
+        "V3의 워크스페이스 정책 규칙이 사용하는 경로 형식에서도 유지되는지 확인하세요.",
+        "V3에서 하위 디렉터리의 .kiroignore 파일을 에이전트가 수정하려 할 때 쓰기가 차단되는지 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "훅의 동적 확인 옵션",
+          "detail": "V3 훅이 confirmCommand를 지원해 확인 옵션을 동적으로 제시할 수 있습니다.",
+          "evidence": "[V3] Hooks now support confirmCommand for dynamic confirmation"
+        },
+        {
+          "title": "정책 규칙 저장과 tools 목록 갱신",
+          "detail": "V3의 워크스페이스 정책 규칙이 서로 다른 경로 형식에서도 유지됩니다. /tools 목록도 도구 탐색 뒤 갱신되어 발견된 도구가 나타납니다.",
+          "evidence": "[V3] Workspace-scope policy rules now persist correctly across"
+        },
+        {
+          "title": ".kiroignore 쓰기 차단 범위 확대",
+          "detail": "V3 정책 엔진은 디렉터리 깊이와 관계없이 .kiroignore 파일 자체에 대한 에이전트 쓰기를 차단합니다.",
+          "evidence": "[V3] The policy engine now blocks agent writes"
+        }
+      ],
+      "audience": [
+        "Kiro CLI를 팀 워크플로우에 적용하는 개발자",
+        "훅과 정책 규칙으로 명령 실행을 통제하는 관리자"
+      ],
+      "category": "security",
+      "impact": "medium"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 보호 대상은 .kiroignore에 적힌 경로가 아니라 모든 깊이의 .kiroignore 파일 자체다. 각 변경이 V3에 한정된다는 조건도 복원했다."
+  },
+  {
+    "id": "claude-code-e4780ff64b6de60458e1",
+    "contentHash": "523cdb75aedbc7b7565c5f39862db152a577cb70c405af6ed4c77a2c54248956",
+    "explanation": {
+      "title": "Claude Code 2.1.215, /verify와 /code-review는 직접 호출해야 실행",
+      "summary": "Claude Code 2.1.215의 변경 기록은 Claude가 /verify와 /code-review 스킬을 스스로 실행하지 않도록 바꿨다고 안내합니다. 해당 스킬을 사용하려면 사용자가 /verify 또는 /code-review로 호출합니다.",
+      "whyItMatters": "두 스킬의 자동 호출을 전제로 한 작업 절차를 쓰고 있었다면 호출 단계를 명시해야 합니다. 여기서 바뀐 것은 /verify와 /code-review 스킬의 실행 방식입니다.",
+      "actionItems": [
+        "두 스킬로 검증이나 코드 리뷰를 수행하려면 필요한 시점에 /verify 또는 /code-review를 직접 입력하세요.",
+        "자동 실행을 전제로 만든 워크플로나 팀 안내 문서가 있다면 스킬 호출 단계를 명시적으로 추가하세요."
+      ],
+      "highlights": [
+        {
+          "title": "스킬 자동 실행 중단",
+          "detail": "Claude가 /verify와 /code-review를 스스로 실행하지 않습니다. 두 스킬은 사용자가 필요할 때 직접 호출하는 방식으로 바뀌었습니다.",
+          "evidence": "Claude no longer runs the `/verify` and `/code-review`"
+        }
+      ],
+      "audience": [
+        "CLI에서 Claude Code를 사용하는 개발자",
+        "검증과 코드 리뷰 절차를 자동화해 둔 팀"
+      ],
+      "category": "breaking",
+      "impact": "medium"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 원문은 특정 두 스킬의 자동 호출 변경이다. 모든 검증·리뷰 작업이 실행되지 않는다는 뜻으로 넓히지 않고 2.1.215의 변경으로 설명했다."
+  },
+  {
+    "id": "claude-code-592b1d96d495cf5cb8f8",
+    "contentHash": "b099100a602e7166d3d1219b176bbba826419bcb78fad82cbde738427215b0bc",
+    "explanation": {
+      "title": "Claude Code 2.1.211: 서브에이전트 텍스트 출력 옵션과 채팅 권한 승인 메시지 보호 추가",
+      "summary": "Claude Code 2.1.211에서 `--forward-subagent-text` 플래그와 `CLAUDE_CODE_FORWARD_SUBAGENT_TEXT` 환경 변수가 추가되었습니다. 이 옵션을 켜면 stream-json 출력에 서브에이전트의 텍스트와 사고 과정이 포함됩니다. 채팅 채널로 전달되는 권한 승인 메시지가 도구 입력으로 시각적으로 바뀌지 않도록 보호하는 수정도 들어갔습니다.",
+      "whyItMatters": "stream-json 출력을 파싱하는 도구를 만들었다면 서브에이전트 출력이 추가로 포함되는지 확인해야 합니다. 원문에는 이 옵션의 기본값이 나와 있지 않으므로 필요할 때만 플래그나 환경 변수를 설정하는 것이 안전합니다. 채팅 채널로 권한 요청을 받는 환경에서는 도구 입력이 승인 메시지의 표시를 바꾸지 못하도록 수정되었습니다. 또 PreToolUse 훅이 `ask`를 반환한 샌드박스 밖 Bash 명령은 자동 모드에서도 승인 요청이 뜨도록 고쳐졌습니다.",
+      "actionItems": [
+        "stream-json 출력을 처리하는 스크립트가 있다면 서브에이전트 텍스트가 추가된 상태에서도 파싱이 정상적으로 동작하는지 확인하세요.",
+        "샌드박스 밖에서 실행하는 Bash 명령에 PreToolUse 훅이 ask를 반환하도록 했다면 자동 모드에서도 승인 요청이 뜨는지 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "서브에이전트 텍스트를 stream-json 출력에 포함하는 옵션",
+          "detail": "`--forward-subagent-text` 플래그 또는 `CLAUDE_CODE_FORWARD_SUBAGENT_TEXT` 환경 변수를 설정하면 서브에이전트의 텍스트와 사고 과정이 stream-json 출력에 포함됩니다. 출력을 외부 도구로 넘기는 자동화에서 서브에이전트의 진행 상황을 함께 받을 때 쓸 수 있습니다.",
+          "evidence": "Added `--forward-subagent-text` flag and `CLAUDE_CODE_FORWARD_SUBAGENT_TEXT` environment variable to"
+        },
+        {
+          "title": "채팅 채널 권한 미리보기 보호와 훅 ask 결정 보존",
+          "detail": "채팅 채널로 전달되는 권한 미리보기에서 양방향 텍스트 재정렬 문자, 너비 0 문자, 비슷하게 생긴 따옴표를 중화하도록 바뀌었습니다. 샌드박스 밖 Bash 명령에 대한 PreToolUse 훅의 ask 결정을 자동 모드가 덮어쓰던 문제도 고쳤습니다.",
+          "evidence": "Fixed permission previews relayed to chat channels not"
+        }
+      ],
+      "audience": [
+        "Claude Code를 CLI나 자동화 스크립트에서 사용하는 개발자",
+        "채팅 채널로 권한 승인을 받는 팀 운영자",
+        "PreToolUse 훅으로 권한을 제어하는 개발자"
+      ],
+      "category": "security",
+      "impact": "medium"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. PreToolUse ask 결정 보존 수정의 대상은 unsandboxed Bash다. 행동 지침과 상세 설명에서 빠진 샌드박스 밖 실행 조건을 복원했다."
+  },
+  {
+    "id": "kiro-0dfd2b74f504bbf82504",
+    "contentHash": "0fd4c8f9dde00f16f3338024c82c48645103a3a973302a6f9bc462ad9723d2e8",
+    "explanation": {
+      "title": "Kiro에서 OpenAI GPT-5.6 Sol, Terra, Luna 실험 기능 제공 시작",
+      "summary": "Kiro에서 OpenAI 모델을 처음으로 선택할 수 있게 되었습니다. GPT-5.6 Sol, Terra, Luna 세 등급이 IDE, CLI, 웹에서 제공되며, 작업 난이도와 비용에 맞춰 모델을 고를 수 있습니다. 이 지원은 실험 기능으로 단계적으로 열리고 있습니다.",
+      "whyItMatters": "원문은 여러 단계의 구현, 장기간 리팩터링, 복잡한 터미널 작업에 Sol을, 일상적인 개발에는 Terra를, 처리량이 중요한 잦은 작업에는 Luna를 소개합니다. 7월 14일 발표 당시에는 세 모델의 272K 컨텍스트와 Sol 2.4배, Terra 1.2배, Luna 0.6배 크레딧 배율을 안내했습니다. 실제 사용 전에는 현재 모델 목록의 컨텍스트와 과금 조건을 확인하세요.",
+      "actionItems": [
+        "작업 난이도에 맞는 모델을 고르고, 현재 제공되는 컨텍스트 크기와 크레딧 배율을 확인하세요.",
+        "실험 기능 롤아웃 대상인 Pro, Pro+, Pro Max, Power 요금제인지와 us-east-1 또는 eu-central-1 리전을 쓰는지 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "작업 난이도별 세 가지 등급",
+          "detail": "Sol은 가장 어려운 다단계 작업을 위한 플래그십 모델로, Coding Agent Index에서 80점, Terminal-Bench 2.1에서 88.8%를 기록했다고 소개됩니다. Terra는 일상적인 다단계 개발에 쓰는 균형형 모델이고, Luna는 처리량이 중요한 고빈도 작업을 위한 가장 빠르고 저렴한 등급입니다.",
+          "evidence": "Sol is the flagship, built for the hardest"
+        },
+        {
+          "title": "사람의 감독 없이 더 오래 실행되는 에이전트",
+          "detail": "세 모델 모두 사람의 감독 없이 더 오래 작업을 수행하고, 도구를 조율하거나 중간 결과를 처리하는 가벼운 프로그램을 작성할 수 있습니다. 발표에 따르면 이 기능으로 왕복 호출과 막다른 길이 줄어듭니다.",
+          "evidence": "All three run longer without supervision and can"
+        },
+        {
+          "title": "실험 기능의 적용 범위와 추론 표시 방식",
+          "detail": "지원은 실험 기능으로 Pro, Pro+, Pro Max, Power 고객에게 us-east-1과 eu-central-1 리전에서 교차 리전 추론과 함께 단계적으로 제공됩니다. 추론 과정은 숨겨져 있어 최종 출력만 확인할 수 있습니다.",
+          "evidence": "Hidden chain-of-thought means you see final output only."
+        }
+      ],
+      "audience": [
+        "Kiro로 여러 단계 구현이나 리팩터링을 맡기는 개발자",
+        "팀의 AI 사용 비용과 크레딧 소비를 관리하는 리드나 관리자"
+      ],
+      "category": "feature",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 컨텍스트 크기와 크레딧 배율은 7월14일 출시 안내의 수치다. 이를 현재 조건으로 단정하지 않도록 발표 당시 값임을 명시하고 현재 이용 조건 확인으로 행동 지침을 좁혔다."
+  },
+  {
+    "id": "claude-code-32129890dc7118295505",
+    "contentHash": "ee6a2c55c70fa0a2155eaee24fc9f1e1ae6afac18d4de04f98b36edd3182e3c2",
+    "explanation": {
+      "title": "Claude Code 2.1.207, 자동 모드 옵트인 제거와 긴 응답 스트리밍 멈춤 수정",
+      "summary": "2.1.207부터 Bedrock, Vertex AI, Foundry에서 자동 모드를 쓰기 위해 `CLAUDE_CODE_ENABLE_AUTO_MODE`를 설정할 필요가 없습니다. 긴 목록, 표, 코드 블록이 담긴 응답을 스트리밍할 때 터미널이 멈추거나 입력이 밀리던 문제도 고쳐졌습니다.",
+      "whyItMatters": "Bedrock, Vertex AI, Foundry 환경에서 자동 모드를 쓰는 팀은 환경 변수 없이 기능을 켤 수 있습니다. 자동 모드를 끄려면 설정에서 `disableAutoMode`를 사용합니다. 긴 응답을 자주 받는 개발자는 스트리밍 중 화면이 멈추던 문제가 사라져 입력과 확인 작업이 덜 끊깁니다. 기본 모델도 Bedrock, Vertex, AWS의 Claude Platform에서 Claude Opus 4.8로 바뀌므로, 특정 모델에 맞춰 둔 작업은 결과를 확인해야 합니다.",
+      "actionItems": [
+        "Bedrock, Vertex AI, Foundry에서 자동 모드용으로 설정해 둔 `CLAUDE_CODE_ENABLE_AUTO_MODE`는 제거해도 됩니다. 자동 모드를 막으려면 설정에 `disableAutoMode`를 지정합니다.",
+        "autoMode는 저장소의 .claude/settings.local.json에서 더 이상 읽지 않습니다. 이 설정을 사용하려면 ~/.claude/settings.json으로 옮기세요.",
+        "셸 형식의 ${user_config.*}를 쓰는 플러그인 훅은 exec 형식의 args 배열이나 $CLAUDE_PLUGIN_OPTION_<KEY>로 바꾸세요. 모니터와 MCP headersHelper는 스크립트 안에서 설정 파일이나 서버 env 블록의 값을 읽도록 바꾸세요."
+      ],
+      "highlights": [
+        {
+          "title": "자동 모드 옵트인 제거",
+          "detail": "Bedrock, Vertex AI, Foundry에서 자동 모드를 쓰기 위해 별도 환경 변수를 설정하지 않아도 됩니다. 설정의 `disableAutoMode`로 기능을 끌 수 있습니다.",
+          "evidence": "Auto mode is now available without `CLAUDE_CODE_ENABLE_AUTO_MODE` opt-in"
+        },
+        {
+          "title": "긴 응답 스트리밍 중 터미널 멈춤 수정",
+          "detail": "긴 목록, 표, 문단, 코드 블록이 포함된 응답을 스트리밍할 때 터미널이 멈추거나 키 입력이 지연되던 문제가 고쳐졌습니다.",
+          "evidence": "Fixed the terminal freezing and keystrokes lagging while"
+        },
+        {
+          "title": "플러그인 셸 명령의 사용자 설정 값 주입 차단",
+          "detail": "플러그인 훅, 모니터, MCP `headersHelper`의 셸 형식 명령에서 `${user_config.*}`는 거부됩니다. 셸 주입을 막기 위한 조치이며, 훅은 exec 형식이나 `$CLAUDE_PLUGIN_OPTION_<KEY>`를, 모니터와 `headersHelper`는 스크립트 안에서 값을 읽는 방식을 써야 합니다.",
+          "evidence": "Plugin hooks/monitors/MCP headersHelper: `${user_config.*}` in shell-form commands is"
+        }
+      ],
+      "audience": [
+        "Bedrock, Vertex AI, Foundry에서 Claude Code를 쓰는 개발자",
+        "플러그인과 MCP 설정을 관리하는 팀",
+        "긴 응답을 자주 받는 CLI 사용자"
+      ],
+      "category": "breaking",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 저장소 로컬 autoMode 설정을 읽지 않는다는 대명사가 이동 대상 사용자 파일을 가리키는 것으로 읽혔다. 또한 훅의 exec/환경 변수 대안을 monitors와 headersHelper에도 적용하도록 잘못 일반화했다."
+  },
+  {
+    "id": "claude-code-9722b16083fee0960d2d",
+    "contentHash": "e7771736ad58c34c061079620c37956697a665709fbd487d0d6696edd941f860",
+    "explanation": {
+      "title": "서브에이전트를 기본으로 백그라운드에서 실행하고 Chrome 연동을 일반 공급",
+      "summary": "v2.1.198부터 서브에이전트는 기본적으로 백그라운드에서 실행됩니다. Claude는 서브에이전트가 돌아가는 동안 다른 작업을 이어가고, 서브에이전트가 끝나면 알림을 받습니다. 이전에는 점진적으로 배포되던 기능입니다. 같은 릴리스에서 Claude in Chrome도 일반 공급 상태가 되었습니다.",
+      "whyItMatters": "여러 서브에이전트에 작업을 나눠 맡긴 경우 메인 세션이 다른 작업을 계속할 수 있습니다. claude agents에서 입력이 필요하거나 작업을 마친 세션은 Notification 훅을 실행하므로 후속 처리에 연결할 수 있습니다. 2.1.198의 변경 기록은 claude agents에서 시작한 백그라운드 에이전트가 워크트리의 코드 작업을 마치면 커밋, 푸시, 드래프트 PR 생성을 진행한다고 안내합니다.",
+      "actionItems": [
+        "서브에이전트가 백그라운드에서 실행되는 방식이 현재 작업 흐름에 맞는지 확인하세요. 결과를 즉시 받아야 하는 작업이라면 실행 방식을 조정하는 편이 낫습니다.",
+        "`agent_needs_input`, `agent_completed` 이벤트를 자동화에 쓰려면 `Notification` 훅 설정을 추가하세요.",
+        "claude agents에서 시작한 백그라운드 에이전트에 워크트리의 코드 작업을 맡긴다면, 이 릴리스의 커밋, 푸시, 드래프트 PR 생성 안내를 확인하고 브랜치 설정을 점검하세요."
+      ],
+      "highlights": [
+        {
+          "title": "서브에이전트 백그라운드 기본 실행",
+          "detail": "서브에이전트가 기본적으로 백그라운드에서 실행됩니다. Claude는 실행 중에도 다른 작업을 이어가고, 서브에이전트가 끝나면 알림을 받습니다. 이 기능은 이전에 점진적으로 배포되던 방식이었습니다.",
+          "evidence": "Subagents now run in the background by default,"
+        },
+        {
+          "title": "백그라운드 에이전트 알림과 훅 연동",
+          "detail": "`claude agents`에서 입력이 필요하거나 작업이 끝난 세션이 `Notification` 훅을 실행합니다. 이벤트 이름은 `agent_needs_input`과 `agent_completed`입니다.",
+          "evidence": "Added background agent notifications in `claude agents` —"
+        },
+        {
+          "title": "Claude in Chrome 일반 공급",
+          "detail": "Claude in Chrome이 일반 공급 상태가 되었습니다. 이 릴리스 기록에는 사용 조건이나 요금제 정보가 없으므로 공식 안내를 함께 확인하세요.",
+          "evidence": "Claude in Chrome is now generally available"
+        }
+      ],
+      "audience": [
+        "Claude Code로 여러 서브에이전트를 조율하는 개발자",
+        "자동화 스크립트에서 훅 알림을 받는 팀",
+        "백그라운드 에이전트로 코드 작업을 맡기는 개발자"
+      ],
+      "category": "feature",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 커밋·푸시·드래프트PR 생성의 대상은 claude agents에서 시작한 백그라운드 에이전트다. 모든 백그라운드 에이전트로 넓히지 않고 해당 릴리스의 안내로 한정했다."
+  },
+  {
+    "id": "claude-code-86c7fd4cd17279117f88",
+    "contentHash": "45b2ed1cbf0541cd74d6641e09d82f545a78eb7ee2123ea26104df3cc8bbd9d9",
+    "explanation": {
+      "title": "Claude Code 2.1.197에서 Sonnet 5를 기본 모델로 도입했습니다",
+      "summary": "Claude Code 2.1.197은 Sonnet 5를 기본 모델로 도입하고 네이티브 1M 토큰 컨텍스트를 지원한다고 안내했습니다. 이 모델에 접근하려면 2.1.197로 업데이트하라는 안내가 포함되어 있습니다.",
+      "whyItMatters": "원문은 Sonnet 5의 네이티브 1M 토큰 컨텍스트를 안내합니다. 실제 작업에서의 차이는 사용하는 코드베이스와 설정으로 확인해야 합니다. 함께 안내된 프로모션 가격은 8월 31일까지였으므로, 현재 비용을 계산할 때는 당시 가격을 그대로 적용하지 말고 현재 안내를 확인하세요.",
+      "actionItems": [
+        "이 릴리스에서 도입된 Sonnet 5를 사용하려면 모델에 접근할 수 있는 버전과 현재 모델 설정을 확인하세요.",
+        "이전 모델을 계속 써야 한다면 모델 설정을 직접 지정해 둡니다.",
+        "비용이 중요한 작업이라면 현재 적용되는 가격을 확인하세요. 원문에 안내된 8월 31일까지의 프로모션 기간은 이미 지났습니다."
+      ],
+      "highlights": [
+        {
+          "title": "Sonnet 5가 기본 모델로 설정됨",
+          "detail": "2.1.197의 변경 기록은 Claude Sonnet 5를 Claude Code의 기본 모델로 소개합니다. 사용할 모델 설정은 별도로 확인하세요.",
+          "evidence": "Introducing Claude Sonnet 5: now the default model"
+        },
+        {
+          "title": "업데이트해야 접근할 수 있음",
+          "detail": "Sonnet 5에 접근하려면 2.1.197 버전으로 업데이트해야 합니다. 이전 버전을 쓰는 환경에서는 이 모델이 기본으로 적용되지 않습니다.",
+          "evidence": "Update to version 2.1.197 for access. https://www.anthropic.com/news/claude-sonnet-5"
+        }
+      ],
+      "audience": [
+        "Claude Code를 일상 개발에 쓰는 개발자",
+        "긴 코드베이스를 다루는 팀",
+        "API 비용을 관리하는 개발 리드"
+      ],
+      "category": "feature",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 8월 31일까지의 프로모션은 검토 시점에 이미 종료됐다. 당시의 기본 모델과 가격 안내를 현재 조건으로 단정하거나 명시된 모델 설정도 업데이트만으로 바뀐다고 추론하지 않도록 수정했다."
+  },
+  {
+    "id": "claude-code-33b1ca46faca53c86bcd",
+    "contentHash": "341f5e2cf6e9b3ad061113cf1a87bdd10e15b3f6c0021010503a15012e54db9a",
+    "explanation": {
+      "title": "Claude Code 2.1.193, 모든 셸 명령을 분류기로 검사하는 설정과 응답 로그 기본값 변경",
+      "summary": "2.1.193에서 `autoMode.classifyAllShell` 설정이 추가되어 Bash와 PowerShell 명령 전체를 자동 모드 분류기로 검사할 수 있습니다. 기존에는 임의 코드 실행 패턴에 해당하는 명령만 검사 대상이었습니다. OpenTelemetry에는 모델 응답 텍스트를 담는 `claude_code.assistant_response` 로그 이벤트가 추가되었습니다.",
+      "whyItMatters": "보안 정책을 엄격하게 운영하는 팀은 `classifyAllShell`을 켜서 모든 셸 명령이 분류기를 거치도록 할 수 있습니다. 반대로 `OTEL_LOG_ASSISTANT_RESPONSES`를 따로 설정하지 않은 환경에서는 `OTEL_LOG_USER_PROMPTS`가 켜져 있을 때 업그레이드 후 응답 내용도 수집되기 시작합니다. 프롬프트만 기록하려면 이 값을 `0`으로 설정해야 합니다.",
+      "actionItems": [
+        "OpenTelemetry 로그를 수집하는 환경이라면 업그레이드 전에 `OTEL_LOG_ASSISTANT_RESPONSES` 값을 확인하세요. 프롬프트만 유지하려면 `0`으로 설정하세요.",
+        "모든 셸 명령을 자동 모드 분류기로 검사해야 하는 팀은 `autoMode.classifyAllShell` 설정을 검토하세요.",
+        "유휴 상태의 백그라운드 셸 명령을 유지하는 환경이라면 메모리 압박 시 자동 정리 기능의 동작을 확인하세요. 이 기능을 끄려면 CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP=1을 설정하세요."
+      ],
+      "highlights": [
+        {
+          "title": "모든 셸 명령을 자동 모드 분류기로 검사",
+          "detail": "`autoMode.classifyAllShell` 설정을 켜면 Bash와 PowerShell 명령 전체가 자동 모드 분류기를 거칩니다. 거부된 이유는 대화 기록, 거부 알림, `/permissions`의 최근 거부 목록에 표시됩니다.",
+          "evidence": "Added `autoMode.classifyAllShell` setting to route all Bash/PowerShell commands"
+        },
+        {
+          "title": "응답 텍스트를 담는 OpenTelemetry 이벤트 추가",
+          "detail": "`claude_code.assistant_response` 로그 이벤트에 모델 응답 텍스트가 담깁니다. 기본적으로 가려져 있으며 `OTEL_LOG_ASSISTANT_RESPONSES=1`일 때만 기록됩니다. 변수가 설정되지 않으면 `OTEL_LOG_USER_PROMPTS` 값을 따르므로, 프롬프트를 이미 수집하던 배포 환경은 업그레이드 후 응답도 수집하게 됩니다.",
+          "evidence": "Redacted unless `OTEL_LOG_ASSISTANT_RESPONSES=1`; when that var is unset"
+        },
+        {
+          "title": "MCP 인증 필요 시 시작 알림과 headersHelper 자동 재연결",
+          "detail": "MCP 서버에 인증이 필요하면 시작할 때 `/mcp`를 안내하는 알림이 표시됩니다. `headersHelper`는 도구 호출이 401 또는 403을 반환하면 스스로 다시 실행되고 재연결합니다.",
+          "evidence": "Added a startup notice when MCP servers need"
+        }
+      ],
+      "audience": [
+        "보안 정책과 자동 모드를 관리하는 팀",
+        "OpenTelemetry로 Claude Code 사용량을 수집하는 플랫폼 운영자",
+        "MCP 서버와 백그라운드 작업을 함께 쓰는 개발자"
+      ],
+      "category": "security",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 메모리 압박 시 자동 정리 대상은 오래 실행되는 명령 전체가 아니라 idle 상태의 백그라운드 셸 명령이다."
+  },
+  {
+    "id": "claude-code-e7d63869d3608caed931",
+    "contentHash": "9021a4896eb337d39010f5f600fc61fecd7f5c0198599cbd760f981d73dcf214",
+    "explanation": {
+      "title": "Claude Code 2.1.183, 자동 모드에서 파괴적 git과 IaC 삭제 명령을 차단",
+      "summary": "자동 모드에서 git reset --hard, git checkout -- ., git clean -fd, git stash drop은 사용자가 로컬 작업을 버리라고 요청하지 않으면 차단됩니다. 이번 세션에서 에이전트가 만들지 않은 커밋에 대한 git commit --amend와, 특정 스택을 지정하지 않은 terraform destroy, pulumi destroy, cdk destroy도 막힙니다.",
+      "whyItMatters": "자동 모드로 긴 작업을 맡기면 에이전트가 로컬 변경을 날리거나 이번 세션에서 에이전트가 만들지 않은 커밋을 고쳐 쓰는 사고가 줄어듭니다. 대신 초기화나 삭제가 필요한 작업이라면 사용자가 대상과 범위를 명시해야 실행됩니다. 요청한 모델이 폐기되었거나 자동으로 새 모델로 바뀌면 -p 모드에서는 stderr로 경고가 출력되고, 에이전트 frontmatter에 지정된 모델도 같은 경고 대상에 포함됩니다.",
+      "actionItems": [
+        "자동 모드에서 파괴적 명령이 막혔을 때 의도한 작업이라면 대상과 범위를 요청 문장에 구체적으로 적어 다시 지시하세요.",
+        "-p 모드로 스크립트를 돌린다면 stderr에 출력되는 모델 폐기 또는 자동 갱신 경고를 확인하세요.",
+        "web과 Remote Control 세션에서 커밋과 PR에 claude.ai 세션 링크가 붙는 것이 불편하다면 attribution.sessionUrl 설정을 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "자동 모드의 파괴적 git 명령과 IaC 삭제 차단",
+          "detail": "사용자가 로컬 작업 폐기를 요청하지 않은 경우 git reset --hard, git checkout -- ., git clean -fd, git stash drop이 차단됩니다. 이번 세션에서 에이전트가 만들지 않은 커밋에는 git commit --amend가 막히고, 특정 스택을 요청하지 않은 경우 terraform, pulumi, cdk의 destroy 명령도 차단됩니다.",
+          "evidence": "destructive git commands (`git"
+        },
+        {
+          "title": "모델 폐기와 자동 갱신 경고 추가",
+          "detail": "요청한 모델이 폐기되었거나 더 새로운 모델로 자동 갱신되는 경우 경고가 표시됩니다. print 모드(-p)에서는 stderr로 출력되며, 에이전트 frontmatter에 지정된 모델도 같은 경고 대상에 포함됩니다.",
+          "evidence": "Added a warning when the requested model is"
+        },
+        {
+          "title": "/config 조작 방식 변경과 도움말 추가",
+          "detail": "/config --help로 /config key=value에서 쓸 수 있는 단축 키 목록을 볼 수 있습니다. 설정 토글에서는 Enter와 Space가 모두 선택한 설정을 바꾸고, Esc는 되돌리지 않고 저장한 뒤 닫습니다.",
+          "evidence": "Changed `/config` toggle behavior: Enter and Space both"
+        }
+      ],
+      "audience": [
+        "Claude Code를 자동 모드로 쓰는 개발자",
+        "CI나 스크립트에서 -p 모드를 쓰는 개발자",
+        "Terraform, Pulumi, CDK로 인프라를 관리하는 개발자"
+      ],
+      "category": "security",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. amend 차단 조건은 다른 사람의 커밋인지가 아니라 이번 세션에서 에이전트가 만든 커밋인지다."
+  },
+  {
+    "id": "claude-code-c3ef1a48bda9af0cc54b",
+    "contentHash": "2e1c0627681e5391d8f540d20d3cd3ec196fdac0065f75dce847a5d8dddda44a",
+    "explanation": {
+      "title": "관리형 설정에서 availableModels 허용 목록을 기본 모델까지 적용하도록 강화",
+      "summary": "v2.1.175에서 enforceAvailableModels 관리형 설정이 추가되었습니다. 이 설정을 켜면 availableModels 허용 목록이 기본 모델(Default)에도 적용되고, Default가 허용되지 않은 모델로 해석될 때 첫 번째 허용 모델을 사용합니다. 이 설정을 적용한 환경에서는 사용자나 프로젝트 설정으로 관리형 목록을 넓힐 수 없습니다.",
+      "whyItMatters": "enforceAvailableModels를 켠 조직은 Default가 허용 목록 밖의 모델로 해석되더라도 그 모델을 사용하지 않게 할 수 있습니다. 이 관리 설정을 적용한 환경에서는 사용자나 프로젝트 설정으로 관리형 허용 목록을 늘리는 것도 막습니다.",
+      "actionItems": [
+        "관리형 설정에서 `availableModels`를 사용하고 있다면 `enforceAvailableModels`를 켤지 검토하세요.",
+        "이 설정을 켠 환경에서 Default가 허용 목록 밖의 모델로 해석될 때 첫 번째 허용 모델로 대체되는지 확인하세요.",
+        "사용자나 프로젝트 설정으로 허용 목록을 넓혀 쓰던 작업 방식이 있다면, 관리형 목록을 바꿔야 하는지 팀과 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "기본 모델에도 허용 목록 적용",
+          "detail": "`enforceAvailableModels`를 켜면 `availableModels` 허용 목록이 Default 모델에도 적용됩니다. Default가 허용되지 않은 모델로 해석되면 허용 목록의 첫 번째 모델이 사용됩니다.",
+          "evidence": "Added `enforceAvailableModels` managed setting — when enabled, the"
+        },
+        {
+          "title": "사용자와 프로젝트 설정으로 목록을 넓히는 것 차단",
+          "detail": "enforceAvailableModels 관리형 설정을 적용한 환경에서는 사용자나 프로젝트 설정으로 관리형 availableModels 목록을 확장할 수 없습니다.",
+          "evidence": "Added `enforceAvailableModels` managed setting — when enabled, the"
+        }
+      ],
+      "audience": [
+        "조직의 Claude Code 관리자",
+        "보안 및 모델 사용 정책을 담당하는 개발자",
+        "관리형 설정으로 모델 허용 목록을 운영하는 팀"
+      ],
+      "category": "security",
+      "impact": "medium"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 원문의 when enabled 조건을 모델 허용 목록 설명에 명시했다. Default가 첫 허용 모델로 대체되는 조건도 기존 Default가 허용되지 않은 경우로 한정했다."
+  },
+  {
+    "id": "codex-79558a0bf2990ba10542",
+    "contentHash": "4d8b582646c3d2d1e997c947b03c859f5911fccdf4e1e45aee3195367c42e504",
+    "explanation": {
+      "title": "Codex CLI 0.134.0, --profile이 기본 프로필 선택 옵션이 되고 옛 프로필 설정은 거부됩니다",
+      "summary": "Codex CLI 0.134.0에서 --profile이 CLI, TUI 권한 설정, 샌드박스 실행에서 프로필을 고르는 기본 옵션이 되었습니다. 옛 방식의 프로필 설정은 이제 거부되며, 오류 메시지에 마이그레이션 안내가 함께 나옵니다. 같은 릴리스에서 로컬 대화 기록 검색, MCP 서버별 환경 지정, streamable HTTP 서버의 OAuth 옵션도 추가되었습니다.",
+      "whyItMatters": "옛 방식으로 프로필을 설정해 쓰던 팀은 업데이트 후 오류가 나므로 설정 파일을 안내에 따라 옮겨야 합니다. MCP 서버를 여러 환경에 연결하거나 streamable HTTP 서버를 OAuth로 붙이는 경우에는 설정 방법이 달라질 수 있습니다. readOnlyHint를 명시한 읽기 전용 MCP 도구는 병렬로 실행할 수 있습니다.",
+      "actionItems": [
+        "업데이트 후 기존 프로필 설정에서 오류가 나면 안내된 마이그레이션 문서를 따라 설정을 옮기세요.",
+        "CLI, 권한 설정, 샌드박스 실행에서 --profile을 어떻게 쓰는지 확인하세요.",
+        "MCP 서버를 여러 환경에 연결해 쓰는 경우 서버별 환경 지정 방식으로 설정을 점검하세요."
+      ],
+      "highlights": [
+        {
+          "title": "--profile이 기본 프로필 선택 옵션으로 바뀜",
+          "detail": "CLI, TUI 권한 설정, 샌드박스 흐름에서 --profile이 프로필을 고르는 주요 방식이 되었습니다. 옛 방식의 프로필 설정은 거부되고 마이그레이션 안내가 나옵니다.",
+          "evidence": "Made --profile the primary profile selector across CLI,"
+        },
+        {
+          "title": "MCP 서버별 환경 지정과 OAuth 옵션",
+          "detail": "MCP 서버를 명시한 환경에 연결할 수 있고, streamable HTTP 서버에는 OAuth 옵션을 쓸 수 있습니다.",
+          "evidence": "Improved MCP setup with per-server environment targeting and"
+        },
+        {
+          "title": "읽기 전용 MCP 도구 병렬 실행",
+          "detail": "readOnlyHint를 명시한 읽기 전용 MCP 도구는 병렬로 실행할 수 있습니다. 원문은 이 힌트를 병렬 실행의 조건으로 안내합니다.",
+          "evidence": "Let read-only MCP tools run concurrently when they"
+        }
+      ],
+      "audience": [
+        "Codex CLI로 프로필을 나눠 쓰는 개발자",
+        "MCP 서버를 여러 환경에 연결해 쓰는 팀",
+        "원격 실행과 샌드박스 설정을 관리하는 개발자"
+      ],
+      "category": "breaking",
+      "impact": "high"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. readOnlyHint가 있는 읽기 전용 도구의 병렬 실행을 허용한다는 기능을 모든 호출이 반드시 동시에 실행된다는 표현으로 단정하지 않도록 고쳤다."
+  },
+  {
+    "id": "codex-fe53727dc3385ca20415",
+    "contentHash": "abe5769d2bffbfbf15a7f6d4cd7aac7278195bf1707cf718d152530793053a3a",
+    "explanation": {
+      "title": "ChatGPT로 로그인한 Codex에서 GPT-5.3-Codex와 GPT-5.2 선택 중단",
+      "summary": "ChatGPT 계정으로 로그인한 사용자는 Codex에서 GPT-5.3-Codex와 GPT-5.2를 직접 고를 수 없게 되었습니다. API 키로 작업하는 흐름에는 영향이 없습니다.",
+      "whyItMatters": "ChatGPT 로그인으로 Codex를 쓰면서 두 모델을 지정해 두었다면 현재 지원되는 모델로 바꿔야 합니다. 원문에 적힌 GPT-5.5, GPT-5.4, GPT-5.4 mini는 5월 26일 안내 당시의 대체 모델 예시입니다. 현재 이용 가능한 모델과 크레딧 요금은 원문에 연결된 공식 안내에서 확인하세요.",
+      "actionItems": [
+        "ChatGPT 로그인 Codex의 설정에 GPT-5.3-Codex나 GPT-5.2가 남아 있는지 확인하고, 현재 모델 목록에서 사용 가능한 지원 모델을 선택하세요.",
+        "모델 이용 가능 여부는 Codex 모델 문서의 지원 중단 항목에서, 크레딧 요금은 Codex 요금 문서에서 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "ChatGPT 로그인 사용자의 모델 선택 제한",
+          "detail": "ChatGPT 로그인 사용자에게 GPT-5.3-Codex와 GPT-5.2는 직접 선택하는 모델의 지원 중단 대상으로 안내되었습니다. API 키를 사용하는 작업 흐름은 이 변경의 영향을 받지 않습니다.",
+          "evidence": "GPT-5.3-Codex and GPT-5.2 are now deprecated as user-selectable"
+        }
+      ],
+      "audience": [
+        "ChatGPT 계정으로 Codex를 사용하는 개발자",
+        "Codex에서 특정 모델을 고정해 둔 팀 리더 및 설정 관리자"
+      ],
+      "category": "breaking",
+      "impact": "medium"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 5월26일 안내의 대체 모델 예시를 현재 지원 모델로 단정했다. 특히 GPT-5.4 계열은 검토 시점에 이미 종료 안내가 있으므로 고정된 옛 예시 대신 원문의 모델 이용 가능 여부 문서를 확인하도록 했다. 사용자가 모델 목록에서 빠진다는 문장 주어 오류도 수정했다."
+  },
+  {
+    "id": "claude-code-f0dfd4cdfef10f9572e0",
+    "contentHash": "2377de2a1dd8629687b5a597d7885bd80b9c43a52b27df0bf54878a1773028f6",
+    "explanation": {
+      "title": "Claude Code 2.1.293, Haiku 5.5 지원 추가와 세션 안정성 수정",
+      "summary": "Claude Code 2.1.293에 Haiku 5.5 지원이 추가됐으며, 원문은 이를 Anthropic API의 기본 Haiku 모델로 안내합니다. subagentStatusLine에 agentType이 추가되었고 mods의 도구 등록에는 isDeferred 옵션이 들어갔습니다. 세션 복구, 원격 제어, 키 입력 처리 등의 문제도 함께 고쳤습니다.",
+      "whyItMatters": "Haiku 5.5 사용 여부는 작업에 설정된 모델 이름을 확인해야 합니다. 이 모델은 1M 컨텍스트를 지원하며, 100K 토큰을 넘는 프롬프트에는 더 높은 단가가 적용됩니다. 서브에이전트 상태 스크립트는 agentType으로 커스텀 타입을 구분할 수 있습니다. HTTP MCP 연결의 메모리 누수와 컨텍스트 압축 이후 작업 완료 판단 오류도 고쳤습니다.",
+      "actionItems": [
+        "Haiku 5.5 사용을 검토한다면 모델 식별자 claude-haiku-5-5와 100K 토큰 초과 프롬프트의 요금 조건을 확인하세요.",
+        "서브에이전트 상태 스크립트를 쓴다면 subagentStatusLine 페이로드의 agentType 값을 읽도록 수정할 수 있습니다.",
+        "컨텍스트 압축 이후 Claude가 끝난 작업을 되돌리거나 다시 수행하던 문제가 있었다면 이번 버전에서 같은 현상이 있는지 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "Anthropic API의 기본 Haiku 모델이 Haiku 5.5로 변경",
+          "detail": "claude-haiku-5-5가 추가되어 Anthropic API의 기본 Haiku 모델이 되었습니다. 1M 컨텍스트를 지원하며, 입력과 출력 단가는 100만 토큰당 $0.10과 $0.50이고, 100K 토큰을 넘는 프롬프트는 $0.50과 $2.50이 적용됩니다.",
+          "evidence": "Added Claude Haiku 5.5 (`claude-haiku-5-5`), now the default"
+        },
+        {
+          "title": "서브에이전트 상태 스크립트에서 커스텀 타입 구분 가능",
+          "detail": "subagentStatusLine 페이로드에 agentType이 추가되어, 스크립트가 커스텀 서브에이전트 타입을 구분할 수 있습니다.",
+          "evidence": "Added `agentType` to the `subagentStatusLine` payload, so scripts"
+        },
+        {
+          "title": "HTTP MCP 연결의 메모리 누수 수정",
+          "detail": "HTTP MCP 연결이 닫힐 때까지 보낸 요청을 모두 붙잡고 있던 메모리 누수가 고쳐졌습니다.",
+          "evidence": "Fixed a memory leak where an HTTP MCP"
+        }
+      ],
+      "audience": [
+        "API로 Haiku를 호출하는 개발자",
+        "Claude Code 플러그인(mod)을 만드는 개발자",
+        "긴 세션과 MCP 서버를 함께 쓰는 개발자"
+      ],
+      "category": "feature",
+      "impact": "medium"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. Anthropic API의 기본 Haiku 안내를 기존 API 작업의 자동 모델 교체로 넓히지 않았다. 제목의 기본 모델 범위와 mods의 도구 등록 대상도 명확히 했다."
+  },
+  {
+    "id": "kiro-988589806814ad6fbf32",
+    "contentHash": "0d33ed417c838ee1012b5e10e669e85530a4d7f6c9925ff21ab98d8fdfcba873",
+    "explanation": {
+      "title": "Kiro CLI 2.28.0, 같은 터미널에서 3.0으로 전환하고 명령을 다시 실행",
+      "summary": "Kiro CLI 2.28.0은 3.0을 실행할 수 있는 호스트에서 대화형 Classic 세션을 시작하면 전환을 안내합니다. 선택하면 설정을 변환하고 같은 명령을 3.0에서 다시 실행합니다. V3 훅은 도구 카테고리로도 매칭하며, 긴 V3 세션에서는 완료된 턴을 메모리에서 해제합니다.",
+      "whyItMatters": "Classic 사용자는 같은 터미널에서 기본 실행 모드와 에이전트 설정을 바꾸고 명령을 다시 실행할 수 있습니다. 전환을 거절하면 약 일주일마다 다시 안내합니다. V3 훅은 도구 ID를 하나씩 적지 않고 카테고리 단위로 조건을 묶을 수 있으며, 완료된 턴의 메모리 해제로 긴 대화의 메모리 누적도 줄어듭니다.",
+      "actionItems": [
+        "대화형 Classic 세션을 시작했을 때 나오는 3.0 전환 안내를 확인하세요. 전환을 고른 뒤에는 에이전트 설정이 업그레이드되고 같은 명령이 3.0에서 다시 실행되는지 살펴보세요.",
+        "V3 훅 설정에서 도구 ID로 적어 둔 항목을 점검하고, shell, read, write 같은 카테고리나 특정 MCP 서버 또는 도구 단위로 바꿀 수 있는 훅을 정리해 보세요."
+      ],
+      "highlights": [
+        {
+          "title": "Classic 세션에서 3.0으로 바로 전환",
+          "detail": "3.0을 실행할 수 있는 호스트에서 대화형 Classic 세션을 시작하면 '3.0으로 전환'을 고를 수 있습니다. 이 선택은 에이전트 설정을 업그레이드하고 3.0을 기본값으로 저장한 뒤 같은 명령을 3.0에서 다시 실행합니다. 거부하면 Kiro가 약 일주일마다 다시 안내합니다.",
+          "evidence": "Switch to 3.0 from an interactive Classic session"
+        },
+        {
+          "title": "V3 훅을 도구 카테고리로 매칭",
+          "detail": "V3 세션에서 도구 실행 전후에 동작하는 훅을 내부 도구 ID뿐 아니라 shell, read, write 같은 카테고리나 특정 MCP 서버 또는 도구로 매칭할 수 있습니다.",
+          "evidence": "In V3 sessions, Hooks that run before or"
+        },
+        {
+          "title": "긴 V3 세션의 메모리 사용 개선",
+          "detail": "V3가 완료된 턴을 메모리에 계속 유지하지 않고 해제합니다. 매우 긴 대화에서 메모리가 쌓이는 현상이 줄어듭니다.",
+          "evidence": "This reduces buildup in very long chats"
+        }
+      ],
+      "audience": [
+        "Kiro CLI의 Classic 사용자",
+        "V3 훅을 설정하는 개발자",
+        "긴 대화 세션으로 작업하는 개발자"
+      ],
+      "category": "feature",
+      "impact": "medium"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 전환 안내는 3.0을 실행할 수 있는 호스트에서 시작한 대화형 Classic 세션에 해당한다. 설정 변환 후 명령을 다시 실행하는 절차를 세션이 그대로 이어지는 전환으로 읽지 않도록 요약을 명확히 했다."
+  },
+  {
+    "id": "kiro-984bdd253784fe717f2b",
+    "contentHash": "64d6a4876923b849a258ef77861e8a29adf752c627c9c4ab531f99cf939b49d7",
+    "explanation": {
+      "title": "Kiro IDE 1.2, 백그라운드 Workflows와 설정 파일 확인 요청 추가",
+      "summary": "Kiro IDE 1.2는 재사용 가능한 여러 단계 계획을 백그라운드에서 실행하는 Workflows를 추가했습니다. 에이전트, Hook, Power 파일과 .kiro/workflows/ 아래 Workflow 레시피를 바꿀 때는 파일 권한이 허용되어 있어도 Kiro가 먼저 확인을 요청합니다. 신뢰하지 않은 작업공간에서는 다른 Kiro 설정 변경과 명령 실행 전에도 확인을 요청하고, 신뢰하기 전까지 Workflow 레시피를 불러오지 않습니다.",
+      "whyItMatters": "여러 단계로 된 작업을 맡겨 두고 상위 채팅을 이어갈 수 있습니다. 각 단계는 별도 에이전트 세션에서 실행되며 진행 상황은 Workflows 영역에서 확인합니다. 신뢰하지 않는 작업공간에서는 설정 변경과 명령 실행 전에 확인을 요청하고, Workflow 레시피는 작업공간을 신뢰하기 전까지 불러오지 않습니다.",
+      "actionItems": [
+        "Workflows는 기본적으로 꺼져 있으므로 Agent Focus의 Workspace Configuration 또는 설정의 kiroAgent.workflows.enabled에서 켠 뒤 새 채팅 세션을 시작하세요.",
+        "신뢰하지 않은 작업공간을 열었을 때 Kiro 설정 변경과 명령 실행 전에 확인 요청이 나오는지 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "백그라운드에서 Workflows 실행",
+          "detail": "재사용할 수 있는 여러 단계 계획을 실행하면서 상위 채팅을 계속 사용할 수 있습니다. Workflows 영역에서 단계별 진행 상황을 보고, 실행을 일시 정지하거나 재개하거나 중지할 수 있습니다.",
+          "evidence": "Run multi-agent Workflows in the background"
+        },
+        {
+          "title": "설정 파일과 Workflow 레시피 보호",
+          "detail": "에이전트가 agent, Hook, Power 파일이나 .kiro/workflows/의 레시피를 바꾸려 하면 파일 권한과 관계없이 먼저 확인을 요청합니다. 신뢰하지 않은 작업공간에서는 신뢰하기 전까지 Workflow 레시피를 불러오지 않습니다.",
+          "evidence": "Kiro asks before the agent changes agent, Hook,"
+        },
+        {
+          "title": "엔터프라이즈 로그인 제어",
+          "detail": "관리자가 허용할 로그인 방식을 제한하고, 조직 로그인 정보를 미리 채우고, 로그인 화면에 도움말 링크를 넣을 수 있습니다. 허용되지 않은 방식을 고르면 Kiro가 허용된 옵션을 보여줍니다.",
+          "evidence": "Enterprise sign-in controls: Administrators can restrict which sign-in"
+        }
+      ],
+      "audience": [
+        "Kiro IDE를 팀 작업에 쓰는 개발자",
+        "엔터프라이즈 로그인 정책을 관리하는 관리자",
+        "여러 저장소와 Workflow 레시피를 다루는 개발자"
+      ],
+      "category": "feature",
+      "impact": "medium"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 신뢰하지 않는 작업공간의 레시피는 승인창만 거치면 실행되는 것이 아니라 작업공간을 신뢰하기 전까지 불러오지 않는다. 설정 변경 승인과 레시피 로드의 신뢰 조건을 분리했다."
+  },
+  {
+    "id": "claude-code-4bd3eac7e8d8aced5beb",
+    "contentHash": "b7d762c3a7a780513d62cedd6f037b2e38971d407773f607a01b5ac9db0ad735",
+    "explanation": {
+      "title": "Claude Code CLI 2.1.272, 버그 수정과 안정성 개선 반영",
+      "summary": "2026년 9월 15일에 발표된 Claude Code CLI 2.1.272는 버그 수정과 안정성 개선을 담은 릴리스입니다. 공식 변경 기록에는 어떤 문제가 고쳐졌는지 세부 내용이 적혀 있지 않습니다.",
+      "whyItMatters": "구체적인 수정 항목과 영향을 받는 기능은 원문만으로 판단할 수 없습니다. 평소 CLI에서 겪던 문제가 있다면 업데이트 후 같은 작업에서 다시 나타나는지 확인해 볼 수 있습니다.",
+      "actionItems": [
+        "평소 쓰던 작업 흐름을 그대로 실행해 이전에 나타나던 오류가 재현되는지 확인하세요.",
+        "팀에서 CLI 버전을 맞춰 쓴다면 업데이트 전후의 동작 차이를 짧게 기록해 두세요."
+      ],
+      "highlights": [
+        {
+          "title": "버그 수정과 안정성 개선",
+          "detail": "이번 릴리스의 변경 내용은 버그 수정과 안정성 개선으로 요약되어 있습니다. 구체적으로 어떤 문제가 해결되었는지는 공식 기록에서 확인되지 않습니다.",
+          "evidence": "Bug fixes and reliability improvements"
+        }
+      ],
+      "audience": [
+        "Claude Code CLI를 일상적으로 사용하는 개발자",
+        "CLI 버전을 관리하는 팀 리드"
+      ],
+      "category": "fix",
+      "impact": "low"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 변경 내역이 공개되지 않았다는 사실만으로 작업 방식을 바꿀 필요가 작다고 판단할 수 없다."
+  },
+  {
+    "id": "claude-code-a3fb8dea4a04b1bdda5e",
+    "contentHash": "1cb4f7f0c401597f05bc0b81ac8c870b66e1fa0647eed60b987d12c38cf4eb42",
+    "explanation": {
+      "title": "Claude Code 2.1.263, 버그 수정과 안정성 보완",
+      "summary": "Claude Code CLI 2.1.263은 버그 수정과 안정성 보완을 담은 릴리스입니다. 릴리스 노트에 고친 항목이 따로 적혀 있지 않아 어떤 동작이 바뀌었는지는 확인할 수 없습니다.",
+      "whyItMatters": "원문에는 구체적인 변경 항목이 없어 기능이나 호환성에 어떤 영향이 있는지 판단할 수 없습니다. 이전 버전에서 특정 작업이 불안정했다면 업데이트 후 같은 조건에서 다시 확인해 볼 수 있습니다.",
+      "actionItems": [
+        "사용 중인 Claude Code CLI를 2.1.263 이상으로 업데이트한 뒤 평소 쓰는 작업을 실행해 봅니다.",
+        "업데이트 전 겪던 문제가 있다면 같은 조건에서 재현되는지 확인합니다. 해결 내역이 공개되지 않았으므로 여전히 재현되면 지원 채널에 문의합니다."
+      ],
+      "highlights": [
+        {
+          "title": "버그 수정과 안정성 보완",
+          "detail": "이번 릴리스는 버그 수정과 안정성 보완을 목표로 합니다. 개별 수정 항목이 원문에 없어서 어떤 기능이 얼마나 달라졌는지는 단정할 수 없습니다.",
+          "evidence": "Bug fixes and reliability improvements"
+        }
+      ],
+      "audience": [
+        "Claude Code CLI를 업무에 사용하는 개발자"
+      ],
+      "category": "fix",
+      "impact": "low"
+    },
+    "reason": "검토본 2026-10-07T23:42:18.151120+00:00, 시점 판단 2026-10-08. 새 기능이 없다고 단정할 근거는 없다. 원문에는 버그 수정과 안정성 개선이라는 포괄적인 안내만 있다."
+  }
+]

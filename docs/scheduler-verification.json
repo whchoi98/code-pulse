@@ -1,0 +1,53 @@
+{
+  "scheduleArn": "arn:aws:scheduler:ap-northeast-2:061525506239:schedule/code-pulse/code-pulse-verify-1791418682179",
+  "name": "code-pulse-verify-1791418682179",
+  "scheduledAt": "2026-10-08T00:20:00.000Z",
+  "target": {
+    "Arn": "arn:aws:ecs:ap-northeast-2:061525506239:cluster/CodePulse-ClusterEB0386A7-vgzNxE18nT12",
+    "DeadLetterConfig": {
+      "Arn": "arn:aws:sqs:ap-northeast-2:061525506239:CodePulse-SchedulerDeadLetterQueueFA1FB96A-n7NfOxDw55lY"
+    },
+    "EcsParameters": {
+      "EnableExecuteCommand": false,
+      "LaunchType": "FARGATE",
+      "NetworkConfiguration": {
+        "awsvpcConfiguration": {
+          "AssignPublicIp": "DISABLED",
+          "SecurityGroups": [
+            "sg-07268fb7d283f238e"
+          ],
+          "Subnets": [
+            "subnet-07b1e65682847dce9",
+            "subnet-095297380cd45e1eb"
+          ]
+        }
+      },
+      "PlatformVersion": "1.4.0",
+      "TaskCount": 1,
+      "TaskDefinitionArn": "arn:aws:ecs:ap-northeast-2:061525506239:task-definition/CodePulseWorkerTask14FE9E2F:2"
+    },
+    "RetryPolicy": {
+      "MaximumEventAgeInSeconds": 3600,
+      "MaximumRetryAttempts": 2
+    },
+    "RoleArn": "arn:aws:iam::061525506239:role/CodePulse-SchedulerRole59E73443-zMKPu1Pd3kb9"
+  },
+  "observedGuardDutyRunning": true,
+  "taskArn": "arn:aws:ecs:ap-northeast-2:061525506239:task/CodePulse-ClusterEB0386A7-vgzNxE18nT12/82a1f7493cee4aefb3f5244702ade86c",
+  "completedAt": "2026-10-08T00:23:23.614Z",
+  "exitCode": 0,
+  "containers": [
+    {
+      "name": "collector",
+      "status": "STOPPED",
+      "exitCode": 0
+    },
+    {
+      "name": "aws-guardduty-agent-SAwXnX",
+      "status": "STOPPED",
+      "exitCode": 0
+    }
+  ],
+  "stopCode": "EssentialContainerExited",
+  "stoppedReason": "Essential container in task exited"
+}

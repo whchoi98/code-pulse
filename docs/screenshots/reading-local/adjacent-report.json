@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-10-08T01:17:04.523Z",
+  "base": "http://127.0.0.1:4196",
+  "product": "claude-code",
+  "current": {
+    "id": "claude-code-07abe3c8807214782c53",
+    "date": "2026-10-06"
+  },
+  "older": {
+    "id": "claude-code-94f67557fbc1bd447fc2",
+    "date": "2026-10-06"
+  },
+  "newer": {
+    "id": "claude-code-f0dfd4cdfef10f9572e0",
+    "date": "2026-10-07"
+  },
+  "checks": [
+    "nearest previous and next publication IDs",
+    "previous and next detail navigation",
+    "newest boundary hides next link",
+    "original product and version search restored",
+    "original card focus and exact scroll restored",
+    "320px dark detail and two adjacent links without overflow"
+  ],
+  "errors": [],
+  "visualCheckedAt": "2026-10-08T01:18:10.169Z",
+  "darkDetailButtonBackground": "rgb(26, 39, 55)"
+}

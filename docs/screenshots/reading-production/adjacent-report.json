@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-10-08T01:24:42.387Z",
+  "base": "https://code-pulse.whchoi.net",
+  "product": "claude-code",
+  "current": {
+    "id": "claude-code-07abe3c8807214782c53",
+    "date": "2026-10-06"
+  },
+  "older": {
+    "id": "claude-code-94f67557fbc1bd447fc2",
+    "date": "2026-10-06"
+  },
+  "newer": {
+    "id": "claude-code-f0dfd4cdfef10f9572e0",
+    "date": "2026-10-07"
+  },
+  "restoredListScroll": 489,
+  "checks": [
+    "nearest previous and next publication IDs",
+    "previous and next detail navigation",
+    "newest boundary hides next link",
+    "original product and version search restored",
+    "original card focus and exact scroll restored",
+    "320px dark detail and two adjacent links without overflow"
+  ],
+  "errors": [],
+  "scrollCheckedAt": "2026-10-08T01:25:28.407Z",
+  "scrollViewport": {
+    "width": 1440,
+    "height": 760
+  }
+}

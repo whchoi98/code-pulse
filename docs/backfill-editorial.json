@@ -1,0 +1,40 @@
+[
+  {
+    "id": "claude-code-dbcd8a19eb6101750339",
+    "contentHash": "6fa366ce224156be6229e5599f0b1cac2bb6a5059d6b9066a4d99997cee8aaf1",
+    "explanation": {
+      "title": "Claude Code 2.1.225, 사용 한도 안내와 다른 기기 세션에 먼저 메시지 보내기",
+      "summary": "Claude Code 2.1.225에서는 게이트웨이 지출 한도에 도달했을 때 한도 이름, 재설정 시간, 운영자 메시지를 함께 보여 줍니다. SendMessage로 다른 기기의 Remote Control 세션에 이름을 지정해 먼저 대화를 시작할 수도 있게 되었습니다. 이 밖에 여러 오류 수정이 함께 들어갔습니다.",
+      "whyItMatters": "게이트웨이를 거쳐 Claude Code를 쓰는 팀은 한도에 걸렸을 때 어떤 한도인지, 언제 다시 사용할 수 있는지 메시지에서 바로 확인할 수 있습니다. 이 기능은 게이트웨이도 2.1.225 이상일 때 동작합니다. 여러 기기에서 Remote Control 세션을 운영한다면 상대가 먼저 메시지를 보내지 않아도 작업을 시작할 수 있습니다.",
+      "actionItems": [
+        "게이트웨이를 쓰고 있다면 게이트웨이도 2.1.225 이상으로 올린 뒤 한도 도달 시 메시지에 한도 이름과 재설정 시간이 나오는지 확인합니다.",
+        "여러 기기에서 Remote Control을 쓴다면 `ListAgents` 목록에서 상대 세션이 `name [ref]` 형식으로 보이는지 확인한 뒤 SendMessage로 먼저 대화를 시작합니다.",
+        "헤드리스 세션이나 `claude self-hosted-runner`를 운영한다면 `--base-dir` 경로에 디렉터리를 만들고 쓸 권한이 있는지 확인합니다. 경로를 만들 수 없으면 이제 시작할 때 명확한 오류와 함께 종료됩니다."
+      ],
+      "highlights": [
+        {
+          "title": "게이트웨이 지출 한도 메시지에 한도 정보 추가",
+          "detail": "게이트웨이 지출 한도에 도달하면 메시지에 한도 이름, 재설정 시간, 운영자가 설정한 안내가 함께 나옵니다. 게이트웨이가 2.1.225 이상일 때만 이 정보가 표시됩니다.",
+          "evidence": "Added gateway spend-limit support to Claude Code's usage"
+        },
+        {
+          "title": "다른 기기의 Remote Control 세션에 먼저 메시지 보내기",
+          "detail": "SendMessage로 다른 기기의 Remote Control 세션을 이름으로 지정해 대화를 시작할 수 있습니다. 이전에는 상대가 먼저 메시지를 보낸 뒤에만 답장할 수 있었습니다. 상대 세션은 `ListAgents`에서 `name [ref]` 형식으로 나타납니다.",
+          "evidence": "SendMessage can now start a conversation with your"
+        },
+        {
+          "title": "일시적인 401 오류가 장기 토큰을 덮어쓰던 문제 수정",
+          "detail": "일시적인 401 응답을 받은 뒤 장기 토큰 `CLAUDE_CODE_OAUTH_TOKEN`이 저장된 로그인의 단기 토큰으로 덮어써져, 재시작할 때까지 헤드리스 세션이 동작하지 않던 문제를 고쳤습니다.",
+          "evidence": "Fixed a transient 401 replacing a long-lived `CLAUDE_CODE_OAUTH_TOKEN`"
+        }
+      ],
+      "audience": [
+        "Claude Code를 게이트웨이와 함께 운영하는 팀 관리자",
+        "여러 기기에서 Remote Control을 사용하는 개발자",
+        "헤드리스 세션이나 self-hosted runner를 운영하는 개발자"
+      ],
+      "category": "feature",
+      "impact": "medium"
+    }
+  }
+]

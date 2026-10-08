@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-10-08T01:26:26.575Z",
+  "base": "https://code-pulse.whchoi.net",
+  "table": "CodePulse-PresenceTable3ADAA3E7-DODDVNJWV4YM",
+  "secureCookie": true,
+  "httpOnlyCookie": true,
+  "cookiePath": "/api/presence",
+  "cacheDisabled": true,
+  "getDoesNotCount": true,
+  "persistentMarker": true,
+  "markerPreservedAcrossRestoredClient": true,
+  "activeTtlSeconds": 90,
+  "ttlStatus": "ENABLED",
+  "initial": {
+    "active_visitors": 1,
+    "total_visitors": 8,
+    "counting_since": "2026-10-08T00:03:30.111Z",
+    "as_of": "2026-10-08T01:26:24.065Z",
+    "window_seconds": 90
+  },
+  "firstVisit": {
+    "active_visitors": 2,
+    "total_visitors": 9,
+    "counting_since": "2026-10-08T00:03:30.111Z",
+    "as_of": "2026-10-08T01:26:24.571Z",
+    "window_seconds": 90
+  },
+  "repeated": [
+    {
+      "active_visitors": 2,
+      "total_visitors": 9,
+      "counting_since": "2026-10-08T00:03:30.111Z",
+      "as_of": "2026-10-08T01:26:24.600Z",
+      "window_seconds": 90
+    },
+    {
+      "active_visitors": 2,
+      "total_visitors": 9,
+      "counting_since": "2026-10-08T00:03:30.111Z",
+      "as_of": "2026-10-08T01:26:24.670Z",
+      "window_seconds": 90
+    },
+    {
+      "active_visitors": 2,
+      "total_visitors": 9,
+      "counting_since": "2026-10-08T00:03:30.111Z",
+      "as_of": "2026-10-08T01:26:24.666Z",
+      "window_seconds": 90
+    },
+    {
+      "active_visitors": 2,
+      "total_visitors": 9,
+      "counting_since": "2026-10-08T00:03:30.111Z",
+      "as_of": "2026-10-08T01:26:24.663Z",
+      "window_seconds": 90
+    }
+  ],
+  "restoredClient": {
+    "active_visitors": 2,
+    "total_visitors": 9,
+    "counting_since": "2026-10-08T00:03:30.111Z",
+    "as_of": "2026-10-08T01:26:26.119Z",
+    "window_seconds": 90
+  },
+  "stableTotalObserved": true,
+  "rejectedForeignOrigin": true,
+  "rejectedClientCount": true
+}

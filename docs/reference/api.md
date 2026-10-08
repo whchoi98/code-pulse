@@ -1,0 +1,123 @@
+# Code Pulse HTTP and RSS reference
+
+[![English](https://img.shields.io/badge/lang-English-blue)](#english) [![한국어](https://img.shields.io/badge/lang-%ED%95%9C%EA%B5%AD%EC%96%B4-red)](#한국어)
+
+## English
+
+### Endpoints
+
+The public base URL is `https://code-pulse.whchoi.net`. Read endpoints require no login. Presence uses a server-issued signed cookie and same-origin requests. The authoritative routes are in [app.ts](../../src/server/app.ts) and [presence.ts](../../src/server/presence.ts).
+
+| Method | Path | Contract |
+| --- | --- | --- |
+| GET | `/healthz` | Process health: `{"status":"ok","service":"code-pulse"}` |
+| GET | `/api/feed` | All published snapshot records, source status, last run, schedule and freshness |
+| GET | `/api/entries/:id` | One record by its stable ID; 404 when absent |
+| GET | `/feed.xml` | Latest 50 ready Korean explanations as RSS 2.0 |
+| GET | `/feed.xml?product=kiro` | Product-specific RSS; also accepts `claude-code` and `codex` |
+| GET | `/api/presence` | Read counts and prepare a signed cookie without recording a visit |
+| POST | `/api/presence` | Record activity for that cookie and return updated counts |
+| GET | `/robots.txt` | Allow crawler access |
+
+```bash
+curl --fail --silent --show-error https://code-pulse.whchoi.net/healthz
+curl --fail --silent --show-error https://code-pulse.whchoi.net/api/feed
+curl --fail --silent --show-error 'https://code-pulse.whchoi.net/feed.xml?product=kiro'
+```
+
+`/healthz` confirms the server is running; it does not prove the last collection succeeded. GET routes also support HEAD. The edge allows writes only on the exact `/api/presence` behavior.
+
+### Feed and entry fields
+
+[types.ts](../../src/shared/types.ts) defines `Feed`, `FeedEntry`, `SourceStatus` and `Explanation`.
+
+| Field | Meaning |
+| --- | --- |
+| `generatedAt` | Snapshot generation time; empty before the first snapshot |
+| `entries` | Public records, including `pending` explanations |
+| `sources` | Per-source `ok`, `error` or `pending` state and available check times |
+| `latestRun` | Most recent collection run, when one exists |
+| `schedule` | `timezone: "Asia/Seoul"`, `hour: 9` |
+| `stale` | Storage fallback, missing successful source checks or checks older than 26 hours |
+
+Entries include the stable `id`, product and channel, optional version, publication fields, official references and explanation state. An available explanation contains the Korean title, summary, meaning, actions, highlights and evidence. `datePrecision` distinguishes a source date from an exact timestamp; a day-only record does not establish an actual announcement time.
+
+The feed omits `originalText`, `contentHash` and `explanationModel`. The detail route also excludes the model identifier, but retains `originalText` and `contentHash` as empty strings for compatibility. It does not return the archived source body.
+
+Filtering and pagination are browser behavior. `/api/feed` returns the whole snapshot; parameters such as `product`, `q`, `from`, `to`, `saved` and `unread` belong to the website URL, not a server-side feed filtering contract.
+
+### RSS
+
+Only `product` is accepted as an RSS parameter. Omit it for all products, or supply exactly one of `claude-code`, `codex`, `kiro`. Empty, repeated, unknown or additional parameters return 400.
+
+RSS includes only ready explanations with valid, non-future publication times, ordered newest first with stable-ID tie-breaking. Each item contains a title, original `pubDate`, Korean summary and meaning, an explanation link and an allowed official source link. A day-only date is labelled as lacking an announcement time. The canonical detail URL is also the item GUID. Visitor information and internal model metadata are excluded. See [rss.ts](../../src/server/rss.ts).
+
+### Presence and caching
+
+POST requires the cookie prepared by GET, the exact configured `Origin`, `x-code-pulse-client: 1`, JSON content type and an empty object body `{}`. Missing cookies return 401, invalid origin or client header 403, and a rejected body 400. Oversized bodies can return 413. Backend unavailability returns 503.
+
+Responses contain `active_visitors`, `total_visitors`, `as_of`, `window_seconds` and nullable `counting_since`. The 90-second activity window counts signed browser cookies rather than people. Permanent first-visit markers prevent repeat heartbeats from increasing the cumulative count. The production cookie is HttpOnly, Secure and SameSite=Lax, scoped to `/api/presence`.
+
+Presence responses use `no-store`. Feed, detail and RSS normally use `public, max-age=30, s-maxage=60`; the server also caches its snapshot for 60 seconds. Storage fallback serves cached data with `no-store`; without cached data, reads return 503. A missing detail returns 404 with `no-store`.
+
+For operating procedures and verification, follow the [runbook](../runbook.md), [architecture](../architecture.md) and [verification record](../verification.md).
+
+## 한국어
+
+### 엔드포인트
+
+공개 기준 주소는 `https://code-pulse.whchoi.net`입니다. 읽기 API는 로그인 없이 사용합니다. 방문 집계는 서버가 발급한 서명 쿠키와 같은 Origin의 요청을 사용합니다. 실제 경로는 [app.ts](../../src/server/app.ts)와 [presence.ts](../../src/server/presence.ts)를 기준으로 확인합니다.
+
+| 메서드 | 경로 | 동작 |
+| --- | --- | --- |
+| GET | `/healthz` | 프로세스 상태: `{"status":"ok","service":"code-pulse"}` |
+| GET | `/api/feed` | 공개 스냅샷의 전체 기록, 출처 상태, 최근 실행, 일정과 최신성 |
+| GET | `/api/entries/:id` | 글 ID로 조회, 없으면 404 |
+| GET | `/feed.xml` | 해설이 준비된 최신 글 50개를 RSS 2.0으로 제공 |
+| GET | `/feed.xml?product=kiro` | 제품별 RSS, `claude-code`와 `codex`도 허용 |
+| GET | `/api/presence` | 방문을 기록하지 않고 집계를 읽으며 서명 쿠키 준비 |
+| POST | `/api/presence` | 해당 쿠키의 활동을 기록하고 갱신한 집계 반환 |
+| GET | `/robots.txt` | 크롤러 접근 허용 |
+
+```bash
+curl --fail --silent --show-error https://code-pulse.whchoi.net/healthz
+curl --fail --silent --show-error https://code-pulse.whchoi.net/api/feed
+curl --fail --silent --show-error 'https://code-pulse.whchoi.net/feed.xml?product=kiro'
+```
+
+`/healthz`는 서버 실행 여부를 확인하며 최근 수집의 성공을 보장하지 않습니다. GET 경로는 HEAD도 지원합니다. 엣지에서 쓰기 요청을 허용하는 경로는 정확히 일치하는 `/api/presence`뿐입니다.
+
+### 피드와 상세 필드
+
+[types.ts](../../src/shared/types.ts)에 `Feed`, `FeedEntry`, `SourceStatus`, `Explanation`을 정의합니다.
+
+| 필드 | 의미 |
+| --- | --- |
+| `generatedAt` | 스냅샷 생성 시각, 첫 스냅샷 전에는 빈 문자열 |
+| `entries` | 해설 `pending` 상태를 포함한 공개 기록 |
+| `sources` | 출처별 `ok`, `error`, `pending` 상태와 확인된 시각 |
+| `latestRun` | 실행 기록이 있을 때 가장 최근 수집 결과 |
+| `schedule` | `timezone: "Asia/Seoul"`, `hour: 9` |
+| `stale` | 저장소 캐시 대체, 출처 성공 기록 부재 또는 26시간이 지난 확인 |
+
+글에는 고정 `id`, 제품과 채널, 선택적 버전, 발표일 필드, 공식 참고 링크와 해설 상태가 들어 있습니다. 준비된 해설에는 한국어 제목, 요약, 변경의 의미, 확인할 사항, 주요 내용과 근거가 있습니다. `datePrecision`은 날짜만 제공한 출처와 정확한 시각을 제공한 출처를 구분합니다. 날짜만 있는 글에서 실제 발표 시각을 추정하지 않습니다.
+
+피드에서는 `originalText`, `contentHash`, `explanationModel`을 제외합니다. 상세 응답도 모델 식별자를 제외하지만 호환성을 위해 `originalText`와 `contentHash`는 빈 문자열로 남깁니다. 보관한 원문 본문은 반환하지 않습니다.
+
+필터와 페이지 구분은 브라우저가 처리합니다. `/api/feed`는 전체 스냅샷을 반환합니다. `product`, `q`, `from`, `to`, `saved`, `unread`는 웹사이트 주소에서 사용하는 조건이며 서버 피드 필터 계약이 아닙니다.
+
+### RSS
+
+RSS 매개변수는 `product`만 허용합니다. 생략하면 전체 제품을, 지정하면 `claude-code`, `codex`, `kiro` 중 하나를 제공합니다. 빈 값, 중복 지정, 알 수 없는 값이나 추가 매개변수는 400을 반환합니다.
+
+해설이 준비됐고 발표 시각이 유효한 글 중 미래 발표를 제외합니다. 최신 발표순으로 정렬하고 시각이 같으면 고정 ID로 순서를 정합니다. 항목에는 제목, 원문 `pubDate`, 한국어 요약과 의미, 해설 링크와 허용된 공식 원문 링크를 담습니다. 날짜만 있는 글에는 발표 시각이 제공되지 않았음을 표시합니다. 공개 도메인의 상세 주소를 GUID로도 사용합니다. 방문 정보와 내부 모델 메타데이터는 포함하지 않습니다. 구현은 [rss.ts](../../src/server/rss.ts)에 있습니다.
+
+### 방문 집계와 캐시
+
+POST에는 GET으로 준비한 쿠키, 설정값과 정확히 일치하는 `Origin`, `x-code-pulse-client: 1`, JSON 콘텐츠 타입과 빈 객체 `{}` 본문이 필요합니다. 쿠키가 없으면 401, Origin이나 클라이언트 헤더가 올바르지 않으면 403, 허용하지 않는 본문이면 400을 반환합니다. 본문이 너무 크면 413이 나올 수 있으며 저장소를 사용할 수 없으면 503입니다.
+
+응답 필드는 `active_visitors`, `total_visitors`, `as_of`, `window_seconds`, null이 가능한 `counting_since`입니다. 최근 90초의 활동은 사람 수가 아니라 서명된 브라우저 쿠키를 기준으로 집계합니다. 영구 첫 방문 표식으로 반복 활동이 누적 방문을 늘리지 않게 합니다. 운영 쿠키는 HttpOnly, Secure, SameSite=Lax이며 경로는 `/api/presence`입니다.
+
+방문 응답은 `no-store`입니다. 피드, 상세와 RSS의 일반 응답은 `public, max-age=30, s-maxage=60`을 사용하며 서버도 스냅샷을 60초 동안 캐시합니다. 저장소 장애 시 이전 캐시가 있으면 `no-store`로 제공하고 없으면 503을 반환합니다. 없는 글의 상세 조회는 `no-store`와 404를 반환합니다.
+
+운영 절차와 검증은 [운영 안내](../runbook.md), [아키텍처](../architecture.md), [검증 기록](../verification.md)을 참고합니다.

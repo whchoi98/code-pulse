@@ -1,0 +1,72 @@
+{
+  "version": "1.1.0",
+  "releases": [
+    {
+      "version": "1.1.0",
+      "date": "2026-10-08",
+      "changes": [
+        {
+          "category": "Added",
+          "en": "Track read articles in the browser and filter unread changes; updated content becomes unread again.",
+          "ko": "브라우저 읽음 기록과 읽지 않은 글 필터 추가, 내용이 바뀐 글 다시 표시"
+        },
+        {
+          "category": "Added",
+          "en": "Navigate to the previous or next record for the same product while preserving the list context.",
+          "ko": "목록의 검색 조건을 유지하며 같은 제품의 이전 기록과 다음 기록 탐색"
+        },
+        {
+          "category": "Added",
+          "en": "Subscribe to the latest 50 Korean explanations through the complete or product-specific RSS feed.",
+          "ko": "전체 또는 제품별 최신 한국어 해설 50개를 받는 RSS 구독 추가"
+        },
+        {
+          "category": "Added",
+          "en": "Export the currently filtered saved articles to Markdown with Korean explanations and official source links.",
+          "ko": "현재 조건에 맞는 저장 글의 한국어 해설과 공식 링크를 Markdown으로 내보내기"
+        },
+        {
+          "category": "Fixed",
+          "en": "Correct the custom domain to code-pulse.whchoi.net, align RSS and visitor origins, and redirect existing CloudFront links.",
+          "ko": "code-pulse.whchoi.net 연결 오류 수정, RSS와 방문 집계 주소 통일, 기존 CloudFront 링크의 새 주소 이동"
+        }
+      ]
+    },
+    {
+      "version": "1.0.0",
+      "date": "2026-10-07",
+      "changes": [
+        {
+          "category": "Added",
+          "en": "Collect official Claude Code, Codex and Kiro changes published from January 1, 2026, including historical releases and dated Kiro patches.",
+          "ko": "2026년 1월 1일부터 발표된 Claude Code, Codex, Kiro의 공식 변경 기록과 날짜가 명시된 Kiro 패치 수집"
+        },
+        {
+          "category": "Added",
+          "en": "Generate Korean explanations and a separate editorial pass with Claude Haiku 5.5, preserving source evidence and publication dates.",
+          "ko": "Claude Haiku 5.5로 한국어 해설과 별도 윤문을 수행하고 원문 근거와 발표일 보존"
+        },
+        {
+          "category": "Added",
+          "en": "Provide product, date and category filters, search, saved articles, shared links, keyboard navigation and dark mode.",
+          "ko": "제품, 날짜, 종류별 필터와 검색, 글 저장, 링크 공유, 키보드 탐색, 다크 모드 추가"
+        },
+        {
+          "category": "Added",
+          "en": "Display official product logos and link Claude Code releases to its English changelog and Korean weekly news.",
+          "ko": "공식 제품 로고 표시와 Claude Code 영문 changelog 및 한국어 주간 소식 연결"
+        },
+        {
+          "category": "Added",
+          "en": "Show current and cumulative visitor counts from persistent server data, together with the application version and release notes.",
+          "ko": "서버에 저장한 현재 접속 수와 누적 방문 수, 앱 버전과 서비스 변경 기록 표시"
+        },
+        {
+          "category": "Added",
+          "en": "Run daily collection at 09:00 Asia/Seoul on private Fargate tasks behind the existing VPC, CloudFront and ALB.",
+          "ko": "기존 VPC의 CloudFront와 ALB 뒤에 프라이빗 Fargate를 배치하고 매일 한국 시간 오전 9시에 수집"
+        }
+      ]
+    }
+  ]
+}

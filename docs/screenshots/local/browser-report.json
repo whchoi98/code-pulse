@@ -1,0 +1,24 @@
+{
+  "base": "http://127.0.0.1:4187",
+  "checkedAt": "2026-10-07T20:19:10.229Z",
+  "entries": 75,
+  "products": [
+    "claude-code",
+    "codex",
+    "kiro"
+  ],
+  "stale": false,
+  "checks": [
+    "HTTPS/security header response",
+    "real feed from all products",
+    "source body privacy",
+    "search",
+    "detail",
+    "bookmark",
+    "official links",
+    "mobile overflow",
+    "dark mode",
+    "browser errors"
+  ],
+  "errors": []
+}

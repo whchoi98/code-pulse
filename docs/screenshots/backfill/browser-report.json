@@ -1,0 +1,47 @@
+{
+  "base": "http://127.0.0.1:4195",
+  "checkedAt": "2026-10-08T00:11:45.140Z",
+  "https": false,
+  "entries": 612,
+  "products": [
+    "claude-code",
+    "codex",
+    "kiro"
+  ],
+  "stale": false,
+  "januaryEntries": 48,
+  "historySince": "2026-01-01",
+  "logos": [
+    "/brand/claude-code.png",
+    "/brand/codex.png",
+    "/brand/kiro.svg"
+  ],
+  "sourceIds": [
+    "claude-releases",
+    "codex-releases",
+    "codex-changelog",
+    "kiro-changelog",
+    "claude-changelog",
+    "claude-whats-new"
+  ],
+  "version": "1.0.0",
+  "checks": [
+    "HTTP 200 and security headers",
+    "real feed from all products",
+    "source body and background privacy",
+    "official logos in both themes",
+    "six healthy official sources",
+    "requested Claude documentation links",
+    "live visitor counts",
+    "manifest version and application release notes",
+    "January history and date filtering for all three products",
+    "search",
+    "detail",
+    "bookmark",
+    "official links",
+    "mobile overflow",
+    "dark mode",
+    "browser errors"
+  ],
+  "errors": []
+}

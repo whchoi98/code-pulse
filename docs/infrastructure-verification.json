@@ -1,0 +1,285 @@
+{
+  "checkedAt": "2026-10-08T01:24:59.887Z",
+  "stackStatus": "UPDATE_COMPLETE",
+  "siteUrl": "https://code-pulse.whchoi.net",
+  "distribution": {
+    "Status": "Deployed",
+    "Domain": "dxdh24n4uucjz.cloudfront.net",
+    "Enabled": true,
+    "Aliases": [
+      "code-pulse.whchoi.net"
+    ],
+    "ViewerCertificate": {
+      "ACMCertificateArn": "arn:aws:acm:us-east-1:061525506239:certificate/7d53182a-2a2a-4225-a319-4f94030561b7",
+      "CloudFrontDefaultCertificate": false,
+      "MinimumProtocolVersion": "TLSv1.2_2021",
+      "SSLSupportMethod": "sni-only"
+    },
+    "Protocol": "redirect-to-https",
+    "DefaultPolicy": "41f8e69b-3dbd-41f9-923e-bfcc10b78fd1",
+    "DefaultFunctionAssociations": [
+      {
+        "FunctionARN": "arn:aws:cloudfront::061525506239:function/ap-northeast-2CodePulseCanonicalHostC24230AA",
+        "EventType": "viewer-request"
+      }
+    ],
+    "ApiPolicy": "41f8e69b-3dbd-41f9-923e-bfcc10b78fd1",
+    "OriginDomains": [
+      "CodePu-Alb16-ODifBZ6cEhpj-1138537527.ap-northeast-2.elb.amazonaws.com"
+    ],
+    "OriginHeaders": [
+      "X-Code-Pulse-Origin"
+    ],
+    "Behaviors": [
+      {
+        "Path": "/api/presence",
+        "CachePolicy": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+        "OriginPolicy": "216adef6-5c7f-47e4-b989-5492eafa07d3",
+        "Methods": [
+          "HEAD",
+          "DELETE",
+          "POST",
+          "GET",
+          "OPTIONS",
+          "PUT",
+          "PATCH"
+        ],
+        "Protocol": "redirect-to-https",
+        "Origin": "CodePulseDistributionOrigin1EF18B7F4",
+        "FunctionAssociations": [
+          {
+            "FunctionARN": "arn:aws:cloudfront::061525506239:function/ap-northeast-2CodePulseCanonicalHostC24230AA",
+            "EventType": "viewer-request"
+          }
+        ]
+      },
+      {
+        "Path": "/api/*",
+        "CachePolicy": "41f8e69b-3dbd-41f9-923e-bfcc10b78fd1",
+        "OriginPolicy": null,
+        "Methods": [
+          "HEAD",
+          "GET"
+        ],
+        "Protocol": "redirect-to-https",
+        "Origin": "CodePulseDistributionOrigin1EF18B7F4",
+        "FunctionAssociations": [
+          {
+            "FunctionARN": "arn:aws:cloudfront::061525506239:function/ap-northeast-2CodePulseCanonicalHostC24230AA",
+            "EventType": "viewer-request"
+          }
+        ]
+      },
+      {
+        "Path": "/assets/*",
+        "CachePolicy": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+        "OriginPolicy": null,
+        "Methods": [
+          "HEAD",
+          "GET"
+        ],
+        "Protocol": "redirect-to-https",
+        "Origin": "CodePulseDistributionOrigin1EF18B7F4",
+        "FunctionAssociations": [
+          {
+            "FunctionARN": "arn:aws:cloudfront::061525506239:function/ap-northeast-2CodePulseCanonicalHostC24230AA",
+            "EventType": "viewer-request"
+          }
+        ]
+      },
+      {
+        "Path": "/fonts/*",
+        "CachePolicy": "658327ea-f89d-4fab-a63d-7e88639e58f6",
+        "OriginPolicy": null,
+        "Methods": [
+          "HEAD",
+          "GET"
+        ],
+        "Protocol": "redirect-to-https",
+        "Origin": "CodePulseDistributionOrigin1EF18B7F4",
+        "FunctionAssociations": [
+          {
+            "FunctionARN": "arn:aws:cloudfront::061525506239:function/ap-northeast-2CodePulseCanonicalHostC24230AA",
+            "EventType": "viewer-request"
+          }
+        ]
+      },
+      {
+        "Path": "/healthz",
+        "CachePolicy": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+        "OriginPolicy": null,
+        "Methods": [
+          "HEAD",
+          "GET"
+        ],
+        "Protocol": "redirect-to-https",
+        "Origin": "CodePulseDistributionOrigin1EF18B7F4",
+        "FunctionAssociations": [
+          {
+            "FunctionARN": "arn:aws:cloudfront::061525506239:function/ap-northeast-2CodePulseCanonicalHostC24230AA",
+            "EventType": "viewer-request"
+          }
+        ]
+      }
+    ]
+  },
+  "vpc": "vpc-0dfa5610180dfa628",
+  "customDomain": {
+    "hostname": "code-pulse.whchoi.net",
+    "aliases": [
+      "code-pulse.whchoi.net"
+    ],
+    "viewerCertificate": {
+      "ACMCertificateArn": "arn:aws:acm:us-east-1:061525506239:certificate/7d53182a-2a2a-4225-a319-4f94030561b7",
+      "CloudFrontDefaultCertificate": false,
+      "MinimumProtocolVersion": "TLSv1.2_2021",
+      "SSLSupportMethod": "sni-only"
+    },
+    "certificate": {
+      "region": "us-east-1",
+      "CertificateArn": "arn:aws:acm:us-east-1:061525506239:certificate/7d53182a-2a2a-4225-a319-4f94030561b7",
+      "Status": "ISSUED",
+      "DomainName": "*.whchoi.net",
+      "SubjectAlternativeNames": [
+        "*.whchoi.net"
+      ]
+    },
+    "redirectFunction": {
+      "arn": "arn:aws:cloudfront::061525506239:function/ap-northeast-2CodePulseCanonicalHostC24230AA",
+      "eventType": "viewer-request",
+      "behaviorPaths": [
+        "*",
+        "/api/presence",
+        "/api/*",
+        "/assets/*",
+        "/fonts/*",
+        "/healthz"
+      ]
+    },
+    "applicationUrls": {
+      "web": {
+        "publicBaseUrl": "https://code-pulse.whchoi.net",
+        "publicOrigin": "https://code-pulse.whchoi.net"
+      },
+      "collector": {
+        "publicBaseUrl": "https://code-pulse.whchoi.net"
+      }
+    }
+  },
+  "securityGroups": {
+    "alb": "sg-0d225f1cec37820f2",
+    "web": "sg-0d89fda0fbe615e2f",
+    "worker": "sg-07268fb7d283f238e",
+    "cloudFrontPrefixList": "pl-22a6434b"
+  },
+  "networks": [
+    {
+      "Vpc": "vpc-0dfa5610180dfa628",
+      "Subnet": "subnet-095297380cd45e1eb",
+      "PrivateIp": "10.100.45.43",
+      "PublicIp": null
+    }
+  ],
+  "webTaskArns": [
+    "arn:aws:ecs:ap-northeast-2:061525506239:task/CodePulse-ClusterEB0386A7-vgzNxE18nT12/ada7340ba87849ddb524555027d68823"
+  ],
+  "guardDutyRunning": true,
+  "healthyTargets": 1,
+  "cacheTtl": {
+    "min": 0,
+    "default": 0,
+    "max": 60
+  },
+  "directOrigin": {
+    "timedOut": true
+  },
+  "originTokenMatched": true,
+  "collector": {
+    "modelId": "global.anthropic.claude-haiku-5-5",
+    "taskDefinition": "arn:aws:ecs:ap-northeast-2:061525506239:task-definition/CodePulseWorkerTask14FE9E2F:3",
+    "modelPolicyVerified": true
+  },
+  "schedule": {
+    "name": "code-pulse-daily",
+    "expression": "cron(0 9 * * ? *)",
+    "timezone": "Asia/Seoul",
+    "state": "ENABLED",
+    "workerNetwork": {
+      "AssignPublicIp": "DISABLED",
+      "SecurityGroups": [
+        "sg-07268fb7d283f238e"
+      ],
+      "Subnets": [
+        "subnet-07b1e65682847dce9",
+        "subnet-095297380cd45e1eb"
+      ]
+    }
+  },
+  "storage": {
+    "bucket": "codepulse-databuckete3889a50-vfu4nknz50ly",
+    "publicAccessBlocked": true,
+    "encryption": "AES256",
+    "versioning": "Enabled"
+  },
+  "presence": {
+    "table": {
+      "name": "CodePulse-PresenceTable3ADAA3E7-DODDVNJWV4YM",
+      "arn": "arn:aws:dynamodb:ap-northeast-2:061525506239:table/CodePulse-PresenceTable3ADAA3E7-DODDVNJWV4YM",
+      "status": "ACTIVE",
+      "keys": {
+        "partition": "pk",
+        "sort": "sk"
+      },
+      "billingMode": "PAY_PER_REQUEST",
+      "ttl": {
+        "attribute": "expires_at",
+        "status": "ENABLED"
+      },
+      "pointInTimeRecovery": "ENABLED",
+      "encryption": {
+        "status": "ENABLED",
+        "type": "KMS"
+      }
+    },
+    "cloudFront": {
+      "path": "/api/presence",
+      "cachePolicy": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+      "originRequestPolicy": "216adef6-5c7f-47e4-b989-5492eafa07d3",
+      "allowedMethods": [
+        "HEAD",
+        "DELETE",
+        "POST",
+        "GET",
+        "OPTIONS",
+        "PUT",
+        "PATCH"
+      ],
+      "cacheTtl": {
+        "min": 0,
+        "default": 0,
+        "max": 0
+      },
+      "viewerHeaders": "allViewer",
+      "cookies": "all",
+      "queryStrings": "all"
+    },
+    "webConfiguration": {
+      "table": "CodePulse-PresenceTable3ADAA3E7-DODDVNJWV4YM",
+      "publicOrigin": "https://code-pulse.whchoi.net",
+      "signingSecretReferenceVerified": true
+    },
+    "identityPolicies": {
+      "webRole": "CodePulse-WebTaskRoleA6676EAB-XDSdMhTymSGd",
+      "allowedActions": [
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:UpdateItem"
+      ],
+      "tableArn": "arn:aws:dynamodb:ap-northeast-2:061525506239:table/CodePulse-PresenceTable3ADAA3E7-DODDVNJWV4YM",
+      "collectorRole": "CodePulse-WorkerTaskRole013F226A-GNepn2UbdApV",
+      "collectorDynamoAllowPermissions": false,
+      "includedManagedPolicies": true
+    }
+  }
+}

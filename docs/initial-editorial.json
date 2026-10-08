@@ -1,0 +1,298 @@
+[
+  {
+    "id": "kiro-984bdd253784fe717f2b",
+    "contentHash": "14050ff06e5d34ec2478d1e41690fa6f95e7cb918ab098a55a3eb22d0fb9b391",
+    "explanation": {
+      "title": "Workflows로 여러 단계의 작업을 백그라운드에서 실행합니다",
+      "summary": "Kiro IDE 1.2에 반복해서 사용할 작업 순서를 백그라운드에서 실행하는 Workflows가 추가됐습니다. 신뢰하지 않는 작업 폴더에서는 설정 변경과 명령 실행에 승인을 요청합니다.",
+      "whyItMatters": "각 단계가 별도 에이전트 세션에서 실행되므로 진행 상황을 살펴보면서 원래 대화를 이어갈 수 있습니다. 신뢰하지 않는 폴더에서는 이전에 허용했던 명령도 다시 확인하며, 폴더를 신뢰하기 전에는 Workflow 레시피를 불러오지 않습니다.",
+      "actionItems": [
+        "Workflows는 기본적으로 꺼져 있습니다. Agent Focus의 Workspace Configuration에서 켜거나 `kiroAgent.workflows.enabled` 설정을 바꾼 뒤 새 대화를 시작하세요.",
+        "실행 중인 작업은 채팅 위 Workflows 영역에서 확인하고, 필요한 단계를 열거나 실행을 일시 중지할 수 있습니다.",
+        "에이전트가 설정 파일이나 `.kiro/workflows/`의 레시피를 바꾸려 할 때 승인 요청의 내용을 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "단계마다 별도 에이전트 세션을 사용합니다",
+          "detail": "여러 단계로 이루어진 작업을 실행하고 진행 상태를 확인할 수 있습니다. 실행을 일시 중지하거나 재개하고 중단하는 조작도 제공합니다.",
+          "evidence": "Each step runs in its own agent session."
+        },
+        {
+          "title": "설정 파일 변경에 승인을 요청합니다",
+          "detail": "더 넓은 파일 쓰기 권한이 있어도 에이전트, Hook, Power 설정과 Workflow 레시피를 바꾸기 전에는 확인을 요청합니다.",
+          "evidence": "Kiro asks before the agent changes agent, Hook,"
+        }
+      ],
+      "audience": [
+        "Kiro IDE 사용자",
+        "반복 작업을 자동화하는 개발자"
+      ],
+      "category": "feature",
+      "impact": "medium"
+    }
+  },
+  {
+    "id": "codex-80b369e4774953919bee",
+    "contentHash": "0fd94c637418ea3aabf3d8b4fb59f207c8ab7752dbd9f0a5512576665dfee025",
+    "explanation": {
+      "title": "Codex MCP 서버 명령 대신 앱 서버로 전환합니다",
+      "summary": "Codex를 MCP 서버로 실행하던 `codex mcp-server` 명령이 사용 중단 대상이 됐습니다. 원문에 추가된 2026년 9월 5일 안내에 따르면 이 명령과 독립 실행 파일 `codex-mcp-server`는 삭제됐습니다.",
+      "whyItMatters": "스크립트나 연동 도구가 이 명령으로 Codex를 실행했다면 앱 서버를 사용하는 방식으로 바꿔야 합니다. 기존 실행 명령이 실패할 수 있으므로 업데이트할 때 연동 설정도 함께 확인해야 합니다.",
+      "actionItems": [
+        "자동화 스크립트와 연동 설정에서 `codex mcp-server` 또는 `codex-mcp-server`를 사용하는지 확인하세요.",
+        "공식 원문에 연결된 마이그레이션 안내를 읽고 Codex 앱 서버로 전환하세요."
+      ],
+      "highlights": [
+        {
+          "title": "MCP 서버 실행 명령을 사용 중단합니다",
+          "detail": "공식 안내는 기존 명령 대신 Codex 앱 서버를 사용하도록 권합니다.",
+          "evidence": "command is now deprecated."
+        },
+        {
+          "title": "독립 실행 파일도 삭제됐습니다",
+          "detail": "9월 5일에 추가된 안내는 기존 명령과 독립 실행 파일의 삭제를 알립니다.",
+          "evidence": "binary have been removed."
+        }
+      ],
+      "audience": [
+        "Codex를 다른 도구에 연결한 개발자",
+        "Codex 실행 스크립트를 관리하는 팀"
+      ],
+      "category": "breaking",
+      "impact": "high"
+    }
+  },
+  {
+    "id": "codex-049089805d5ffd13c821",
+    "contentHash": "d38269b2919bc4ab9a583ad2ead366740b640b02a53433d18e9e201de7b1f1c6",
+    "explanation": {
+      "title": "GPT-5.5의 Codex 지원이 10월 14일 종료될 예정입니다",
+      "summary": "ChatGPT 로그인으로 사용하는 Codex에서 GPT-5.5 지원이 2026년 10월 14일 종료될 예정입니다. 모든 요금제가 대상이며 OpenAI API에는 적용되지 않습니다.",
+      "whyItMatters": "작업 공간 기본값이나 자동 실행 작업이 `gpt-5.5`를 지정하고 있다면 종료일 전에 모델 설정을 바꿔야 합니다. 자신의 요금제와 클라이언트에서 사용할 수 있는 대체 모델을 선택해야 합니다.",
+      "actionItems": [
+        "작업 공간 기본값, 저장된 모델 설정, 관리자가 배포한 설정에서 `gpt-5.5`를 선택한 곳을 확인하세요.",
+        "사용자 정의 에이전트, 예약 작업과 스크립트의 모델 설정도 10월 14일 전에 바꾸세요.",
+        "대체 모델은 공식 원문에 연결된 지원 종료 안내와 작업 공간별 모델 목록에서 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "지원 종료일은 2026년 10월 14일입니다",
+          "detail": "소비자, Business, Enterprise, Edu를 포함한 모든 요금제에 적용됩니다. OpenAI API는 지원 종료 대상이 아닙니다.",
+          "evidence": "retirement does not apply to the OpenAI API."
+        },
+        {
+          "title": "저장해 둔 모델 설정도 확인해야 합니다",
+          "detail": "앱에서 모델을 바꾸는 것과 별도로 작업 공간 설정, 에이전트와 자동화 스크립트에 남은 모델 이름을 확인합니다.",
+          "evidence": "Update workspace defaults, saved model settings, managed configurations,"
+        }
+      ],
+      "audience": [
+        "ChatGPT 로그인으로 Codex를 사용하는 개발자",
+        "팀의 모델 설정을 관리하는 담당자"
+      ],
+      "category": "breaking",
+      "impact": "high"
+    }
+  },
+  {
+    "id": "codex-6ff8aba8a2a93c9ea09c",
+    "contentHash": "019d8b488e6bd78c1edd38dd0ba96eb9d5528604c0c28dae613270a31c90d496",
+    "explanation": {
+      "title": "GPT-5.3-Codex-Spark 지원이 종료됐습니다",
+      "summary": "GPT-5.3-Codex-Spark의 시험 제공이 2026년 9월 14일 끝났습니다. ChatGPT 데스크톱 앱, Codex CLI와 IDE 확장에서 더 이상 사용할 수 없습니다.",
+      "whyItMatters": "이 모델을 직접 지정한 저장 설정과 자동화 스크립트도 교체 대상입니다. 빠른 응답 때문에 Spark를 선택했다면 지원되는 모델의 Fast mode 안내를 확인할 수 있습니다.",
+      "actionItems": [
+        "저장된 설정, 사용자 정의 에이전트와 스크립트에서 `gpt-5.3-codex-spark`를 지정한 곳을 확인하세요.",
+        "공식 원문에 연결된 권장 모델 목록에서 대체 모델을 선택하세요.",
+        "응답 속도가 중요하다면 지원 모델에서 사용할 수 있는 Fast mode의 조건을 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "앱, CLI와 IDE 확장에서 사용할 수 없습니다",
+          "detail": "9월 14일부로 시험 제공이 종료됐습니다.",
+          "evidence": "GPT-5.3-Codex-Spark was deprecated on September 14, 2026."
+        },
+        {
+          "title": "직접 지정한 모델 이름을 바꿉니다",
+          "detail": "저장된 설정과 에이전트, 스크립트를 지원 모델에 맞춰 갱신합니다.",
+          "evidence": "update saved configurations, custom agents, and scripts"
+        }
+      ],
+      "audience": [
+        "GPT-5.3-Codex-Spark를 사용했던 개발자",
+        "Codex 자동화 작업을 관리하는 팀"
+      ],
+      "category": "breaking",
+      "impact": "high"
+    }
+  },
+  {
+    "id": "claude-code-bbd70aba1ce8f94e1422",
+    "contentHash": "f1e410bd197b6a24c8a72f4cec83cb3831d9284e0b9f3a5d9333d7a033b97e44",
+    "explanation": {
+      "title": "게이트웨이 환경 변수로 발생하던 인증 오류를 수정했습니다",
+      "summary": "Claude Code 2.1.265에서 `CLAUDE_CODE_USE_GATEWAY`만으로 클라우드 게이트웨이 로그인을 강제하던 문제를 고쳤습니다. API 키, `apiKeyHelper`나 사용자 인증 헤더를 함께 쓰던 환경에서 발생한 오류입니다.",
+      "whyItMatters": "이 문제로 모든 요청이 인증 오류를 반환하던 프록시 환경은 2.1.266에서 이전 동작을 되찾습니다. 이번 오류를 해결하기 위해 기존 인증 설정을 바꿀 필요는 없습니다.",
+      "actionItems": [
+        "2.1.265의 게이트웨이 또는 프록시 환경에서 `Not signed in to the Cloud gateway` 오류가 발생했다면 2.1.266으로 갱신하세요.",
+        "수정 후에는 기존 인증 설정으로 요청이 처리되는지 확인하세요. 이 오류 때문에 환경 변수를 새로 설정하거나 삭제할 필요는 없습니다."
+      ],
+      "highlights": [
+        {
+          "title": "환경 변수 하나로 로그인 방식을 강제하지 않습니다",
+          "detail": "`ANTHROPIC_BASE_URL`과 `ANTHROPIC_AUTH_TOKEN`을 함께 설정하지 않았을 때 `CLAUDE_CODE_USE_GATEWAY`만으로 로그인을 요구하던 회귀 오류를 되돌렸습니다.",
+          "evidence": "The variable on its own is ignored again;"
+        }
+      ],
+      "audience": [
+        "LLM 게이트웨이나 프록시를 사용하는 Claude Code 운영자",
+        "2.1.265에서 인증 오류를 겪은 사용자"
+      ],
+      "category": "fix",
+      "impact": "high"
+    }
+  },
+  {
+    "id": "claude-code-4bd3eac7e8d8aced5beb",
+    "contentHash": "b7d762c3a7a780513d62cedd6f037b2e38971d407773f607a01b5ac9db0ad735",
+    "explanation": {
+      "title": "세부 내역 없이 수정 릴리스가 공개됐습니다",
+      "summary": "공식 릴리스는 버그 수정과 안정성 개선만 안내합니다. 구체적인 수정 항목과 영향을 받는 기능은 적혀 있지 않습니다.",
+      "whyItMatters": "이 안내만으로 특정 오류가 해결됐는지 판단하기는 어렵습니다. 해결을 기다리던 문제가 있다면 업데이트 후 해당 작업을 다시 확인하는 것이 좋습니다.",
+      "actionItems": [
+        "업데이트를 적용했다면 사용 중인 주요 작업이 정상적으로 진행되는지 확인하세요.",
+        "세부 내용이 필요하면 공식 릴리스 페이지의 추가 안내를 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "구체적인 수정 항목은 공개하지 않았습니다",
+          "detail": "버그 수정과 안정성 개선이라는 설명만 제공합니다.",
+          "evidence": "Bug fixes and reliability improvements"
+        }
+      ],
+      "audience": [
+        "이 버전을 적용하려는 Claude Code 사용자"
+      ],
+      "category": "fix",
+      "impact": "medium"
+    }
+  },
+  {
+    "id": "claude-code-a3fb8dea4a04b1bdda5e",
+    "contentHash": "1cb4f7f0c401597f05bc0b81ac8c870b66e1fa0647eed60b987d12c38cf4eb42",
+    "explanation": {
+      "title": "세부 내역 없이 수정 릴리스가 공개됐습니다",
+      "summary": "공식 릴리스는 버그 수정과 안정성 개선만 안내합니다. 구체적인 수정 항목과 영향을 받는 기능은 적혀 있지 않습니다.",
+      "whyItMatters": "이 안내만으로 특정 오류가 해결됐는지 판단하기는 어렵습니다. 해결을 기다리던 문제가 있다면 업데이트 후 해당 작업을 다시 확인하는 것이 좋습니다.",
+      "actionItems": [
+        "업데이트를 적용했다면 사용 중인 주요 작업이 정상적으로 진행되는지 확인하세요.",
+        "세부 내용이 필요하면 공식 릴리스 페이지의 추가 안내를 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "구체적인 수정 항목은 공개하지 않았습니다",
+          "detail": "버그 수정과 안정성 개선이라는 설명만 제공합니다.",
+          "evidence": "Bug fixes and reliability improvements"
+        }
+      ],
+      "audience": [
+        "이 버전을 적용하려는 Claude Code 사용자"
+      ],
+      "category": "fix",
+      "impact": "medium"
+    }
+  },
+  {
+    "id": "claude-code-996add1163171a6f8641",
+    "contentHash": "4fad9de42e820c95ff2ea215aa3fa4ba51b4039ca3e8671b027cb81afcb5a60b",
+    "explanation": {
+      "title": "세부 내역 없이 수정 릴리스가 공개됐습니다",
+      "summary": "공식 릴리스는 버그 수정과 안정성 개선만 안내합니다. 구체적인 수정 항목과 영향을 받는 기능은 적혀 있지 않습니다.",
+      "whyItMatters": "이 안내만으로 특정 오류가 해결됐는지 판단하기는 어렵습니다. 해결을 기다리던 문제가 있다면 업데이트 후 해당 작업을 다시 확인하는 것이 좋습니다.",
+      "actionItems": [
+        "업데이트를 적용했다면 사용 중인 주요 작업이 정상적으로 진행되는지 확인하세요.",
+        "세부 내용이 필요하면 공식 릴리스 페이지의 추가 안내를 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "구체적인 수정 항목은 공개하지 않았습니다",
+          "detail": "버그 수정과 안정성 개선이라는 설명만 제공합니다.",
+          "evidence": "Bug fixes and reliability improvements"
+        }
+      ],
+      "audience": [
+        "이 버전을 적용하려는 Claude Code 사용자"
+      ],
+      "category": "fix",
+      "impact": "medium"
+    }
+  },
+  {
+    "id": "kiro-988589806814ad6fbf32",
+    "contentHash": "c69ae38eb74de28053eeb503c00c5bb81a7d36d43b892d836951193016fd96d4",
+    "explanation": {
+      "title": "같은 터미널에서 Kiro 3.0으로 전환하고 훅 조건을 바꿉니다",
+      "summary": "Kiro CLI 2.28.0은 3.0을 실행할 수 있는 환경에서 Classic 사용자의 전환을 안내합니다. 설정을 변환하고 명령을 다시 실행하는 절차이며, V3 훅에는 도구 종류별 조건을 추가했습니다.",
+      "whyItMatters": "터미널을 나가지 않고 기본 실행 모드와 에이전트 설정을 바꿀 수 있습니다. 훅은 shell, read, write 같은 도구 종류를 기준으로 실행 조건을 묶어 관리할 수 있습니다.",
+      "actionItems": [
+        "3.0을 실행할 수 있는 환경에서 Classic 세션을 시작하면 전환 안내를 확인하세요. 선택하면 3.0을 기본값으로 저장하고 설정을 변환한 뒤 명령을 다시 실행합니다.",
+        "V3 훅의 조건을 설정할 때 도구 종류나 특정 MCP 서버와 도구를 기준으로 지정해 보세요."
+      ],
+      "highlights": [
+        {
+          "title": "설정을 변환한 뒤 명령을 다시 실행합니다",
+          "detail": "Classic의 대화형 실행에서 3.0으로 전환하는 절차를 제공합니다. 안내를 거절하면 약 일주일 간격으로 다시 제안합니다.",
+          "evidence": "and rerun your command in 3.0"
+        },
+        {
+          "title": "도구 종류로 훅 조건을 지정합니다",
+          "detail": "V3의 도구 실행 전후 훅에서 shell, read, write와 특정 MCP 서버 또는 도구를 조건으로 사용할 수 있습니다.",
+          "evidence": "Hooks that run before or after a tool can now match by category"
+        }
+      ],
+      "audience": [
+        "Kiro Classic에서 3.0 전환을 검토하는 개발자",
+        "V3 훅을 설정하는 사용자"
+      ],
+      "category": "feature",
+      "impact": "medium"
+    }
+  },
+  {
+    "id": "claude-code-f0dfd4cdfef10f9572e0",
+    "contentHash": "2377de2a1dd8629687b5a597d7885bd80b9c43a52b27df0bf54878a1773028f6",
+    "explanation": {
+      "title": "Haiku 5.5를 추가하고 대화 압축 후 작업 판단을 고쳤습니다",
+      "summary": "Claude Code가 Haiku 5.5를 지원합니다. 변경 기록은 이를 Anthropic API의 기본 Haiku 모델로 안내하며, 대화 압축 후 작업을 반복하던 문제와 HTTP MCP 연결의 메모리 누수도 수정했습니다.",
+      "whyItMatters": "긴 대화에서 압축 전에 마친 작업을 다시 수행하거나 철회하던 문제가 수정됐습니다. HTTP MCP 연결을 오래 유지하는 환경에서는 전송한 요청 기록이 계속 메모리에 남던 문제를 고쳤습니다.",
+      "actionItems": [
+        "Haiku를 사용하는 설정에서 새로 추가된 `claude-haiku-5-5`를 선택할지 검토하세요. 기본 Haiku 모델 변경 안내는 Anthropic API 기준입니다.",
+        "긴 대화에서 압축이 일어난 뒤 완료한 작업을 반복하던 문제가 있었다면 업데이트 후 같은 상황을 확인하세요.",
+        "HTTP MCP 연결을 사용하는 장시간 세션에서 메모리가 계속 늘었다면 업데이트 후 사용 상태를 확인하세요."
+      ],
+      "highlights": [
+        {
+          "title": "Haiku 5.5를 지원합니다",
+          "detail": "Anthropic API의 기본 Haiku 모델로 안내하며 1M 토큰 컨텍스트를 지원합니다.",
+          "evidence": "Added Claude Haiku 5.5"
+        },
+        {
+          "title": "압축 전후의 작업 판단을 수정했습니다",
+          "detail": "압축 전에 수행한 작업을 압축 뒤에 실행한 것으로 잘못 판단해 철회하거나 반복하던 문제를 고쳤습니다.",
+          "evidence": "Fixed Claude sometimes treating its own last actions"
+        },
+        {
+          "title": "HTTP MCP 연결의 메모리 누수를 고쳤습니다",
+          "detail": "연결이 끝날 때까지 전송한 모든 요청을 보관하던 누수를 수정했습니다.",
+          "evidence": "Fixed a memory leak"
+        }
+      ],
+      "audience": [
+        "Haiku 모델을 사용하는 Claude Code 사용자",
+        "HTTP MCP 연결을 유지하는 개발자"
+      ],
+      "category": "improvement",
+      "impact": "medium"
+    }
+  }
+]

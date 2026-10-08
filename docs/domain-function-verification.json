@@ -1,0 +1,25 @@
+{
+  "checkedAt": "2026-10-08T01:23:01.762815+00:00",
+  "function": "ap-northeast-2CodePulseCanonicalHostC24230AA",
+  "runtime": "cloudfront-js-2.0",
+  "checks": [
+    {
+      "host": "dxdh24n4uucjz.cloudfront.net",
+      "method": "GET",
+      "computeUtilization": "10",
+      "passed": true
+    },
+    {
+      "host": "code-pulse.whchoi.net",
+      "method": "GET",
+      "computeUtilization": "10",
+      "passed": true
+    },
+    {
+      "host": "dxdh24n4uucjz.cloudfront.net",
+      "method": "POST",
+      "computeUtilization": "7",
+      "passed": true
+    }
+  ]
+}
