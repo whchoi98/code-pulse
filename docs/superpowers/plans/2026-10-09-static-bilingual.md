@@ -62,10 +62,14 @@ Files: `infra/lib/stack.ts`, `infra/bin/app.ts`, `Dockerfile`, `tools/build.mjs`
 - [x] Provision with static routing disabled, publish and validate artifacts, then enable S3 routing.
 - [x] Run and observe the actual collector publication to completion; verify scheduled task settings.
 - [x] Verify coverage of all records, both languages, rendered HTML without JavaScript, request/caching bounds, publication updates, RSS, saved export, privacy, counts, 404s and measured performance.
-- [ ] Complete the Git handoff and confirm remote CI after the already verified deployment.
+- [x] Complete the Git handoff and confirm remote CI after the already verified deployment.
 
-## Execution record
+## Execution record before Git handoff
 
 2026-10-09: Tasks 1–3 implemented in the isolated worktree. Independent review verified both 616-record / 20,428-item inventories, private fields, dates and asset hashes. Three P2 findings (RSS language links, RSS autodiscovery and verifier case comparison) were corrected with focused passing checks. Baseline whole regression:653 unit/infrastructure tests and97 browser tests; added RSS regressions pass. A concurrent CDK synthesis caused a Vite development-page reload during one browser retry test; the unchanged test passed when synthesis completed.
 
 The rollout uses a separate pre-created StaticRouter function so association and S3 origin change in one distribution configuration. A regression proves prepared and final function code are identical. AWS preparation, publication and S3 cutover completed. Production checks passed; the real collector completed successfully and republished generation 2 while reusing all 1,385 immutable objects. Final typecheck and all 655 unit/infrastructure tests passed. Git handoff is the remaining step.
+
+## Git handoff confirmation
+
+On 2026-10-09, commit `c73ab657d6e59663e4fe847365cf84b917a2955d` was merged into `main` and pushed to `whchoi98/code-pulse`. GitHub Actions run `37872098732` completed successfully at `2026-10-09T01:56:42Z`. It verified release consistency, types, tests, build and runtime dependency audit. The tag-only `publish-notes` job was skipped. This completes the handoff that was still pending in the record above; it did not create a tag or hosted release.

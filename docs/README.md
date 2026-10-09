@@ -20,14 +20,14 @@ Start with the [project overview](../README.md) and [contributor instructions](.
 | Inspect application build history | [Changelog](../CHANGELOG.md) and the release links in the project overview |
 | Inspect static delivery, language and loading evidence | [v1.3.0 verification](verification.md#v130-정적-배포와-영어-지원) |
 | Inspect deployment evidence | [Verification](verification.md), currently in Korean |
-| Inspect complete-change coverage | [Full inventory verification](full-changes-verification.json), [content review](full-changes-content-review.json) |
+| Inspect complete-change coverage | [v1.3.0 source inventory](full-changes-v1.3.0-verification.json), [both public languages](static-content-verification.json) |
 | Check logo provenance | [Brand sources](../public/brand/SOURCES.md) |
 
 ### Historical context
 
 The [initial design](superpowers/specs/2026-10-07-code-pulse-design.md), [implementation plan](superpowers/plans/2026-10-07-code-pulse.md), [progress notes](progress.md) and [infrastructure report](infra-report.md) explain earlier decisions and investigation. Their task lists, model settings, URLs and test counts may describe older stages. Use current source and the latest section of the verification document for present behavior.
 
-The [RSS implementation notes](rss-implementation.md) and [final review](final-review.md) provide focused implementation evidence. Do not replace dated reports with a new test result; add the new result to the document that owns the verification.
+The [RSS implementation notes](rss-implementation.md), [initial final review](final-review.md), [v1.2.0 inventory](full-changes-verification.json) and [Korean content review](full-changes-content-review.json) preserve earlier evidence. The [v1.3.0 review](static-delivery-review.md) covers static delivery and language support. Do not replace dated reports with a new test result; add the new result to the document that owns the verification.
 
 ## 한국어
 
@@ -47,11 +47,11 @@ The [RSS implementation notes](rss-implementation.md) and [final review](final-r
 | 앱 빌드 이력 확인 | [변경 기록](../CHANGELOG.md)과 프로젝트 소개의 릴리스 링크 |
 | 정적 배포, 언어와 로딩 검증 | [v1.3.0 검증](verification.md#v130-정적-배포와-영어-지원) |
 | 배포 검증 근거 확인 | [검증 기록](verification.md), 한국어 문서 |
-| 전체 변경 항목의 포함 여부 확인 | [전체 항목 검증](full-changes-verification.json), [내용 대조 기록](full-changes-content-review.json) |
+| 전체 변경 항목의 포함 여부 확인 | [v1.3.0 원문 항목](full-changes-v1.3.0-verification.json), [두 언어 공개 데이터](static-content-verification.json) |
 | 로고 출처 확인 | [브랜드 자료](../public/brand/SOURCES.md) |
 
 ### 과거 작업 기록
 
 [초기 설계](superpowers/specs/2026-10-07-code-pulse-design.md), [구현 계획](superpowers/plans/2026-10-07-code-pulse.md), [진행 기록](progress.md), [인프라 보고서](infra-report.md)에는 이전 결정과 조사 과정이 남아 있습니다. 작업 목록과 모델 설정, 주소, 테스트 수는 당시 상태를 설명할 수 있습니다. 현재 동작은 소스 코드와 검증 문서의 최신 항목을 기준으로 확인합니다.
 
-[RSS 구현 기록](rss-implementation.md)과 [최종 검토](final-review.md)는 개별 구현의 근거를 담습니다. 새 검증 결과는 해당 검증을 관리하는 문서에 추가하고, 날짜가 있는 과거 보고서는 보존합니다.
+[RSS 구현 기록](rss-implementation.md), [초기 최종 검토](final-review.md), [v1.2.0 항목 검증](full-changes-verification.json)과 [한국어 내용 대조](full-changes-content-review.json)는 당시의 근거를 보존합니다. 정적 배포와 영어 지원은 [v1.3.0 검토](static-delivery-review.md)에서 확인합니다. 새 검증 결과는 해당 검증을 관리하는 문서에 추가하고, 날짜가 있는 과거 보고서는 보존합니다.

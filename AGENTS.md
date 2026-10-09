@@ -8,14 +8,14 @@ Code Pulse publishes Korean explanations and complete official English changes f
 
 | Area | Entrypoints and guidance |
 | --- | --- |
-| Browser | `src/client/main.tsx`, `src/client/App.tsx`; filters, saved articles, read state and Markdown export stay in the browser |
+| Browser | `src/client/main.tsx`, `src/client/App.tsx`, `src/client/remote-cache.ts`, `src/client/i18n.tsx`; filters, language, saved articles, read state and Markdown export stay in the browser |
 | HTTP and RSS | `src/server/index.ts`, `src/server/app.ts`, `src/server/rss.ts`; see `docs/reference/api.md` |
 | Visitor counts | `src/server/presence.ts`, `src/server/presence-store.ts`, `src/client/presence.ts` |
 | Collection | `src/collector/run.ts`, `src/collector/engine.ts`, `src/collector/sources.ts`, `src/collector/explanation.ts` |
 | Complete changes | `src/collector/change-items.ts`, `src/collector/full-changes.ts`, `tools/backfill-full-changes.ts` |
-| Static publication | `src/publishing/index.ts`, `projection.ts`, `render.ts`, `tools/publish-site.ts`; see `docs/static-delivery.md` |
+| Static publication | `src/publishing/index.ts`, `src/publishing/projection.ts`, `src/publishing/render.ts`, `src/publishing/assets.ts`, `tools/publish-site.ts`; see `docs/static-delivery.md` |
 | Persistence | `src/collector/store.ts`; local files or conditional S3 writes |
-| Shared contracts | `src/shared/types.ts`, `src/shared/app-release.json` |
+| Shared contracts | `src/shared/types.ts`, `src/shared/reading-revision.ts`, `src/shared/schedule.ts`, `src/shared/app-release.json` |
 | Infrastructure | `infra/bin/app.ts`, `infra/lib/stack.ts`, `Dockerfile` |
 | Documentation | `docs/README.md`, `docs/architecture.md`, `docs/onboarding.md`, `CONTRIBUTING.md` |
 
@@ -49,13 +49,13 @@ Use source files as implementation evidence. `dist/`, `cdk.out/`, `node_modules/
 
 Use Node 22 or newer. Check changed behavior with `npm test`, type checking and the relevant browser tests. Source-reader tests use recorded official structures; live AWS and public-browser checks are separate evidence.
 
-Install dependencies with `npm ci`. `npm run build` builds the browser, server and collector; `npm start` serves the build. `npm run dev` and `npm run dev:client` are separate backend and Vite processes. Follow `docs/onboarding.md` for local environment settings and the Vite RSS limitation.
+Install dependencies with `npm ci`. `npm run build` builds the browser, server, collector and standalone publisher CLI; `npm start` serves the build. `npm run dev` and `npm run dev:client` are separate backend and Vite processes. Follow `docs/onboarding.md` for local environment settings, Vite fallback behavior and static preview.
 
 Use `npm run typecheck`, `npm test` and `npm run test:browser` for implementation changes under the rule above. `npm run synth -- --no-lookups` validates infrastructure without VPC lookups. A declared command is not evidence that a check passed.
 
 For documentation-only changes, check affected links, commands, facts and version synchronization. Reuse prior implementation results only after confirming that their source, test, dependency and configuration inputs still match. Do not rerun application suites solely because prose changed. Changes to generators, executable examples or contributor instructions need their relevant checks. Report newly executed checks and reused results separately.
 
-The daily schedule is 07:00 Asia/Seoul, defined in `src/shared/schedule.ts`. Static publication runs after final collection and editorial writes. Keep content-addressed URLs immutable, promote catalogs after dependencies, and preserve older assets for cached HTML.
+The daily schedule is 07:00 Asia/Seoul, defined in `src/shared/schedule.ts`. Static publication runs after final collection and editorial writes when `SITE_BUCKET` or `SITE_DIR` is configured. Keep content-addressed URLs immutable, promote catalogs after dependencies, and preserve older assets for cached HTML. Deploying an image alone does not update S3 pages; publish the matching compiled frontend as described in `docs/static-delivery.md`.
 
 The collector and server have different privileges. Only the collector may invoke the explanation model or write published content; the web role may update its separate visitor table.
 

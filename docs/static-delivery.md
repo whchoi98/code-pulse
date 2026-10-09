@@ -1,6 +1,6 @@
 # Static delivery and language support
 
-[English](#english) | [한국어](#한국어)
+[![English](https://img.shields.io/badge/lang-English-blue)](#english) [![한국어](https://img.shields.io/badge/lang-%ED%95%9C%EA%B5%AD%EC%96%B4-red)](#한국어)
 
 ## English
 
@@ -16,7 +16,7 @@ English contains every official source item with its section context. It is expl
 
 A listing embeds its compact catalog and renders the first 20 cards before JavaScript starts. Remaining links are available without JavaScript. A detail page embeds its complete record. The browser downloads the separate full search index only after a search is entered; it does not silently search only summaries. Saved export resolves every selected detail before producing Markdown.
 
-The browser prefetches cards within 400px of the viewport with at most two requests at a time. It avoids background prefetch on hidden pages, offline connections, Save-Data and 2G. Detail and search memory is bounded to 80 objects and 16 MiB, with older entries evicted first. Hashed URLs also use the browser HTTP cache. A changed URL prevents reuse of outdated content. Rechecking a source alone does not change its detail URL or read state; the catalog supplies the latest check time.
+The browser prefetches cards within 400px of the viewport with at most two requests at a time. It avoids background prefetch on hidden pages, offline connections, Save-Data and 2G. The detail and search LRU cache retains at most 80 objects with a 16 MiB budget measured by serialized JSON size; this is not a limit on total browser memory. It evicts the least recently used objects first. Hashed URLs also use the browser HTTP cache. A changed URL prevents reuse of outdated content. Rechecking a source alone does not change its detail URL or read state; the catalog supplies the latest check time.
 
 HTML and catalogs use `max-age=0, s-maxage=60, must-revalidate`. Content and compiled assets have content hashes in their URLs and one-year immutable caching. The browser rechecks catalogs at most once a minute while visible and online, and after returning to the page. Failed refreshes preserve readable data with a stale notice. Edge caching and the browser refresh interval can together delay an already open page by about two minutes. Preserve old content-addressed objects because cached HTML and existing browser sessions may still reference them.
 
@@ -24,17 +24,21 @@ The top language switch updates `lang=ko` or `lang=en` in the URL and stores `co
 
 ### Local publication and preview
 
-Use Node 22 or newer. Select the data source explicitly; production data and local files must not be mixed accidentally.
+Use Node 22 or newer and a nonempty collected `data/snapshot.json`. If needed, [collect a local sample](onboarding.md#collect-a-small-local-sample) first. Select the data source explicitly; publication reads the stored snapshot without collecting sources or invoking the model.
 
 ```bash
 npm run build
-node --import tsx tools/publish-site.ts --data-dir ./data --site-dir ./data/site --report /tmp/code-pulse-site.json
-SITE_DIR=./data/site DATA_DIR=./data npm start
+node --import tsx tools/publish-site.ts --data-dir ./data --site-dir ./data/site \
+  --static-dir ./dist/public --report /tmp/code-pulse-site.json
+env -u DATA_BUCKET -u SITE_BUCKET -u PRESENCE_TABLE -u PRESENCE_SECRET \
+  NODE_ENV=development SITE_DIR=./data/site DATA_DIR=./data \
+  PUBLIC_BASE_URL=http://localhost:8080 PUBLIC_ORIGIN=http://localhost:8080 \
+  PORT=8080 npm start
 ```
 
 Open `http://localhost:8080/?lang=en` or `/?lang=ko&entry=<id>`. The preview server uses the same query-to-page mapping as CloudFront and blocks publication controls. Built local development can fall back to the full legacy API only on a loopback hostname when static content is absent. The public site never downloads the full legacy feed as a fallback.
 
-`SITE_BUCKET` and `SITE_DIR` are mutually exclusive. `STATIC_DIR` selects the compiled frontend to publish and defaults to `./dist/public`. The container includes the same publisher as `node dist/publishing/run.js`.
+`SITE_BUCKET` and `SITE_DIR` are mutually exclusive for publication. The preview server uses `SITE_DIR` ahead of `STATIC_DIR`; without it, the server serves the compiled frontend from `STATIC_DIR`. For publication, `STATIC_DIR` selects the compiled frontend and defaults to `./dist/public`; `--static-dir` overrides it. The container includes the same publisher as `node dist/publishing/run.js`.
 
 ### Deploying updates
 
@@ -47,7 +51,11 @@ npm run test:browser
 npm run build
 npm run synth -- --no-lookups
 npm run deploy
-node --import tsx tools/publish-site.ts --data-bucket <DataBucketName> --site-bucket <SiteBucketName> --report /tmp/code-pulse-publication.json
+code_pulse_data_bucket="$(node -p "require('./cdk-outputs.json').CodePulse.DataBucketName")"
+code_pulse_site_bucket="$(node -p "require('./cdk-outputs.json').CodePulse.SiteBucketName")"
+AWS_REGION=ap-northeast-2 node --import tsx tools/publish-site.ts \
+  --data-bucket "$code_pulse_data_bucket" --site-bucket "$code_pulse_site_bucket" \
+  --static-dir ./dist/public --report /tmp/code-pulse-publication.json
 ```
 
 The daily collector publishes the same build after collecting. Application UI changes require this explicit static publication after deploying; updating only the web task does not replace S3 pages. Include manifest, lockfile and bilingual release notes in version changes and run `npm run release:check` before deployment.
@@ -74,7 +82,7 @@ CloudFront는 OAC로 별도 비공개 S3 버킷의 HTML, 간결한 목록, 전�
 
 목록 HTML에는 간결한 목록 데이터를 넣고 JavaScript 실행 전에 첫 20개 글을 표시합니다. JavaScript를 끄면 나머지 글 링크도 볼 수 있습니다. 상세 HTML에는 해당 글 전체를 넣습니다. 전체 검색 색인은 검색어를 입력한 뒤 읽으며 요약만 검색한 결과를 전체 결과로 표시하지 않습니다. 저장 글 내보내기는 선택한 상세 내용을 모두 받은 뒤 파일을 만듭니다.
 
-브라우저는 화면에서 400px 이내로 가까워진 글을 최대 두 개씩 미리 읽습니다. 화면이 숨겨져 있거나 오프라인, 데이터 절약, 2G 상태이면 사전 읽기를 하지 않습니다. 상세와 검색 메모리 캐시는 최대 80개 객체, 16MiB이며 오래 사용하지 않은 항목부터 비웁니다. 내용 해시가 있는 주소는 브라우저 HTTP 캐시도 사용합니다. 내용이 바뀌어 주소가 달라지면 이전 파일을 재사용하지 않습니다. 출처 확인 시각만 바뀌면 상세 주소와 읽음 상태는 유지하고 목록에서 최신 확인 시각을 가져옵니다.
+브라우저는 화면에서 400px 이내로 가까워진 글을 최대 두 개씩 미리 읽습니다. 화면이 숨겨져 있거나 오프라인, 데이터 절약, 2G 상태이면 사전 읽기를 하지 않습니다. 상세와 검색 LRU 캐시는 최대 80개 객체를 보관하며, 직렬화한 JSON 크기를 기준으로 16MiB까지 허용합니다. 브라우저 전체 메모리의 상한은 아닙니다. 오래 사용하지 않은 항목부터 비우며 내용 해시가 있는 주소는 브라우저 HTTP 캐시도 사용합니다. 내용이 바뀌어 주소가 달라지면 이전 파일을 재사용하지 않습니다. 출처 확인 시각만 바뀌면 상세 주소와 읽음 상태는 유지하고 목록에서 최신 확인 시각을 가져옵니다.
 
 HTML과 목록은 `max-age=0, s-maxage=60, must-revalidate`를 사용합니다. 상세와 빌드 자산은 내용 해시를 주소에 넣고 1년간 캐시합니다. 브라우저는 화면이 보이고 온라인일 때 최대 1분에 한 번, 또는 페이지로 돌아온 뒤 목록을 다시 확인합니다. 갱신에 실패하면 이전 데이터와 최신성 안내를 함께 제공합니다. 엣지 캐시와 브라우저 갱신 주기가 겹치면 이미 열린 화면의 반영은 약 2분까지 걸릴 수 있습니다. 캐시된 HTML이나 기존 세션이 사용할 수 있으므로 이전 고정 주소의 파일은 보존합니다.
 
@@ -82,17 +90,21 @@ HTML과 목록은 `max-age=0, s-maxage=60, must-revalidate`를 사용합니다. 
 
 ### 로컬 발행과 미리보기
 
-Node 22 이상을 사용합니다. 운영 데이터와 로컬 파일이 섞이지 않도록 데이터 출처를 명시합니다.
+Node 22 이상과 수집된 기록이 있는 `data/snapshot.json`을 준비합니다. 필요하면 [최근 자료를 로컬에 수집](onboarding.md#최근-자료를-로컬에-수집)한 뒤 진행합니다. 데이터 출처를 명시하며, 발행 명령은 저장된 스냅샷만 읽고 새 수집이나 모델 호출을 실행하지 않습니다.
 
 ```bash
 npm run build
-node --import tsx tools/publish-site.ts --data-dir ./data --site-dir ./data/site --report /tmp/code-pulse-site.json
-SITE_DIR=./data/site DATA_DIR=./data npm start
+node --import tsx tools/publish-site.ts --data-dir ./data --site-dir ./data/site \
+  --static-dir ./dist/public --report /tmp/code-pulse-site.json
+env -u DATA_BUCKET -u SITE_BUCKET -u PRESENCE_TABLE -u PRESENCE_SECRET \
+  NODE_ENV=development SITE_DIR=./data/site DATA_DIR=./data \
+  PUBLIC_BASE_URL=http://localhost:8080 PUBLIC_ORIGIN=http://localhost:8080 \
+  PORT=8080 npm start
 ```
 
 `http://localhost:8080/?lang=en` 또는 `/?lang=ko&entry=<id>`를 엽니다. 미리보기 서버는 CloudFront와 같은 주소 변환을 사용하고 발행 제어 기록을 차단합니다. 정적 파일이 없는 로컬 빌드에서는 루프백 호스트에 한해 기존 전체 API를 사용할 수 있습니다. 공개 사이트는 정적 조회 실패를 전체 피드 다운로드로 대체하지 않습니다.
 
-`SITE_BUCKET`과 `SITE_DIR`은 함께 쓸 수 없습니다. `STATIC_DIR`은 발행할 빌드 화면을 선택하며 기본값은 `./dist/public`입니다. 컨테이너에도 같은 발행기를 `node dist/publishing/run.js`로 포함합니다.
+발행할 때 `SITE_BUCKET`과 `SITE_DIR`은 함께 쓸 수 없습니다. 미리보기 서버에서는 `SITE_DIR`이 `STATIC_DIR`보다 우선하며, `SITE_DIR`이 없으면 `STATIC_DIR`의 빌드 화면을 제공합니다. 발행기의 `STATIC_DIR`은 빌드 화면을 선택하고 기본값은 `./dist/public`이며 `--static-dir`로 바꿀 수 있습니다. 컨테이너에도 같은 발행기를 `node dist/publishing/run.js`로 포함합니다.
 
 ### 변경 배포
 
@@ -105,7 +117,11 @@ npm run test:browser
 npm run build
 npm run synth -- --no-lookups
 npm run deploy
-node --import tsx tools/publish-site.ts --data-bucket <DataBucketName> --site-bucket <SiteBucketName> --report /tmp/code-pulse-publication.json
+code_pulse_data_bucket="$(node -p "require('./cdk-outputs.json').CodePulse.DataBucketName")"
+code_pulse_site_bucket="$(node -p "require('./cdk-outputs.json').CodePulse.SiteBucketName")"
+AWS_REGION=ap-northeast-2 node --import tsx tools/publish-site.ts \
+  --data-bucket "$code_pulse_data_bucket" --site-bucket "$code_pulse_site_bucket" \
+  --static-dir ./dist/public --report /tmp/code-pulse-publication.json
 ```
 
 일일 수집기는 수집 후 같은 빌드를 발행합니다. 화면 기능을 바꿨을 때도 배포 후 정적 발행을 실행해야 합니다. 웹 태스크만 바꿔서는 S3 페이지가 바뀌지 않습니다. 버전 변경에는 manifest, 잠금 파일과 두 언어 릴리스 노트를 함께 반영하고 배포 전 `npm run release:check`를 실행합니다.
