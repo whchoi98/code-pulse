@@ -45,6 +45,19 @@ function entry(overrides: Partial<Entry> = {}): Entry {
 }
 
 describe('entry reading revision', () => {
+  it('uses the published canonical Korean revision for compact and English entries', () => {
+    const revision = entryRevision(entry());
+    const compact: FeedEntry = { ...entry(), explanation: undefined, readRevision: revision };
+    const english: FeedEntry = { ...entry(), language: 'en', contentKind: 'source', readRevision: revision,
+      explanation: { ...entry().explanation!, title: 'English source title', summary: 'English summary' } };
+    expect(entryRevision(compact)).toBe(revision);
+    expect(entryRevision(english)).toBe(revision);
+    expect(entryRevision({ ...english, readRevision: '0123456789abcdef' })).toBe('0123456789abcdef');
+  });
+
+  it('ignores malformed published reader revisions', () => {
+    expect(entryRevision({ ...entry(), readRevision: 'not-a-reader-revision' })).toBe(entryRevision(entry()));
+  });
   it('does not reset when daily checks or editing metadata alone change', () => {
     const original = entry();
     const checkedAgain = entry({

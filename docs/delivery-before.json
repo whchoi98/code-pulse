@@ -1,0 +1,1415 @@
+{
+  "checkedAt": "2026-10-09T00:57:55.581Z",
+  "url": "https://code-pulse.whchoi.net",
+  "conditions": {
+    "mobile": "Pixel 7, 80ms latency, 1.6Mbps down, 750Kbps up, CPU 4x",
+    "desktop": "1440x1000, native network/CPU",
+    "cache": "Fresh context per run; repeated detail in same context"
+  },
+  "results": [
+    {
+      "mode": "desktop",
+      "run": 1,
+      "httpStatus": 200,
+      "listReadyMs": 450.7000002861023,
+      "firstId": "claude-code-578d72e230ea4c0d31a1",
+      "firstDetailMs": 148.2999997138977,
+      "repeatedDetailMs": 81.30000019073486,
+      "itemCount": 143,
+      "navigation": {
+        "name": "https://code-pulse.whchoi.net/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 151.10000038146973,
+        "navigationId": 8092,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "h2",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "gzip",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.10000038146972656,
+        "domainLookupStart": 1.1000003814697266,
+        "domainLookupEnd": 11.300000190734863,
+        "connectStart": 11.300000190734863,
+        "secureConnectionStart": 14.400000095367432,
+        "connectEnd": 104,
+        "requestStart": 104.30000019073486,
+        "responseStart": 114,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 114,
+        "responseEnd": 114.90000009536743,
+        "transferSize": 855,
+        "encodedBodySize": 555,
+        "decodedBodySize": 923,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 133.10000038146973,
+        "domContentLoadedEventStart": 151.10000038146973,
+        "domContentLoadedEventEnd": 151.10000038146973,
+        "domComplete": 151.10000038146973,
+        "loadEventStart": 151.10000038146973,
+        "loadEventEnd": 151.10000038146973,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "low"
+        }
+      },
+      "paints": [
+        {
+          "name": "first-paint",
+          "entryType": "paint",
+          "startTime": 140,
+          "duration": 0,
+          "navigationId": 8092,
+          "paintTime": 136.7000002861023,
+          "presentationTime": 140
+        },
+        {
+          "name": "first-contentful-paint",
+          "entryType": "paint",
+          "startTime": 232,
+          "duration": 0,
+          "navigationId": 8092,
+          "paintTime": 220,
+          "presentationTime": 232
+        }
+      ],
+      "lcpMs": 232,
+      "resources": [
+        {
+          "path": "/fonts/fonts.css",
+          "bytes": 24243,
+          "decoded": 90158,
+          "duration": 11.299999713897705
+        },
+        {
+          "path": "/theme.js",
+          "bytes": 484,
+          "decoded": 380,
+          "duration": 11
+        },
+        {
+          "path": "/assets/index-BnBVsUYr.css",
+          "bytes": 9837,
+          "decoded": 42599,
+          "duration": 10.300000190734863
+        },
+        {
+          "path": "/assets/index-CPQpLd6T.js",
+          "bytes": 92697,
+          "decoded": 297536,
+          "duration": 14.200000286102295
+        },
+        {
+          "path": "/brand/claude-code.png",
+          "bytes": 18301,
+          "decoded": 18001,
+          "duration": 14.800000190734863
+        },
+        {
+          "path": "/brand/kiro.svg",
+          "bytes": 1068,
+          "decoded": 1527,
+          "duration": 14.5
+        },
+        {
+          "path": "/brand/codex.png",
+          "bytes": 9979,
+          "decoded": 9679,
+          "duration": 14.700000286102295
+        },
+        {
+          "path": "/fonts/29f9baee831a5df6.woff2",
+          "bytes": 26180,
+          "decoded": 25880,
+          "duration": 57.200000286102295
+        },
+        {
+          "path": "/fonts/98a0d4ac28a1eb32.woff2",
+          "bytes": 22588,
+          "decoded": 22288,
+          "duration": 58.40000009536743
+        },
+        {
+          "path": "/fonts/7e3d7e3c7de8e8f7.woff2",
+          "bytes": 15008,
+          "decoded": 14708,
+          "duration": 58
+        },
+        {
+          "path": "/fonts/eb889034c0832c07.woff2",
+          "bytes": 15188,
+          "decoded": 14888,
+          "duration": 58
+        },
+        {
+          "path": "/fonts/8c7a91a029329b24.woff2",
+          "bytes": 16868,
+          "decoded": 16568,
+          "duration": 54
+        },
+        {
+          "path": "/fonts/54240e79cb39b804.woff2",
+          "bytes": 14864,
+          "decoded": 14564,
+          "duration": 54.39999961853027
+        },
+        {
+          "path": "/fonts/ed25fa4b90b634db.woff2",
+          "bytes": 16416,
+          "decoded": 16116,
+          "duration": 59.19999980926514
+        },
+        {
+          "path": "/fonts/3997356904cb6a13.woff2",
+          "bytes": 14596,
+          "decoded": 14296,
+          "duration": 59.299999713897705
+        },
+        {
+          "path": "/fonts/da7d684391166897.woff2",
+          "bytes": 16504,
+          "decoded": 16204,
+          "duration": 55.59999990463257
+        },
+        {
+          "path": "/fonts/ab6d1bba47b39f7c.woff2",
+          "bytes": 16396,
+          "decoded": 16096,
+          "duration": 36.19999980926514
+        },
+        {
+          "path": "/fonts/4ff2df2de6bed6df.woff2",
+          "bytes": 16660,
+          "decoded": 16360,
+          "duration": 26.09999990463257
+        },
+        {
+          "path": "/api/feed",
+          "bytes": 1587228,
+          "decoded": 6469112,
+          "duration": 45.5
+        },
+        {
+          "path": "/api/presence",
+          "bytes": 441,
+          "decoded": 141,
+          "duration": 21.40000009536743
+        },
+        {
+          "path": "/api/presence",
+          "bytes": 441,
+          "decoded": 141,
+          "duration": 50.19999980926514
+        },
+        {
+          "path": "/fonts/9b510767fa0d1dc6.woff2",
+          "bytes": 17764,
+          "decoded": 17464,
+          "duration": 36.200000286102295
+        },
+        {
+          "path": "/fonts/f075be350a140d74.woff2",
+          "bytes": 26360,
+          "decoded": 26060,
+          "duration": 30.199999809265137
+        },
+        {
+          "path": "/fonts/74f74b255c59cce1.woff2",
+          "bytes": 16680,
+          "decoded": 16380,
+          "duration": 30
+        },
+        {
+          "path": "/fonts/6a15f402658a9d68.woff2",
+          "bytes": 17692,
+          "decoded": 17392,
+          "duration": 30.40000009536743
+        },
+        {
+          "path": "/fonts/ed3de1e050a9265a.woff2",
+          "bytes": 18212,
+          "decoded": 17912,
+          "duration": 30.59999990463257
+        },
+        {
+          "path": "/fonts/327b92c69ff958ab.woff2",
+          "bytes": 25376,
+          "decoded": 25076,
+          "duration": 30.40000009536743
+        },
+        {
+          "path": "/fonts/1b9e81b1a9da437c.woff2",
+          "bytes": 20000,
+          "decoded": 19700,
+          "duration": 28.5
+        },
+        {
+          "path": "/fonts/94da295fe1a10458.woff2",
+          "bytes": 26636,
+          "decoded": 26336,
+          "duration": 27.5
+        },
+        {
+          "path": "/fonts/1ffa78a4f8c5a147.woff2",
+          "bytes": 25036,
+          "decoded": 24736,
+          "duration": 26.100000381469727
+        },
+        {
+          "path": "/fonts/99e52b38ffc2a193.woff2",
+          "bytes": 29396,
+          "decoded": 29096,
+          "duration": 24.899999618530273
+        }
+      ],
+      "failures": []
+    },
+    {
+      "mode": "desktop",
+      "run": 2,
+      "httpStatus": 200,
+      "listReadyMs": 306.19999980926514,
+      "firstId": "claude-code-578d72e230ea4c0d31a1",
+      "firstDetailMs": 159,
+      "repeatedDetailMs": 83.60000038146973,
+      "itemCount": 143,
+      "navigation": {
+        "name": "https://code-pulse.whchoi.net/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 56.5,
+        "navigationId": 5104,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "h2",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "gzip",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0,
+        "domainLookupStart": 0.5999999046325684,
+        "domainLookupEnd": 1.299999713897705,
+        "connectStart": 1.299999713897705,
+        "secureConnectionStart": 3.5,
+        "connectEnd": 9.299999713897705,
+        "requestStart": 9.399999618530273,
+        "responseStart": 17.5,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 17.5,
+        "responseEnd": 18.09999990463257,
+        "transferSize": 855,
+        "encodedBodySize": 555,
+        "decodedBodySize": 923,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 35.09999990463257,
+        "domContentLoadedEventStart": 53.19999980926514,
+        "domContentLoadedEventEnd": 53.299999713897705,
+        "domComplete": 56.5,
+        "loadEventStart": 56.5,
+        "loadEventEnd": 56.5,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "high"
+        }
+      },
+      "paints": [
+        {
+          "name": "first-paint",
+          "entryType": "paint",
+          "startTime": 60,
+          "duration": 0,
+          "navigationId": 5104,
+          "paintTime": 57,
+          "presentationTime": 60
+        },
+        {
+          "name": "first-contentful-paint",
+          "entryType": "paint",
+          "startTime": 132,
+          "duration": 0,
+          "navigationId": 5104,
+          "paintTime": 116.39999961853027,
+          "presentationTime": 132
+        }
+      ],
+      "lcpMs": 132,
+      "resources": [
+        {
+          "path": "/fonts/fonts.css",
+          "bytes": 24243,
+          "decoded": 90158,
+          "duration": 10.199999809265137
+        },
+        {
+          "path": "/theme.js",
+          "bytes": 484,
+          "decoded": 380,
+          "duration": 11.300000190734863
+        },
+        {
+          "path": "/assets/index-CPQpLd6T.js",
+          "bytes": 92697,
+          "decoded": 297536,
+          "duration": 12.800000190734863
+        },
+        {
+          "path": "/assets/index-BnBVsUYr.css",
+          "bytes": 9837,
+          "decoded": 42599,
+          "duration": 9.800000190734863
+        },
+        {
+          "path": "/brand/claude-code.png",
+          "bytes": 18301,
+          "decoded": 18001,
+          "duration": 12.799999713897705
+        },
+        {
+          "path": "/brand/kiro.svg",
+          "bytes": 1068,
+          "decoded": 1527,
+          "duration": 12.799999713897705
+        },
+        {
+          "path": "/brand/codex.png",
+          "bytes": 9979,
+          "decoded": 9679,
+          "duration": 12.900000095367432
+        },
+        {
+          "path": "/fonts/29f9baee831a5df6.woff2",
+          "bytes": 26180,
+          "decoded": 25880,
+          "duration": 48.60000038146973
+        },
+        {
+          "path": "/fonts/98a0d4ac28a1eb32.woff2",
+          "bytes": 22588,
+          "decoded": 22288,
+          "duration": 46.89999961853027
+        },
+        {
+          "path": "/fonts/7e3d7e3c7de8e8f7.woff2",
+          "bytes": 15008,
+          "decoded": 14708,
+          "duration": 47.5
+        },
+        {
+          "path": "/fonts/eb889034c0832c07.woff2",
+          "bytes": 15188,
+          "decoded": 14888,
+          "duration": 48.09999990463257
+        },
+        {
+          "path": "/fonts/8c7a91a029329b24.woff2",
+          "bytes": 16868,
+          "decoded": 16568,
+          "duration": 45.200000286102295
+        },
+        {
+          "path": "/fonts/54240e79cb39b804.woff2",
+          "bytes": 14864,
+          "decoded": 14564,
+          "duration": 47
+        },
+        {
+          "path": "/fonts/ed25fa4b90b634db.woff2",
+          "bytes": 16416,
+          "decoded": 16116,
+          "duration": 46.80000019073486
+        },
+        {
+          "path": "/fonts/da7d684391166897.woff2",
+          "bytes": 16504,
+          "decoded": 16204,
+          "duration": 47.700000286102295
+        },
+        {
+          "path": "/fonts/3997356904cb6a13.woff2",
+          "bytes": 14596,
+          "decoded": 14296,
+          "duration": 50.200000286102295
+        },
+        {
+          "path": "/fonts/ab6d1bba47b39f7c.woff2",
+          "bytes": 16396,
+          "decoded": 16096,
+          "duration": 29.200000286102295
+        },
+        {
+          "path": "/fonts/4ff2df2de6bed6df.woff2",
+          "bytes": 16660,
+          "decoded": 16360,
+          "duration": 22
+        },
+        {
+          "path": "/api/feed",
+          "bytes": 1587228,
+          "decoded": 6469112,
+          "duration": 46
+        },
+        {
+          "path": "/api/presence",
+          "bytes": 441,
+          "decoded": 141,
+          "duration": 20.300000190734863
+        },
+        {
+          "path": "/fonts/9b510767fa0d1dc6.woff2",
+          "bytes": 17764,
+          "decoded": 17464,
+          "duration": 32.69999980926514
+        },
+        {
+          "path": "/fonts/f075be350a140d74.woff2",
+          "bytes": 26360,
+          "decoded": 26060,
+          "duration": 28.699999809265137
+        }
+      ],
+      "failures": []
+    },
+    {
+      "mode": "desktop",
+      "run": 3,
+      "httpStatus": 200,
+      "listReadyMs": 345.8999996185303,
+      "firstId": "claude-code-578d72e230ea4c0d31a1",
+      "firstDetailMs": 142.90000009536743,
+      "repeatedDetailMs": 84.60000038146973,
+      "itemCount": 143,
+      "navigation": {
+        "name": "https://code-pulse.whchoi.net/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 59.19999980926514,
+        "navigationId": 5622,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "h2",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "gzip",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.09999990463256836,
+        "domainLookupStart": 0.5999999046325684,
+        "domainLookupEnd": 1.3999996185302734,
+        "connectStart": 1.3999996185302734,
+        "secureConnectionStart": 3.8999996185302734,
+        "connectEnd": 10.5,
+        "requestStart": 10.599999904632568,
+        "responseStart": 19.399999618530273,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 19.399999618530273,
+        "responseEnd": 20.09999990463257,
+        "transferSize": 855,
+        "encodedBodySize": 555,
+        "decodedBodySize": 923,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 38.299999713897705,
+        "domContentLoadedEventStart": 56.09999990463257,
+        "domContentLoadedEventEnd": 56.09999990463257,
+        "domComplete": 59.09999990463257,
+        "loadEventStart": 59.19999980926514,
+        "loadEventEnd": 59.19999980926514,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "high"
+        }
+      },
+      "paints": [
+        {
+          "name": "first-paint",
+          "entryType": "paint",
+          "startTime": 64,
+          "duration": 0,
+          "navigationId": 5622,
+          "paintTime": 59.59999990463257,
+          "presentationTime": 64
+        },
+        {
+          "name": "first-contentful-paint",
+          "entryType": "paint",
+          "startTime": 132,
+          "duration": 0,
+          "navigationId": 5622,
+          "paintTime": 118.2999997138977,
+          "presentationTime": 132
+        }
+      ],
+      "lcpMs": 132,
+      "resources": [
+        {
+          "path": "/fonts/fonts.css",
+          "bytes": 24243,
+          "decoded": 90158,
+          "duration": 12
+        },
+        {
+          "path": "/theme.js",
+          "bytes": 484,
+          "decoded": 380,
+          "duration": 11.300000190734863
+        },
+        {
+          "path": "/assets/index-BnBVsUYr.css",
+          "bytes": 9837,
+          "decoded": 42599,
+          "duration": 11.5
+        },
+        {
+          "path": "/assets/index-CPQpLd6T.js",
+          "bytes": 92697,
+          "decoded": 297536,
+          "duration": 14.899999618530273
+        },
+        {
+          "path": "/brand/claude-code.png",
+          "bytes": 18301,
+          "decoded": 18001,
+          "duration": 12.199999809265137
+        },
+        {
+          "path": "/brand/codex.png",
+          "bytes": 9979,
+          "decoded": 9679,
+          "duration": 15
+        },
+        {
+          "path": "/brand/kiro.svg",
+          "bytes": 1068,
+          "decoded": 1527,
+          "duration": 12.099999904632568
+        },
+        {
+          "path": "/fonts/29f9baee831a5df6.woff2",
+          "bytes": 26180,
+          "decoded": 25880,
+          "duration": 48.09999990463257
+        },
+        {
+          "path": "/fonts/98a0d4ac28a1eb32.woff2",
+          "bytes": 22588,
+          "decoded": 22288,
+          "duration": 46
+        },
+        {
+          "path": "/fonts/7e3d7e3c7de8e8f7.woff2",
+          "bytes": 15008,
+          "decoded": 14708,
+          "duration": 47.700000286102295
+        },
+        {
+          "path": "/fonts/eb889034c0832c07.woff2",
+          "bytes": 15188,
+          "decoded": 14888,
+          "duration": 47.80000019073486
+        },
+        {
+          "path": "/fonts/8c7a91a029329b24.woff2",
+          "bytes": 16868,
+          "decoded": 16568,
+          "duration": 44.19999980926514
+        },
+        {
+          "path": "/fonts/54240e79cb39b804.woff2",
+          "bytes": 14864,
+          "decoded": 14564,
+          "duration": 50
+        },
+        {
+          "path": "/fonts/3997356904cb6a13.woff2",
+          "bytes": 14596,
+          "decoded": 14296,
+          "duration": 44.700000286102295
+        },
+        {
+          "path": "/fonts/ed25fa4b90b634db.woff2",
+          "bytes": 16416,
+          "decoded": 16116,
+          "duration": 49.5
+        },
+        {
+          "path": "/fonts/da7d684391166897.woff2",
+          "bytes": 16504,
+          "decoded": 16204,
+          "duration": 49.5
+        },
+        {
+          "path": "/fonts/ab6d1bba47b39f7c.woff2",
+          "bytes": 16396,
+          "decoded": 16096,
+          "duration": 31.5
+        },
+        {
+          "path": "/fonts/4ff2df2de6bed6df.woff2",
+          "bytes": 16660,
+          "decoded": 16360,
+          "duration": 23.5
+        },
+        {
+          "path": "/api/feed",
+          "bytes": 1587228,
+          "decoded": 6469112,
+          "duration": 46.5
+        },
+        {
+          "path": "/api/presence",
+          "bytes": 441,
+          "decoded": 141,
+          "duration": 24.299999713897705
+        },
+        {
+          "path": "/api/presence",
+          "bytes": 441,
+          "decoded": 141,
+          "duration": 61.09999990463257
+        },
+        {
+          "path": "/fonts/9b510767fa0d1dc6.woff2",
+          "bytes": 17764,
+          "decoded": 17464,
+          "duration": 32.69999980926514
+        },
+        {
+          "path": "/fonts/f075be350a140d74.woff2",
+          "bytes": 26360,
+          "decoded": 26060,
+          "duration": 28.90000009536743
+        },
+        {
+          "path": "/fonts/74f74b255c59cce1.woff2",
+          "bytes": 16680,
+          "decoded": 16380,
+          "duration": 28.200000286102295
+        },
+        {
+          "path": "/fonts/6a15f402658a9d68.woff2",
+          "bytes": 17692,
+          "decoded": 17392,
+          "duration": 29.40000009536743
+        },
+        {
+          "path": "/fonts/ed3de1e050a9265a.woff2",
+          "bytes": 18212,
+          "decoded": 17912,
+          "duration": 32.80000019073486
+        },
+        {
+          "path": "/fonts/327b92c69ff958ab.woff2",
+          "bytes": 25376,
+          "decoded": 25076,
+          "duration": 31.59999990463257
+        },
+        {
+          "path": "/fonts/1b9e81b1a9da437c.woff2",
+          "bytes": 20000,
+          "decoded": 19700,
+          "duration": 26.899999618530273
+        },
+        {
+          "path": "/fonts/94da295fe1a10458.woff2",
+          "bytes": 26636,
+          "decoded": 26336,
+          "duration": 26.899999618530273
+        },
+        {
+          "path": "/fonts/1ffa78a4f8c5a147.woff2",
+          "bytes": 25036,
+          "decoded": 24736,
+          "duration": 25.90000009536743
+        },
+        {
+          "path": "/fonts/99e52b38ffc2a193.woff2",
+          "bytes": 29396,
+          "decoded": 29096,
+          "duration": 25.700000286102295
+        }
+      ],
+      "failures": []
+    },
+    {
+      "mode": "mobile",
+      "run": 1,
+      "httpStatus": 200,
+      "listReadyMs": 10644.200000286102,
+      "firstId": "claude-code-578d72e230ea4c0d31a1",
+      "firstDetailMs": 1591.9000000953674,
+      "repeatedDetailMs": 230.59999990463257,
+      "itemCount": 143,
+      "navigation": {
+        "name": "https://code-pulse.whchoi.net/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 920.8000001907349,
+        "navigationId": 2123,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "h2",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "gzip",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.20000028610229492,
+        "domainLookupStart": 0.7000002861022949,
+        "domainLookupEnd": 1.4000000953674316,
+        "connectStart": 1.4000000953674316,
+        "secureConnectionStart": 3.8000001907348633,
+        "connectEnd": 10.700000286102295,
+        "requestStart": 10.800000190734863,
+        "responseStart": 23.800000190734863,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 23.800000190734863,
+        "responseEnd": 93.80000019073486,
+        "transferSize": 855,
+        "encodedBodySize": 555,
+        "decodedBodySize": 923,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 517.1000003814697,
+        "domContentLoadedEventStart": 920.7000002861023,
+        "domContentLoadedEventEnd": 920.7000002861023,
+        "domComplete": 920.8000001907349,
+        "loadEventStart": 920.8000001907349,
+        "loadEventEnd": 920.8000001907349,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "high"
+        }
+      },
+      "paints": [
+        {
+          "name": "first-paint",
+          "entryType": "paint",
+          "startTime": 536,
+          "duration": 0,
+          "navigationId": 2123,
+          "paintTime": 531.4000000953674,
+          "presentationTime": 536
+        },
+        {
+          "name": "first-contentful-paint",
+          "entryType": "paint",
+          "startTime": 1136,
+          "duration": 0,
+          "navigationId": 2123,
+          "paintTime": 1122.2000002861023,
+          "presentationTime": 1136
+        }
+      ],
+      "lcpMs": 1136,
+      "resources": [
+        {
+          "path": "/fonts/fonts.css",
+          "bytes": 24243,
+          "decoded": 90158,
+          "duration": 390.2000002861023
+        },
+        {
+          "path": "/theme.js",
+          "bytes": 484,
+          "decoded": 380,
+          "duration": 105.19999980926514
+        },
+        {
+          "path": "/assets/index-CPQpLd6T.js",
+          "bytes": 92697,
+          "decoded": 297536,
+          "duration": 742.1999998092651
+        },
+        {
+          "path": "/assets/index-BnBVsUYr.css",
+          "bytes": 9837,
+          "decoded": 42599,
+          "duration": 238.10000038146973
+        },
+        {
+          "path": "/brand/claude-code.png",
+          "bytes": 18301,
+          "decoded": 18001,
+          "duration": 232.09999990463257
+        },
+        {
+          "path": "/brand/codex.png",
+          "bytes": 9979,
+          "decoded": 9679,
+          "duration": 187.59999990463257
+        },
+        {
+          "path": "/brand/kiro.svg",
+          "bytes": 1068,
+          "decoded": 1527,
+          "duration": 90.7999997138977
+        },
+        {
+          "path": "/fonts/29f9baee831a5df6.woff2",
+          "bytes": 26180,
+          "decoded": 25880,
+          "duration": 1363
+        },
+        {
+          "path": "/fonts/98a0d4ac28a1eb32.woff2",
+          "bytes": 22588,
+          "decoded": 22288,
+          "duration": 1321.3000001907349
+        },
+        {
+          "path": "/fonts/7e3d7e3c7de8e8f7.woff2",
+          "bytes": 15008,
+          "decoded": 14708,
+          "duration": 1125.7000002861023
+        },
+        {
+          "path": "/fonts/eb889034c0832c07.woff2",
+          "bytes": 15188,
+          "decoded": 14888,
+          "duration": 1133.9000000953674
+        },
+        {
+          "path": "/fonts/8c7a91a029329b24.woff2",
+          "bytes": 16868,
+          "decoded": 16568,
+          "duration": 1191.1000003814697
+        },
+        {
+          "path": "/fonts/54240e79cb39b804.woff2",
+          "bytes": 14864,
+          "decoded": 14564,
+          "duration": 1138.1999998092651
+        },
+        {
+          "path": "/fonts/ed25fa4b90b634db.woff2",
+          "bytes": 16416,
+          "decoded": 16116,
+          "duration": 1197.5999999046326
+        },
+        {
+          "path": "/fonts/3997356904cb6a13.woff2",
+          "bytes": 14596,
+          "decoded": 14296,
+          "duration": 1044.4000000953674
+        },
+        {
+          "path": "/fonts/da7d684391166897.woff2",
+          "bytes": 16504,
+          "decoded": 16204,
+          "duration": 1189.3000001907349
+        },
+        {
+          "path": "/fonts/ab6d1bba47b39f7c.woff2",
+          "bytes": 16396,
+          "decoded": 16096,
+          "duration": 1191.7999997138977
+        },
+        {
+          "path": "/fonts/4ff2df2de6bed6df.woff2",
+          "bytes": 16660,
+          "decoded": 16360,
+          "duration": 1167.9000000953674
+        },
+        {
+          "path": "/api/feed",
+          "bytes": 1587228,
+          "decoded": 6469112,
+          "duration": 9046.199999809265
+        },
+        {
+          "path": "/api/presence",
+          "bytes": 441,
+          "decoded": 141,
+          "duration": 175.2999997138977
+        },
+        {
+          "path": "/api/presence",
+          "bytes": 441,
+          "decoded": 141,
+          "duration": 182.19999980926514
+        }
+      ],
+      "failures": []
+    },
+    {
+      "mode": "mobile",
+      "run": 2,
+      "httpStatus": 200,
+      "listReadyMs": 10642.699999809265,
+      "firstId": "claude-code-578d72e230ea4c0d31a1",
+      "firstDetailMs": 1580.3000001907349,
+      "repeatedDetailMs": 224,
+      "itemCount": 143,
+      "navigation": {
+        "name": "https://code-pulse.whchoi.net/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 919.3999996185303,
+        "navigationId": 5191,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "h2",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "gzip",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.09999990463256836,
+        "domainLookupStart": 0.5,
+        "domainLookupEnd": 1.299999713897705,
+        "connectStart": 1.299999713897705,
+        "secureConnectionStart": 3.6999998092651367,
+        "connectEnd": 9.699999809265137,
+        "requestStart": 9.699999809265137,
+        "responseStart": 20,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 20,
+        "responseEnd": 94,
+        "transferSize": 855,
+        "encodedBodySize": 555,
+        "decodedBodySize": 923,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 532.0999999046326,
+        "domContentLoadedEventStart": 919.2999997138977,
+        "domContentLoadedEventEnd": 919.3999996185303,
+        "domComplete": 919.3999996185303,
+        "loadEventStart": 919.3999996185303,
+        "loadEventEnd": 919.3999996185303,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "high"
+        }
+      },
+      "paints": [
+        {
+          "name": "first-paint",
+          "entryType": "paint",
+          "startTime": 536,
+          "duration": 0,
+          "navigationId": 5191,
+          "paintTime": 531.5999999046326,
+          "presentationTime": 536
+        },
+        {
+          "name": "first-contentful-paint",
+          "entryType": "paint",
+          "startTime": 1124,
+          "duration": 0,
+          "navigationId": 5191,
+          "paintTime": 1110.2999997138977,
+          "presentationTime": 1124
+        }
+      ],
+      "lcpMs": 1124,
+      "resources": [
+        {
+          "path": "/fonts/fonts.css",
+          "bytes": 24243,
+          "decoded": 90158,
+          "duration": 389.2000002861023
+        },
+        {
+          "path": "/theme.js",
+          "bytes": 484,
+          "decoded": 380,
+          "duration": 104
+        },
+        {
+          "path": "/assets/index-CPQpLd6T.js",
+          "bytes": 92697,
+          "decoded": 297536,
+          "duration": 741
+        },
+        {
+          "path": "/assets/index-BnBVsUYr.css",
+          "bytes": 9837,
+          "decoded": 42599,
+          "duration": 238
+        },
+        {
+          "path": "/brand/claude-code.png",
+          "bytes": 18301,
+          "decoded": 18001,
+          "duration": 733.7000002861023
+        },
+        {
+          "path": "/brand/kiro.svg",
+          "bytes": 1068,
+          "decoded": 1527,
+          "duration": 104.19999980926514
+        },
+        {
+          "path": "/brand/codex.png",
+          "bytes": 9979,
+          "decoded": 9679,
+          "duration": 230.39999961853027
+        },
+        {
+          "path": "/api/feed",
+          "bytes": 1587228,
+          "decoded": 6469112,
+          "duration": 9187
+        },
+        {
+          "path": "/fonts/29f9baee831a5df6.woff2",
+          "bytes": 26180,
+          "decoded": 25880,
+          "duration": 1406.5
+        },
+        {
+          "path": "/fonts/98a0d4ac28a1eb32.woff2",
+          "bytes": 22588,
+          "decoded": 22288,
+          "duration": 1364.4000000953674
+        },
+        {
+          "path": "/fonts/7e3d7e3c7de8e8f7.woff2",
+          "bytes": 15008,
+          "decoded": 14708,
+          "duration": 1161.8000001907349
+        },
+        {
+          "path": "/fonts/eb889034c0832c07.woff2",
+          "bytes": 15188,
+          "decoded": 14888,
+          "duration": 1192
+        },
+        {
+          "path": "/fonts/8c7a91a029329b24.woff2",
+          "bytes": 16868,
+          "decoded": 16568,
+          "duration": 1228.9000000953674
+        },
+        {
+          "path": "/fonts/54240e79cb39b804.woff2",
+          "bytes": 14864,
+          "decoded": 14564,
+          "duration": 1161
+        },
+        {
+          "path": "/fonts/ed25fa4b90b634db.woff2",
+          "bytes": 16416,
+          "decoded": 16116,
+          "duration": 1235.5
+        },
+        {
+          "path": "/fonts/3997356904cb6a13.woff2",
+          "bytes": 14596,
+          "decoded": 14296,
+          "duration": 1068.2999997138977
+        },
+        {
+          "path": "/fonts/da7d684391166897.woff2",
+          "bytes": 16504,
+          "decoded": 16204,
+          "duration": 1224.1999998092651
+        },
+        {
+          "path": "/fonts/ab6d1bba47b39f7c.woff2",
+          "bytes": 16396,
+          "decoded": 16096,
+          "duration": 1227.8000001907349
+        },
+        {
+          "path": "/fonts/4ff2df2de6bed6df.woff2",
+          "bytes": 16660,
+          "decoded": 16360,
+          "duration": 1209.3999996185303
+        },
+        {
+          "path": "/api/presence",
+          "bytes": 441,
+          "decoded": 141,
+          "duration": 182.69999980926514
+        },
+        {
+          "path": "/api/presence",
+          "bytes": 441,
+          "decoded": 141,
+          "duration": 197.09999990463257
+        }
+      ],
+      "failures": []
+    },
+    {
+      "mode": "mobile",
+      "run": 3,
+      "httpStatus": 200,
+      "listReadyMs": 10634.299999713898,
+      "firstId": "claude-code-578d72e230ea4c0d31a1",
+      "firstDetailMs": 1585.1999998092651,
+      "repeatedDetailMs": 376.30000019073486,
+      "itemCount": 143,
+      "navigation": {
+        "name": "https://code-pulse.whchoi.net/",
+        "entryType": "navigation",
+        "startTime": 0,
+        "duration": 916.2999997138977,
+        "navigationId": 8056,
+        "initiatorType": "navigation",
+        "deliveryType": "",
+        "nextHopProtocol": "h2",
+        "renderBlockingStatus": "non-blocking",
+        "contentType": "text/html",
+        "contentEncoding": "gzip",
+        "workerStart": 0,
+        "workerRouterEvaluationStart": 0,
+        "workerCacheLookupStart": 0,
+        "workerMatchedSourceType": "",
+        "workerFinalSourceType": "",
+        "redirectStart": 0,
+        "redirectEnd": 0,
+        "fetchStart": 0.09999990463256836,
+        "domainLookupStart": 0.5999999046325684,
+        "domainLookupEnd": 1.299999713897705,
+        "connectStart": 1.299999713897705,
+        "secureConnectionStart": 4.399999618530273,
+        "connectEnd": 10.699999809265137,
+        "requestStart": 10.899999618530273,
+        "responseStart": 22.299999713897705,
+        "firstInterimResponseStart": 0,
+        "finalResponseHeadersStart": 22.299999713897705,
+        "responseEnd": 94.2999997138977,
+        "transferSize": 855,
+        "encodedBodySize": 555,
+        "decodedBodySize": 923,
+        "responseStatus": 200,
+        "serverTiming": [],
+        "unloadEventStart": 0,
+        "unloadEventEnd": 0,
+        "domInteractive": 517.5999999046326,
+        "domContentLoadedEventStart": 916.1999998092651,
+        "domContentLoadedEventEnd": 916.2999997138977,
+        "domComplete": 916.2999997138977,
+        "loadEventStart": 916.2999997138977,
+        "loadEventEnd": 916.2999997138977,
+        "type": "navigate",
+        "redirectCount": 0,
+        "activationStart": 0,
+        "criticalCHRestart": 0,
+        "notRestoredReasons": null,
+        "confidence": {
+          "randomizedTriggerRate": 0.4994798,
+          "value": "low"
+        }
+      },
+      "paints": [
+        {
+          "name": "first-paint",
+          "entryType": "paint",
+          "startTime": 536,
+          "duration": 0,
+          "navigationId": 8056,
+          "paintTime": 532.2999997138977,
+          "presentationTime": 536
+        },
+        {
+          "name": "first-contentful-paint",
+          "entryType": "paint",
+          "startTime": 1108,
+          "duration": 0,
+          "navigationId": 8056,
+          "paintTime": 1096.0999999046326,
+          "presentationTime": 1108
+        }
+      ],
+      "lcpMs": 1108,
+      "resources": [
+        {
+          "path": "/fonts/fonts.css",
+          "bytes": 24243,
+          "decoded": 90158,
+          "duration": 390.30000019073486
+        },
+        {
+          "path": "/theme.js",
+          "bytes": 484,
+          "decoded": 380,
+          "duration": 112.90000009536743
+        },
+        {
+          "path": "/assets/index-CPQpLd6T.js",
+          "bytes": 92697,
+          "decoded": 297536,
+          "duration": 741.2999997138977
+        },
+        {
+          "path": "/assets/index-BnBVsUYr.css",
+          "bytes": 9837,
+          "decoded": 42599,
+          "duration": 238.59999990463257
+        },
+        {
+          "path": "/brand/claude-code.png",
+          "bytes": 18301,
+          "decoded": 18001,
+          "duration": 310.7000002861023
+        },
+        {
+          "path": "/brand/codex.png",
+          "bytes": 9979,
+          "decoded": 9679,
+          "duration": 189.59999990463257
+        },
+        {
+          "path": "/brand/kiro.svg",
+          "bytes": 1068,
+          "decoded": 1527,
+          "duration": 100.39999961853027
+        },
+        {
+          "path": "/fonts/29f9baee831a5df6.woff2",
+          "bytes": 26180,
+          "decoded": 25880,
+          "duration": 1360.4000000953674
+        },
+        {
+          "path": "/fonts/98a0d4ac28a1eb32.woff2",
+          "bytes": 22588,
+          "decoded": 22288,
+          "duration": 1327.0999999046326
+        },
+        {
+          "path": "/fonts/7e3d7e3c7de8e8f7.woff2",
+          "bytes": 15008,
+          "decoded": 14708,
+          "duration": 1124.1999998092651
+        },
+        {
+          "path": "/fonts/eb889034c0832c07.woff2",
+          "bytes": 15188,
+          "decoded": 14888,
+          "duration": 1131.4000000953674
+        },
+        {
+          "path": "/fonts/54240e79cb39b804.woff2",
+          "bytes": 14864,
+          "decoded": 14564,
+          "duration": 1138.5999999046326
+        },
+        {
+          "path": "/fonts/ed25fa4b90b634db.woff2",
+          "bytes": 16416,
+          "decoded": 16116,
+          "duration": 1198.8999996185303
+        },
+        {
+          "path": "/fonts/8c7a91a029329b24.woff2",
+          "bytes": 16868,
+          "decoded": 16568,
+          "duration": 1206.1999998092651
+        },
+        {
+          "path": "/fonts/3997356904cb6a13.woff2",
+          "bytes": 14596,
+          "decoded": 14296,
+          "duration": 1046.9000000953674
+        },
+        {
+          "path": "/fonts/da7d684391166897.woff2",
+          "bytes": 16504,
+          "decoded": 16204,
+          "duration": 1170.5999999046326
+        },
+        {
+          "path": "/fonts/ab6d1bba47b39f7c.woff2",
+          "bytes": 16396,
+          "decoded": 16096,
+          "duration": 1189.2000002861023
+        },
+        {
+          "path": "/fonts/4ff2df2de6bed6df.woff2",
+          "bytes": 16660,
+          "decoded": 16360,
+          "duration": 1169.0999999046326
+        },
+        {
+          "path": "/api/feed",
+          "bytes": 1587228,
+          "decoded": 6469112,
+          "duration": 9059.799999713898
+        },
+        {
+          "path": "/api/presence",
+          "bytes": 441,
+          "decoded": 141,
+          "duration": 184.5
+        },
+        {
+          "path": "/api/presence",
+          "bytes": 441,
+          "decoded": 141,
+          "duration": 189.80000019073486
+        }
+      ],
+      "failures": []
+    }
+  ]
+}

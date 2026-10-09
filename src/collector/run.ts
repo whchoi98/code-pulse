@@ -4,6 +4,7 @@ import { BedrockExplainer, EDITORIAL_VERSION } from './explanation.js';
 import { fetchOfficial } from './official-fetch.js';
 import { configuredStore } from './store.js';
 import { BedrockChangeExplainer } from './full-changes.js';
+import { publishConfiguredSite } from '../publishing/index.js';
 
 function metric(success: boolean) {
   if (process.env.ENABLE_METRICS !== 'true') return;
@@ -58,8 +59,9 @@ try {
     maxFullChanges: values['no-ai'] ? 0 : maxFullChanges,
     modelId: explainer.modelId, refreshModel: values['refresh-model'], summaryConcurrency,
   }));
+  const store = configuredStore();
   const run = await collectOnce({
-    store: configuredStore(), fetchDocument: fetchOfficial,
+    store, fetchDocument: fetchOfficial,
     summarize: async (candidate, supplements) => {
       const explanation = await explainer.explain(candidate, supplements);
       console.log(JSON.stringify({ event: 'entry_explained', product: candidate.product, date: candidate.publishedDate, title: explanation.title }));
@@ -76,6 +78,8 @@ try {
     editorialVersion: EDITORIAL_VERSION,
     onWarning: warning => console.warn(JSON.stringify({ event: 'explanation_pending', ...warning })),
   });
+  const publication = await publishConfiguredSite(store);
+  if (publication) console.log(JSON.stringify({ event: 'site_published', ...publication }));
   console.log(JSON.stringify({ event: 'collection_completed', ...run }));
   metric(run.status === 'success');
   if (run.status !== 'success') process.exitCode = run.status === 'failed' ? 1 : 2;

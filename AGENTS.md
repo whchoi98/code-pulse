@@ -4,7 +4,7 @@ Read README.md, docs/runbook.md and the relevant parts of docs/verification.md b
 
 ## Project and entrypoints
 
-Code Pulse publishes Korean explanations of official Claude Code, Codex and Kiro changes. The public site is `https://code-pulse.whchoi.net`.
+Code Pulse publishes Korean explanations and complete official English changes for Claude Code, Codex and Kiro. The public site is `https://code-pulse.whchoi.net`.
 
 | Area | Entrypoints and guidance |
 | --- | --- |
@@ -13,6 +13,7 @@ Code Pulse publishes Korean explanations of official Claude Code, Codex and Kiro
 | Visitor counts | `src/server/presence.ts`, `src/server/presence-store.ts`, `src/client/presence.ts` |
 | Collection | `src/collector/run.ts`, `src/collector/engine.ts`, `src/collector/sources.ts`, `src/collector/explanation.ts` |
 | Complete changes | `src/collector/change-items.ts`, `src/collector/full-changes.ts`, `tools/backfill-full-changes.ts` |
+| Static publication | `src/publishing/index.ts`, `projection.ts`, `render.ts`, `tools/publish-site.ts`; see `docs/static-delivery.md` |
 | Persistence | `src/collector/store.ts`; local files or conditional S3 writes |
 | Shared contracts | `src/shared/types.ts`, `src/shared/app-release.json` |
 | Infrastructure | `infra/bin/app.ts`, `infra/lib/stack.ts`, `Dockerfile` |
@@ -23,11 +24,11 @@ Use source files as implementation evidence. `dist/`, `cdk.out/`, `node_modules/
 ## Scope and data
 
 - Work only in this project. Reference applications such as Robot Atlas are read-only examples; do not read their `.env` files or change their resources.
-- Keep the existing VPC, subnets, NAT and routing. The web path is CloudFront, its prefix-list security group, ALB and private Fargate.
+- Keep the existing VPC, subnets, NAT and routing. Pages and content use CloudFront with an OAC-protected private S3 site bucket. Presence and legacy API/RSS use the existing prefix-list security group, ALB and private Fargate.
 - Collect official Claude Code, Codex and Kiro records from 2026-01-01 through the actual collection time. Keep publication dates separate from checks and editing times.
 - Preserve stable IDs and previous data when a source fails. Do not invent publication dates, mark partial history complete, or publish preview releases as stable.
 - Keep a complete source-item inventory alongside the short overview. Do not select only important changes or truncate source bodies. Full completion requires one validated Korean item for every source ID, with the current source hash, model and generation format.
-- Keep full-change source hashes and model identifiers private. Public responses expose only the ordered Korean items, count, state and editing metadata. Preserve inline code, compound conditions and alternative outcomes.
+- Keep full-change source hashes and model identifiers private. Public responses expose ordered Korean explanations or the complete English source item inventory, count, state and editing metadata. Do not expose the private archived source-body field or publication control records. Preserve inline code, compound conditions and alternative outcomes.
 - Use Claude Haiku 5.5 for both explanation generation and Korean editing. Keep evidence validation, scoped background material and bounded generation.
 - Polish Korean prose with the available Korean editing skills. Do not use em dashes or middle dots in authored Korean; preserve code, identifiers and direct source quotes.
 - Use the official local product logos and preserve their provenance in public/brand/SOURCES.md.
@@ -53,6 +54,8 @@ Install dependencies with `npm ci`. `npm run build` builds the browser, server a
 Use `npm run typecheck`, `npm test` and `npm run test:browser` for implementation changes under the rule above. `npm run synth -- --no-lookups` validates infrastructure without VPC lookups. A declared command is not evidence that a check passed.
 
 For documentation-only changes, check affected links, commands, facts and version synchronization. Reuse prior implementation results only after confirming that their source, test, dependency and configuration inputs still match. Do not rerun application suites solely because prose changed. Changes to generators, executable examples or contributor instructions need their relevant checks. Report newly executed checks and reused results separately.
+
+The daily schedule is 07:00 Asia/Seoul, defined in `src/shared/schedule.ts`. Static publication runs after final collection and editorial writes. Keep content-addressed URLs immutable, promote catalogs after dependencies, and preserve older assets for cached HTML.
 
 The collector and server have different privileges. Only the collector may invoke the explanation model or write published content; the web role may update its separate visitor table.
 

@@ -190,7 +190,7 @@ test('adjacent publication links stay within the product and restore the origina
   await expect(older).toContainText('2026.09.29');
   await expect(older).toContainText('Claude Code 2.0.9');
   await expect(newer).toContainText('2026.10.07');
-  await expect(newer).toHaveAttribute('href', '?product=claude-code&entry=claude-latest');
+  await expect(newer).toHaveAttribute('href', '?product=claude-code&entry=claude-latest&lang=ko');
   await older.click();
   await expect(page.getByRole('article', { name: 'Claude Code 2.0.9' })).toBeVisible();
   await expect(navigation.getByRole('link', { name: /이전 발표/ })).toHaveCount(0);
@@ -209,11 +209,11 @@ test('middle-clicking an adjacent anchor opens a new tab and a lone product has 
   await context.route('**/api/presence', route => route.fulfill({ json: presence }));
   await page.goto(`/?entry=${latest.id}`);
   const adjacent = page.getByRole('navigation', { name: '같은 제품의 변경 기록' }).getByRole('link', { name: /이전 발표/ });
-  await expect(adjacent).toHaveAttribute('href', '?entry=claude-older');
+  await expect(adjacent).toHaveAttribute('href', '?entry=claude-older&lang=ko');
   const newTabPromise = context.waitForEvent('page');
   await adjacent.click({ button: 'middle' });
   const newTab = await newTabPromise;
-  await expect(newTab).toHaveURL('http://127.0.0.1:4173/?entry=claude-older');
+  await expect(newTab).toHaveURL('http://127.0.0.1:4173/?entry=claude-older&lang=ko');
   await expect(newTab.getByRole('article', { name: entries[3].originalTitle })).toBeVisible();
   await expect(page).toHaveURL(`http://127.0.0.1:4173/?entry=${latest.id}`);
   await newTab.close();

@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { configuredStore } from '../src/collector/store.js';
 import { EDITORIAL_VERSION, validateExplanation } from '../src/collector/explanation.js';
+import { publishConfiguredSite } from '../src/publishing/index.js';
 
 const corrections = JSON.parse(await readFile(process.argv[2] ?? 'docs/initial-editorial.json', 'utf8')) as { id: string; contentHash: string; explanation: unknown }[];
 const store = configuredStore();
@@ -18,4 +19,6 @@ for (const correction of corrections) {
 }
 snapshot.generatedAt = new Date().toISOString();
 await store.write(snapshot, etag);
+const publication = await publishConfiguredSite(store);
+if (publication) console.log(JSON.stringify({ event: 'site_published', ...publication }));
 console.log(JSON.stringify({ event: 'editorial_applied', entries: changed }));

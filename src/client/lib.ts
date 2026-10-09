@@ -1,4 +1,4 @@
-import type { Category, Channel, Feed, FeedEntry, ProductId, PublicFullChanges } from '../shared/types';
+import type { Category, Channel, Feed, FeedEntry, Language, ProductId, PublicFullChanges } from '../shared/types';
 
 export const products: Record<ProductId, { name: string; logo: string }> = {
   'claude-code': { name: 'Claude Code', logo: '/brand/claude-code.png' },
@@ -54,19 +54,21 @@ export function validDate(value: string) {
   return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value ? value : '';
 }
 
-export function displayDate(value: string) {
-  return validDate(value) ? value.replaceAll('-', '.') : '날짜 확인 중';
+export function displayDate(value: string, language: Language = 'ko') {
+  return validDate(value) ? language === 'en' ? value : value.replaceAll('-', '.')
+    : language === 'en' ? 'Date pending' : '날짜 확인 중';
 }
 
-export function displayTimestamp(value?: string) {
-  if (!value || !Number.isFinite(new Date(value).getTime())) return '아직 확인하지 않음';
+export function displayTimestamp(value?: string, language: Language = 'ko') {
+  if (!value || !Number.isFinite(new Date(value).getTime())) return language === 'en' ? 'Not checked yet' : '아직 확인하지 않음';
   const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Asia/Seoul',
     year: 'numeric', month: '2-digit', day: '2-digit',
     hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
   }).formatToParts(new Date(value));
   const part = (name: string) => parts.find(item => item.type === name)?.value ?? '';
-  return `${part('year')}.${part('month')}.${part('day')} ${part('hour')}:${part('minute')}`;
+  const separator = language === 'en' ? '-' : '.';
+  return `${part('year')}${separator}${part('month')}${separator}${part('day')} ${part('hour')}:${part('minute')}`;
 }
 
 export function todayInSeoul() {
@@ -84,6 +86,11 @@ export function lastSevenDays(today = todayInSeoul()) {
 }
 
 function hasPendingFullChanges(entry: FeedEntry) {
+  if (entry.changeSummary) {
+    const summary = entry.changeSummary;
+    return summary.status !== 'ready' || !Number.isInteger(summary.sourceCount)
+      || summary.sourceCount <= 0 || summary.readyCount !== summary.sourceCount;
+  }
   return entry.fullChanges !== undefined && !getFullChangesState(entry.fullChanges).complete;
 }
 
@@ -98,7 +105,7 @@ export function getCollectionState(feed: Feed) {
 
   // The API uses 26 hours for source freshness. It also marks missing success
   // records and cached reads stale, so those cases need different explanations.
-  const oldData = feed.stale && successfulChecks.some(checkedAt => Date.now() - checkedAt > 26 * 60 * 60_000);
+  const oldData = successfulChecks.some(checkedAt => Date.now() - checkedAt > 26 * 60 * 60_000);
   const statusUnavailable = feed.stale && !oldData && successfulChecks.length > 0
     && !sourcePending && !sourceErrors;
   const initialPending = !feed.latestRun && !successfulChecks.length && !feed.entries.length
@@ -132,19 +139,23 @@ export function filterEntries(entries: FeedEntry[], filters: Filters, savedIds: 
       entry.explanation?.title, entry.explanation?.summary, entry.explanation?.whyItMatters,
       ...(entry.explanation?.highlights.flatMap(highlight => [highlight.title, highlight.detail]) ?? []),
       ...(entry.fullChanges?.items.map(item => item.text) ?? []),
+      entry.searchText,
     ].join(' ').normalize('NFC').toLocaleLowerCase();
     return searchable.includes(query);
   }).sort(comparePublication);
 }
 
-export function getFullChangesState(fullChanges?: PublicFullChanges) {
+export function getFullChangesState(fullChanges?: PublicFullChanges, language: Language = 'ko') {
   const items = fullChanges?.items ?? [];
   const total = fullChanges && Number.isInteger(fullChanges.sourceCount) && fullChanges.sourceCount > 0
     ? fullChanges.sourceCount : null;
   const complete = fullChanges?.status === 'ready' && total === items.length
     && items.every(item => item.id.trim() && item.text.trim())
     && new Set(items.map(item => item.id)).size === items.length;
-  const countLabel = complete ? `총 ${items.length}개`
+  const countLabel = language === 'en' ? complete ? `${items.length} ${items.length === 1 ? 'change' : 'changes'}`
+    : total !== null ? `${items.length} of ${total} ready`
+      : items.length ? `${items.length} ready` : 'Preparing'
+    : complete ? `총 ${items.length}개`
     : total !== null ? `${total}개 중 ${items.length}개 준비`
       : items.length ? `${items.length}개 준비` : '준비 중';
   return { complete, countLabel };

@@ -2,6 +2,7 @@ export const PRODUCT_IDS = ['claude-code', 'codex', 'kiro'] as const;
 export type ProductId = (typeof PRODUCT_IDS)[number];
 export type Category = 'feature' | 'improvement' | 'fix' | 'security' | 'breaking';
 export type Channel = 'cli' | 'ide' | 'app' | 'web' | 'general';
+export type Language = 'ko' | 'en';
 
 export interface SourceReference {
   title: string;
@@ -104,14 +105,35 @@ export interface Snapshot {
 
 export type FeedEntry = Omit<Entry, 'originalText' | 'contentHash' | 'explanationModel' | 'fullChanges'> & {
   fullChanges?: PublicFullChanges;
+  language?: Language;
+  contentKind?: 'explanation' | 'source';
+  /** Existing reader fingerprint, shared by both languages. Not a source hash. */
+  readRevision?: string;
+  detailUrl?: string;
+  detailBytes?: number;
+  changeSummary?: { status: 'ready' | 'pending'; sourceCount: number; readyCount: number };
+  searchText?: string;
 };
 export interface Feed {
   generatedAt: string;
   entries: FeedEntry[];
   sources: SourceStatus[];
   latestRun?: CollectionRun;
-  schedule: { timezone: 'Asia/Seoul'; hour: 9 };
+  schedule: { timezone: 'Asia/Seoul'; hour: number };
   stale: boolean;
+  language?: Language;
+  searchUrl?: string;
+}
+
+export interface SearchIndex {
+  language: Language;
+  entries: { id: string; text: string }[];
+}
+
+export interface StaticBootstrap {
+  language: Language;
+  feed?: Feed;
+  detail?: FeedEntry;
 }
 
 /** Counts server-issued browser cookies rather than individual people. */

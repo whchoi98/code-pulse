@@ -30,7 +30,7 @@ describe('public reading API', () => {
     const app = await server();
     const response = await app.inject('/api/feed');
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toMatchObject({ stale: false, schedule: { timezone: 'Asia/Seoul', hour: 9 } });
+    expect(response.json()).toMatchObject({ stale: false, schedule: { timezone: 'Asia/Seoul', hour: 7 } });
     expect(response.json().entries[0].id).toBe(entry.id);
     expect(response.body).not.toContain('Complete copyrighted');
     expect(response.body).not.toContain('internal-hash');
@@ -49,6 +49,23 @@ describe('public reading API', () => {
     expect((await app.inject('/api/entries/missing')).statusCode).toBe(404);
     expect((await app.inject('/api/missing')).statusCode).toBe(404);
     expect((await app.inject({ method: 'POST', url: '/api/collect' })).statusCode).toBe(404);
+  });
+  it('offers all English source items through explicit language selection without private fields', async () => {
+    const englishEntry = { ...entry, originalText: '- Added task hooks.\n- Fixed interrupted sessions.' };
+    const app = await server({ read: async () => ({ snapshot: { ...snapshot, entries: [englishEntry] } }), write: async () => {} });
+    const response = await app.inject('/api/feed?lang=en');
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toMatchObject({ language: 'en', schedule: { hour: 7 } });
+    const detail = (await app.inject(`/api/entries/${entry.id}?lang=en`)).json();
+    expect(detail.contentKind).toBe('source');
+    expect(detail.explanation.title).toBe('Hook matching');
+    expect(detail.fullChanges.items.map((item: { text: string }) => item.text)).toEqual(['Added task hooks.', 'Fixed interrupted sessions.']);
+    expect(detail.fullChanges.sourceCount).toBe(2);
+    expect(response.body).not.toContain('internal-hash');
+    expect(response.body).not.toContain('originalText');
+    for (const url of ['/api/feed?lang=fr', '/api/feed?lang=en&lang=ko', `/api/entries/${entry.id}?lang=fr`]) {
+      expect((await app.inject(url)).statusCode).toBe(400);
+    }
   });
   it('returns service unavailable on a storage failure while health checks keep responding', async () => {
     const app = await server({ read: async () => { throw new Error('access denied, internal details'); }, write: async () => {} });
@@ -91,5 +108,29 @@ describe('public reading API', () => {
       await app?.close();
       await rm(directory, { recursive: true, force: true });
     }
+  });
+  it('previews the generated site with the production query routes and hides publication controls', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'code-pulse-site-preview-'));
+    let app: FastifyInstance | undefined;
+    try {
+      for (const path of ['pages/en', 'pages/ko', 'content/en', '_publication']) await mkdir(join(directory, path), { recursive: true });
+      await writeFile(join(directory, 'pages/en/index.html'), '<html lang="en">English list</html>');
+      await writeFile(join(directory, 'pages/ko/index.html'), '<html lang="ko">한국어 목록</html>');
+      await writeFile(join(directory, 'pages/en/kiro-example.html'), '<html lang="en">Complete changes</html>');
+      await writeFile(join(directory, 'content/en/feed.json'), '{"language":"en"}');
+      await writeFile(join(directory, '_publication/control.json'), 'PRIVATE_CONTROL');
+      app = await createServer(store, { siteDirectory: directory });
+      expect((await app.inject('/?lang=en')).body).toContain('English list');
+      expect((await app.inject('/?lang=en&entry=kiro-example')).body).toContain('Complete changes');
+      const catalog = await app.inject('/content/en/feed.json');
+      expect(catalog.statusCode).toBe(200);
+      expect(catalog.headers['cache-control']).toContain('s-maxage=60');
+      for (const path of ['/_publication/control.json', '/%5fpublication/control.json', '/?entry=../_publication/control']) {
+        const denied = await app.inject(path);
+        expect(denied.statusCode).toBe(404);
+        expect(denied.body).not.toContain('PRIVATE_CONTROL');
+      }
+      expect((await app.inject('/healthz')).statusCode).toBe(200);
+    } finally { await app?.close(); await rm(directory, { recursive: true, force: true }); }
   });
 });

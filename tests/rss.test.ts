@@ -88,6 +88,30 @@ function parse(body: string): RssChannel {
 }
 
 describe('RSS subscription', () => {
+  it('pins Korean reading links while preserving existing subscription GUIDs', async () => {
+    const app = await server();
+    const channel = parse((await app.inject('/feed.xml')).body);
+    expect(new URL(channel.link).searchParams.get('lang')).toBe('ko');
+    expect(new URL(channel.item![0].link).searchParams.get('lang')).toBe('ko');
+    expect(channel.item![0].guid['#text']).toBe('https://pulse.example/?entry=kiro-ready');
+  });
+  it('serves every English source item with English labels and share links', async () => {
+    const app = await server(storeFor(snapshot([{ ...ready, originalText: '- Added task hooks.\n- Fixed interrupted sessions.' }])));
+    const response = await app.inject('/feed.xml?lang=en&product=kiro');
+    expect(response.statusCode).toBe(200);
+    const channel = parse(response.body);
+    expect(channel.language).toBe('en');
+    expect(channel.title).toBe('Code Pulse | Kiro changelog');
+    const item = channel.item![0];
+    expect(item.title).toContain('Hook matching');
+    expect(new URL(item.link).searchParams.get('lang')).toBe('en');
+    expect(load(item.description)('ol li').map((_, element) => load(element).text()).get()).toEqual(['Added task hooks.', 'Fixed interrupted sessions.']);
+    expect(load(item.description).text()).toContain('Official English release notes');
+    expect(item.description).not.toContain('PRIVATE_MODEL_IDENTIFIER');
+    expect(item.description).not.toContain('PRIVATE_SOURCE_HASH');
+    expect(item.description).not.toContain('AI 해설');
+    expect((await app.inject('/feed.xml?lang=fr')).statusCode).toBe(400);
+  });
   it('serves Korean explanations with stable detail links, original dates, and official attribution', async () => {
     const app = await server();
     const response = await app.inject('/feed.xml');
@@ -97,7 +121,7 @@ describe('RSS subscription', () => {
     expect(response.headers['set-cookie']).toBeUndefined();
     const channel = parse(response.body);
     expect(channel.title).toContain('Code Pulse');
-    expect(channel.link).toBe('https://pulse.example/');
+    expect(channel.link).toBe('https://pulse.example/?lang=ko');
     expect(channel.language).toBe('ko');
     expect(channel['atom:link']).toMatchObject({
       '@_href': 'https://pulse.example/feed.xml',
@@ -107,7 +131,7 @@ describe('RSS subscription', () => {
     const item = channel.item![0];
     expect(item.title).toContain('Kiro');
     expect(item.title).toContain('훅 조건을 더 정확하게 적용합니다');
-    expect(item.link).toBe('https://pulse.example/?entry=kiro-ready');
+    expect(item.link).toBe('https://pulse.example/?entry=kiro-ready&lang=ko');
     expect(item.guid).toEqual({ '#text': 'https://pulse.example/?entry=kiro-ready', '@_isPermaLink': 'true' });
     expect(item.pubDate).toBe('Mon, 05 Oct 2026 00:00:00 GMT');
     const html = load(item.description);
@@ -117,7 +141,7 @@ describe('RSS subscription', () => {
     expect(html.text()).toContain('파일에 맞는 훅을 실행합니다.');
     expect(html.text()).toContain('필요한 작업에만 자동 명령을 적용할 수 있습니다.');
     expect(html('a').map((_index, element) => html(element).attr('href')).get()).toEqual([
-      'https://pulse.example/?entry=kiro-ready', 'https://kiro.dev/changelog/cli/2-28/',
+      'https://pulse.example/?entry=kiro-ready&lang=ko', 'https://kiro.dev/changelog/cli/2-28/',
     ]);
     for (const privateValue of [
       'PRIVATE_ARCHIVED_SOURCE_BODY', 'PRIVATE_SOURCE_HASH', 'PRIVATE_MODEL_IDENTIFIER',
@@ -136,8 +160,8 @@ describe('RSS subscription', () => {
     const selected = parse((await app.inject(`/feed.xml?product=${product}`)).body);
     expect(selected.item).toHaveLength(1);
     const expectedId = { 'claude-code': 'claude-item', codex: 'codex-item', kiro: 'kiro-item' }[product];
-    expect(selected.item![0].link).toBe(`https://pulse.example/?entry=${expectedId}`);
-    expect(selected.link).toBe(`https://pulse.example/?product=${product}`);
+    expect(selected.item![0].link).toBe(`https://pulse.example/?entry=${expectedId}&lang=ko`);
+    expect(selected.link).toBe(`https://pulse.example/?product=${product}&lang=ko`);
     expect(selected['atom:link']['@_href']).toBe(`https://pulse.example/feed.xml?product=${product}`);
   });
 
@@ -208,8 +232,8 @@ describe('RSS subscription', () => {
     expect(all.every(item => item.category === 'Codex')).toBe(true);
     const selected = parse((await app.inject('/feed.xml?product=kiro')).body).item!;
     expect(selected).toHaveLength(50);
-    expect(selected[0].link).toBe('https://pulse.example/?entry=kiro-54');
-    expect(selected[49].link).toBe('https://pulse.example/?entry=kiro-05');
+    expect(selected[0].link).toBe('https://pulse.example/?entry=kiro-54&lang=ko');
+    expect(selected[49].link).toBe('https://pulse.example/?entry=kiro-05&lang=ko');
   });
 
   it.each([
@@ -279,9 +303,9 @@ describe('RSS subscription', () => {
     );
     expect((await app.inject('/api/feed')).statusCode).toBe(200);
     value = snapshot([{ ...ready, id: 'later-read' }]);
-    expect(parse((await app.inject('/feed.xml')).body).item![0].link).toBe('https://pulse.example/?entry=kiro-ready');
+    expect(parse((await app.inject('/feed.xml')).body).item![0].link).toBe('https://pulse.example/?entry=kiro-ready&lang=ko');
     time += 60_000;
-    expect(parse((await app.inject('/feed.xml')).body).item![0].link).toBe('https://pulse.example/?entry=later-read');
+    expect(parse((await app.inject('/feed.xml')).body).item![0].link).toBe('https://pulse.example/?entry=later-read&lang=ko');
   });
 
   it('encodes XML and embedded HTML independently and replaces XML 1.0 forbidden characters', async () => {
@@ -303,7 +327,7 @@ describe('RSS subscription', () => {
     expect(html('[onerror], [onclick]')).toHaveLength(0);
     expect(html.text()).toContain('<script>alert("x&y")</script> ]]>');
     expect(html('a')).toHaveLength(2);
-    expect(html('a').eq(0).attr('href')).toBe('https://pulse.example/?entry=id%26x%3D%22%3Cimg+src%3Dx+onerror%3Dalert%281%29%3E%23');
+    expect(html('a').eq(0).attr('href')).toBe('https://pulse.example/?entry=id%26x%3D%22%3Cimg+src%3Dx+onerror%3Dalert%281%29%3E%23&lang=ko');
     expect(html('a').eq(1).attr('href')).toBe('https://kiro.dev/changelog/cli/2-28/?a=1&note=%22%3E%3Cimg%20src=x%20onerror=alert(1)%3E');
   });
 
@@ -317,7 +341,7 @@ describe('RSS subscription', () => {
     const item = parse(response.body).item![0];
     const html = load(item.description);
     expect(html('a').map((_index, element) => html(element).attr('href')).get()).toEqual([
-      'https://pulse.example/?entry=kiro-ready',
+      'https://pulse.example/?entry=kiro-ready&lang=ko',
     ]);
     expect(response.body).not.toContain('private-password');
     expect(response.body).not.toContain('untrusted.example');
@@ -335,7 +359,7 @@ describe('RSS subscription', () => {
       },
     });
     const channel = parse(response.body);
-    expect(channel.link).toBe('https://pulse.example/');
+    expect(channel.link).toBe('https://pulse.example/?lang=ko');
     expect(channel.item![0].guid['#text']).toBe('https://pulse.example/?entry=kiro-ready');
     expect(response.body).not.toMatch(/attacker|forwarded\.invalid|another\.invalid/);
   });
@@ -345,14 +369,14 @@ describe('RSS subscription', () => {
     vi.stubEnv('PUBLIC_BASE_URL', 'https://configured.example');
     const app = await server(undefined, { publicBaseUrl: undefined });
     const channel = parse((await app.inject('/feed.xml')).body);
-    expect(channel.link).toBe('https://configured.example/');
-    expect(channel.item![0].link).toBe('https://configured.example/?entry=kiro-ready');
+    expect(channel.link).toBe('https://configured.example/?lang=ko');
+    expect(channel.item![0].link).toBe('https://configured.example/?entry=kiro-ready&lang=ko');
   });
 
   it('uses localhost only for an unconfigured development server', async () => {
     const app = await server(undefined, { publicBaseUrl: undefined });
     const channel = parse((await app.inject('/feed.xml')).body);
-    expect(channel.link).toBe('http://localhost:8080/');
+    expect(channel.link).toBe('http://localhost:8080/?lang=ko');
   });
 
   it('rejects a missing production canonical URL instead of guessing from a request', async () => {

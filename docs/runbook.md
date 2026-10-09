@@ -1,8 +1,14 @@
 # Code Pulse 운영
 
+## 정적 사이트와 언어
+
+정적 페이지 발행, 로컬 미리보기, 첫 S3 전환과 복구 절차는 [정적 배포 안내](static-delivery.md)에 있습니다. `SITE_BUCKET`이 설정된 수집 태스크는 최종 스냅샷 저장 후 정적 페이지와 두 언어의 목록을 갱신합니다. 정적 발행이 실패하면 실행 실패로 기록하며 이전 파일과 연결된 상세 내용은 남습니다. 개별 S3 파일은 원자적으로 교체하지만 사이트의 모든 파일이 동시에 바뀌는 것은 아닙니다.
+
+한국어는 Haiku 5.5 해설, 영어는 공식 원문에서 추출한 전체 항목입니다. 원문 항목 ID를 두 언어에서 유지하며 언어 전환으로 읽음 상태가 초기화되지 않습니다.
+
 ## 일일 수집
 
-EventBridge Scheduler의 `code-pulse` 그룹에 등록된 일정이 매일 09:00 Asia/Seoul에 수집 태스크 한 개를 실행합니다. 일정과 태스크, 보안 그룹의 실제 이름은 `cdk-outputs.json`에 있습니다.
+EventBridge Scheduler의 `code-pulse` 그룹에 등록된 일정이 매일 07:00 Asia/Seoul에 수집 태스크 한 개를 실행합니다. 일정과 태스크, 보안 그룹의 실제 이름은 `cdk-outputs.json`에 있습니다.
 
 기본 수집 범위는 2026년 1월 1일부터 실행 시점까지입니다. 수집기는 공식 원문을 저장하고 내용이 달라진 항목에 해설을 만듭니다. 최대 세 개씩 해설을 생성하며 한국어를 다시 다듬은 뒤 근거 인용과 코드가 원문에 있는지 검사합니다. 중간 결과는 배치 처리가 끝난 뒤 조건부 S3 쓰기로 저장합니다. 완료 전에는 성공 실행 기록을 만들지 않습니다.
 
@@ -55,6 +61,7 @@ GitHub HTML 요청은 2초 간격을 유지합니다. 서버가 Retry-After를 �
 | `entry_explained` | 해설을 만든 제품과 제목 |
 | `entry_changes_progress` | 전체 목록의 제품, 버전, 준비한 항목 수와 원문 항목 수 |
 | `explanation_pending` | 근거 검증이나 모델 호출 실패 |
+| `site_published` | 두 언어의 정적 페이지와 목록 발행 결과 |
 | `collection_completed` | 신규, 수정, 해설 수와 최종 상태 |
 | `collection_failed` | 저장소나 실행 오류 |
 | `collection_timeout` | 실행 시간 제한 |
@@ -153,7 +160,7 @@ node --import tsx tools/apply-full-editorial.ts --data-dir ./data/full-changes -
 
 `GET /feed.xml`은 전체 최신 해설, `?product=<제품 ID>`는 해당 제품의 최신 해설을 최대 50개 반환합니다. `PUBLIC_BASE_URL`은 운영에서 HTTPS 루트 URL이어야 합니다. 배포에서는 `https://code-pulse.whchoi.net`을 주입합니다. 요청의 Host 헤더를 RSS 링크 생성에 사용하지 않습니다.
 
-RSS는 게시물 API와 스냅샷 캐시를 공유하며 방문 집계에 쓰지 않습니다. 저장소 장애 시 이전 스냅샷이 있으면 캐시 금지 응답으로 제공하고, 처음부터 읽을 수 없으면 503을 반환합니다.
+RSS는 게시물 API와 스냅샷 캐시를 공유하며 방문 집계에 쓰지 않습니다. `?lang=en`을 추가하면 공식 영문 전체 항목을 제공하며 제품 조건과 함께 사용할 수 있습니다. 저장소 장애 시 이전 스냅샷이 있으면 캐시 금지 응답으로 제공하고, 처음부터 읽을 수 없으면 503을 반환합니다.
 
 Markdown 내보내기는 브라우저에서 파일을 생성합니다. 현재 필터에 맞는 저장 글 전체를 담고 원문 전체나 내부 메타데이터는 제외합니다. 파일 생성으로 서버 데이터가 바뀌거나 외부 서비스에 전송되지는 않습니다.
 
@@ -165,7 +172,7 @@ Markdown 내보내기는 브라우저에서 파일을 생성합니다. 현재 �
 
 ## 배포와 복구
 
-`npm run deploy`는 새 이미지를 만들고 ECS 서비스를 갱신합니다. 건강 확인 경로는 `/healthz`이며 실패한 서비스 배포는 ECS circuit breaker가 되돌립니다. 앱 화면과 API를 모두 확인한 뒤 배포 성공을 판단합니다.
+`npm run deploy`는 새 이미지를 만들고 ECS 서비스를 갱신합니다. 건강 확인 경로는 `/healthz`이며 실패한 서비스 배포는 ECS circuit breaker가 되돌립니다. 새 이미지 배포와 정적 사이트 발행을 모두 수행합니다. 앱 화면, `/content/ko/feed.json`, 영어 상세와 API를 확인한 뒤 배포 성공을 판단합니다.
 
 공개 도메인은 `code-pulse.whchoi.net`입니다. DNS는 `dxdh24n4uucjz.cloudfront.net`을 가리키며, CloudFront의 대체 도메인에도 같은 이름을 등록합니다. TLS 인증서는 `us-east-1`의 발급된 `*.whchoi.net` 인증서를 재사용합니다. 인증서는 이 스택이 생성하거나 갱신하지 않습니다.
 

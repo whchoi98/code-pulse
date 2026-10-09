@@ -70,6 +70,8 @@ Install the browser once with `npx playwright install chromium` when required. B
 
 Follow [CONTRIBUTING.md](../CONTRIBUTING.md) when choosing checks. Documentation-only edits reuse applicable implementation results; verify their changed links and examples separately. [docs/verification.md](verification.md) records earlier deployments and their exact observations.
 
+For pre-rendered HTML and complete English content, follow [local static publication](static-delivery.md#local-publication-and-preview). This also documents the two site environment variables and production deployment order.
+
 ## 한국어
 
 ### 준비 사항
@@ -137,3 +139,5 @@ env -u DATA_BUCKET DATA_DIR=./data AWS_REGION=ap-northeast-2 \
 브라우저 설치가 필요하면 `npx playwright install chromium`을 한 번 실행합니다. 브라우저 테스트는 4173번 포트의 Vite 서버와 정해진 API 응답 자료를 사용합니다. 이 결과를 실제 AWS 검증으로 취급하지 않습니다.
 
 검사 범위는 [기여 안내](../CONTRIBUTING.md)에 따라 정합니다. 문서만 수정했다면 유효한 구현 검사 결과를 재사용하고, 바꾼 링크와 예제를 별도로 확인합니다. 이전 배포에서 확인한 결과는 [검증 기록](verification.md)에 있습니다.
+
+정적 HTML과 전체 영문을 로컬에서 확인하려면 [정적 발행과 미리보기](static-delivery.md#로컬-발행과-미리보기)를 따릅니다. 사이트 환경변수와 운영 배포 순서도 같은 문서에 있습니다.

@@ -15,6 +15,10 @@ const entry: FeedEntry = {
 };
 
 describe('search across full changes', () => {
+  it('finds the final item through the separately loaded complete index', () => {
+    const compact = { ...entry, fullChanges: undefined, searchText: '마지막 변경 잔여세션정리 오류를 고쳤습니다.' };
+    expect(filterEntries([compact], { ...readLocation(''), query: '잔여세션정리' }, []).map(item => item.id)).toEqual(['full-list']);
+  });
   it('finds a keyword that appears only in item 56', () => {
     expect(filterEntries([entry], { ...readLocation(''), query: '잔여세션정리' }, []).map(item => item.id)).toEqual(['full-list']);
     expect(filterEntries([{ ...entry, fullChanges: undefined }], { ...readLocation(''), query: '잔여세션정리' }, [])).toEqual([]);
@@ -39,6 +43,12 @@ describe('search across full changes', () => {
 });
 
 const pendingCases = [
+  { name: 'a compact catalog with an unfinished inventory', pending: true,
+    overrides: { fullChanges: undefined, changeSummary: { status: 'pending', sourceCount: 56, readyCount: 4 } } },
+  { name: 'a compact catalog with ready but incomplete inventory', pending: true,
+    overrides: { fullChanges: undefined, changeSummary: { status: 'ready', sourceCount: 56, readyCount: 55 } } },
+  { name: 'a compact catalog with a complete inventory', pending: false,
+    overrides: { fullChanges: undefined, changeSummary: { status: 'ready', sourceCount: 56, readyCount: 56 } } },
   { name: 'a ready summary with a pending full list', pending: true,
     overrides: { fullChanges: fullChangesFixture({ status: 'pending', items: fullChangesFixture().items.slice(0, 4) }) } },
   { name: 'a full list still pending after all items are present', pending: true,
@@ -59,6 +69,14 @@ const pendingCases = [
 ] satisfies { name: string; pending: boolean; overrides: Partial<FeedEntry> }[];
 
 describe('pending explanation tracking', () => {
+  it('becomes stale as source checks age even when the serialized stale flag was false', () => {
+    const source = { ...entry };
+    const old: Feed = { generatedAt: '2026-01-01T00:00:00Z', entries: [source],
+      sources: [{ id: 'test-release', product: 'claude-code', name: 'Synthetic source', url: source.sourceUrl,
+        state: 'ok', entryCount: 1, lastSuccessAt: '2026-01-01T00:00:00Z' }],
+      schedule: { timezone: 'Asia/Seoul', hour: 7 }, stale: false };
+    expect(getCollectionState(old).oldData).toBe(true);
+  });
   it.each(pendingCases)('reports collection readiness for $name', ({ pending, overrides }) => {
     const source = { ...entry, ...overrides };
     const feed: Feed = {

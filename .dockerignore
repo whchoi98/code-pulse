@@ -33,6 +33,7 @@ AGENTS.md
 tools/*
 !tools/build.mjs
 !tools/release-docs.mjs
+!tools/publish-site.ts
 !README.md
 !CHANGELOG.md
 !docs

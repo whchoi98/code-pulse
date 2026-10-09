@@ -1,0 +1,35 @@
+{
+  "checkedAt": "2026-10-09T01:45:49.229Z",
+  "base": "https://code-pulse.whchoi.net",
+  "version": "1.3.0",
+  "reports": [
+    {
+      "check": "repeat-detail-cache",
+      "entry": "claude-code-578d72e230ea4c0d31a1",
+      "additionalRequests": 0
+    },
+    {
+      "check": "english-and-korean",
+      "entry": "claude-code-f0dfd4cdfef10f9572e0",
+      "itemsPerLanguage": 56,
+      "mobileWidth": 320,
+      "sharedLanguage": "en",
+      "appVersion": "1.3.0"
+    },
+    {
+      "check": "rendered-without-javascript",
+      "language": "ko",
+      "items": 56,
+      "server": "AmazonS3"
+    },
+    {
+      "check": "rendered-without-javascript",
+      "language": "en",
+      "items": 56,
+      "server": "AmazonS3"
+    }
+  ],
+  "errors": [],
+  "badResponses": [],
+  "complete": true
+}

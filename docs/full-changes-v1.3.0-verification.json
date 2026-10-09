@@ -1,0 +1,4831 @@
+{
+  "checkedAt": "2026-10-09T01:44:47.403Z",
+  "model": "global.anthropic.claude-haiku-5-5",
+  "formatVersion": "full-changes-1",
+  "records": 616,
+  "sourceItems": 20428,
+  "explainedItems": 20428,
+  "completeRecords": 616,
+  "pendingRecords": 0,
+  "products": {
+    "claude-code": {
+      "records": 242,
+      "sourceItems": 6809,
+      "explainedItems": 6809,
+      "completeRecords": 242
+    },
+    "codex": {
+      "records": 201,
+      "sourceItems": 11443,
+      "explainedItems": 11443,
+      "completeRecords": 201
+    },
+    "kiro": {
+      "records": 173,
+      "sourceItems": 2176,
+      "explainedItems": 2176,
+      "completeRecords": 173
+    }
+  },
+  "issues": [],
+  "sourceErrors": [],
+  "latestRun": {
+    "id": "72c00959-5ec6-409f-a13a-596dfc3b6200",
+    "startedAt": "2026-10-09T01:40:00.302Z",
+    "completedAt": "2026-10-09T01:41:56.101Z",
+    "status": "success",
+    "newEntries": 0,
+    "updatedEntries": 0,
+    "summarizedEntries": 0,
+    "failedSources": []
+  },
+  "v2_1_293": {
+    "id": "claude-code-f0dfd4cdfef10f9572e0",
+    "product": "claude-code",
+    "version": "2.1.293",
+    "sourceCount": 56,
+    "explainedCount": 56,
+    "complete": true,
+    "officialReferenceVerified": false
+  },
+  "complete": true,
+  "entries": [
+    {
+      "id": "claude-code-578d72e230ea4c0d31a1",
+      "product": "claude-code",
+      "version": "2.1.295",
+      "sourceCount": 143,
+      "explainedCount": 143,
+      "complete": true
+    },
+    {
+      "id": "codex-8adc215349ebc410570f",
+      "product": "codex",
+      "version": "0.162.0",
+      "sourceCount": 240,
+      "explainedCount": 240,
+      "complete": true
+    },
+    {
+      "id": "claude-code-7742de6497a4907625ea",
+      "product": "claude-code",
+      "version": "2.1.294",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-d34d05e4ffa67b38c05f",
+      "product": "codex",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-f0dfd4cdfef10f9572e0",
+      "product": "claude-code",
+      "version": "2.1.293",
+      "sourceCount": 56,
+      "explainedCount": 56,
+      "complete": true
+    },
+    {
+      "id": "codex-d99d0c529688d8116045",
+      "product": "codex",
+      "version": "0.161.0",
+      "sourceCount": 168,
+      "explainedCount": 168,
+      "complete": true
+    },
+    {
+      "id": "codex-58b7cd467be8d0ed3831",
+      "product": "codex",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "claude-code-07abe3c8807214782c53",
+      "product": "claude-code",
+      "version": "2.1.292",
+      "sourceCount": 92,
+      "explainedCount": 92,
+      "complete": true
+    },
+    {
+      "id": "claude-code-94f67557fbc1bd447fc2",
+      "product": "claude-code",
+      "version": "2.1.291",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-d65fdce44bc68c4cf170",
+      "product": "claude-code",
+      "version": "2.1.290",
+      "sourceCount": 190,
+      "explainedCount": 190,
+      "complete": true
+    },
+    {
+      "id": "codex-736ba3f6054599bb2dad",
+      "product": "codex",
+      "version": "0.160.1",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-988589806814ad6fbf32",
+      "product": "kiro",
+      "version": "2.28.0",
+      "sourceCount": 19,
+      "explainedCount": 19,
+      "complete": true
+    },
+    {
+      "id": "kiro-dc08990cf42d8f079041",
+      "product": "kiro",
+      "version": "1.2.37",
+      "sourceCount": 19,
+      "explainedCount": 19,
+      "complete": true
+    },
+    {
+      "id": "claude-code-6754ed1bdacd4b04f1ed",
+      "product": "claude-code",
+      "version": "2.1.289",
+      "sourceCount": 27,
+      "explainedCount": 27,
+      "complete": true
+    },
+    {
+      "id": "claude-code-8485811029991b883366",
+      "product": "claude-code",
+      "version": "2.1.288",
+      "sourceCount": 89,
+      "explainedCount": 89,
+      "complete": true
+    },
+    {
+      "id": "kiro-1e1a31fb3d455b19205f",
+      "product": "kiro",
+      "version": "2.27.1",
+      "sourceCount": 14,
+      "explainedCount": 14,
+      "complete": true
+    },
+    {
+      "id": "kiro-b054bb1b77862c004517",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-bfcbbdf8679be62936bc",
+      "product": "codex",
+      "version": "0.160.0",
+      "sourceCount": 74,
+      "explainedCount": 74,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2152fac3398d5d3fd577",
+      "product": "claude-code",
+      "version": "2.1.287",
+      "sourceCount": 106,
+      "explainedCount": 106,
+      "complete": true
+    },
+    {
+      "id": "kiro-9df97129a827f60cfbcd",
+      "product": "kiro",
+      "version": "2.27.0",
+      "sourceCount": 35,
+      "explainedCount": 35,
+      "complete": true
+    },
+    {
+      "id": "codex-34d3a42ba008f73b1e8c",
+      "product": "codex",
+      "version": "0.159.3",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "claude-code-6e32822c204ea31eabfc",
+      "product": "claude-code",
+      "version": "2.1.286",
+      "sourceCount": 88,
+      "explainedCount": 88,
+      "complete": true
+    },
+    {
+      "id": "kiro-329a6df6bb536eb4cb5f",
+      "product": "kiro",
+      "sourceCount": 13,
+      "explainedCount": 13,
+      "complete": true
+    },
+    {
+      "id": "kiro-4e1e9a4f243779487f57",
+      "product": "kiro",
+      "version": "2.26.0",
+      "sourceCount": 17,
+      "explainedCount": 17,
+      "complete": true
+    },
+    {
+      "id": "kiro-984bdd253784fe717f2b",
+      "product": "kiro",
+      "version": "1.2.4",
+      "sourceCount": 20,
+      "explainedCount": 20,
+      "complete": true
+    },
+    {
+      "id": "kiro-b7a32bd13bdbd6772c7a",
+      "product": "kiro",
+      "version": "2.26.1",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "codex-fff92c6f351db5dd52d9",
+      "product": "codex",
+      "version": "0.159.2",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "codex-d9668834bc73e4af9c23",
+      "product": "codex",
+      "version": "0.159.1",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-cb7d2995f791e7340fdf",
+      "product": "claude-code",
+      "version": "2.1.285",
+      "sourceCount": 136,
+      "explainedCount": 136,
+      "complete": true
+    },
+    {
+      "id": "codex-651c881a827293172090",
+      "product": "codex",
+      "version": "0.159.0",
+      "sourceCount": 107,
+      "explainedCount": 107,
+      "complete": true
+    },
+    {
+      "id": "codex-5a1fddf0a6346b241813",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-efdbfb85be495decc4e6",
+      "product": "claude-code",
+      "version": "2.1.284",
+      "sourceCount": 100,
+      "explainedCount": 100,
+      "complete": true
+    },
+    {
+      "id": "codex-74b6fb8584901969336b",
+      "product": "codex",
+      "version": "0.158.0",
+      "sourceCount": 203,
+      "explainedCount": 203,
+      "complete": true
+    },
+    {
+      "id": "kiro-2b6d52f52abfc2e429f9",
+      "product": "kiro",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-3542a96ba890d03ae63c",
+      "product": "kiro",
+      "version": "0.7.2",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-645ed5ee91657f43eb1b",
+      "product": "kiro",
+      "version": "2.25.0",
+      "sourceCount": 29,
+      "explainedCount": 29,
+      "complete": true
+    },
+    {
+      "id": "codex-ff5832c04f323302b7af",
+      "product": "codex",
+      "version": "0.157.1",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e9f620a716d51374357d",
+      "product": "claude-code",
+      "version": "2.1.283",
+      "sourceCount": 94,
+      "explainedCount": 94,
+      "complete": true
+    },
+    {
+      "id": "codex-929bf028f061e99d78a8",
+      "product": "codex",
+      "version": "0.157.0",
+      "sourceCount": 142,
+      "explainedCount": 142,
+      "complete": true
+    },
+    {
+      "id": "claude-code-97c9a5bf54caa19b9990",
+      "product": "claude-code",
+      "version": "2.1.282",
+      "sourceCount": 86,
+      "explainedCount": 86,
+      "complete": true
+    },
+    {
+      "id": "kiro-9403ba55cebc48a94611",
+      "product": "kiro",
+      "version": "1.1.70",
+      "sourceCount": 12,
+      "explainedCount": 12,
+      "complete": true
+    },
+    {
+      "id": "kiro-ca4afa6996f26682ed75",
+      "product": "kiro",
+      "version": "0.7.0",
+      "sourceCount": 69,
+      "explainedCount": 69,
+      "complete": true
+    },
+    {
+      "id": "kiro-ea6d003f7ea06f5bf881",
+      "product": "kiro",
+      "version": "2.24.1",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "kiro-f2ca9939d1c123d2806c",
+      "product": "kiro",
+      "version": "0.7.1",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-5a75862ddf3d77a3eaac",
+      "product": "claude-code",
+      "version": "2.1.281",
+      "sourceCount": 176,
+      "explainedCount": 176,
+      "complete": true
+    },
+    {
+      "id": "codex-5bf7d67e7f9ba7ee26cf",
+      "product": "codex",
+      "version": "0.156.1",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-18b80f6a0bf2c0813d0e",
+      "product": "kiro",
+      "version": "2.23.1",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-74100d77821d0d3b8d94",
+      "product": "kiro",
+      "version": "2.24.0",
+      "sourceCount": 26,
+      "explainedCount": 26,
+      "complete": true
+    },
+    {
+      "id": "codex-8321ccd6ce11901bcbdb",
+      "product": "codex",
+      "version": "0.156.0",
+      "sourceCount": 546,
+      "explainedCount": 546,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e7f820f578b12b0b3a33",
+      "product": "claude-code",
+      "version": "2.1.280",
+      "sourceCount": 114,
+      "explainedCount": 114,
+      "complete": true
+    },
+    {
+      "id": "codex-32267e599f8127305933",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-5a6fc0f3312932a01728",
+      "product": "kiro",
+      "sourceCount": 36,
+      "explainedCount": 36,
+      "complete": true
+    },
+    {
+      "id": "kiro-3e252bc19d41335f5e2b",
+      "product": "kiro",
+      "version": "2.23.0",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "claude-code-cb136d11c25ae39033d0",
+      "product": "claude-code",
+      "version": "2.1.278",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-61f2905b1774fe73ba44",
+      "product": "codex",
+      "version": "0.155.1",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "claude-code-cc2587f3dc8a0d283820",
+      "product": "claude-code",
+      "version": "2.1.277",
+      "sourceCount": 87,
+      "explainedCount": 87,
+      "complete": true
+    },
+    {
+      "id": "claude-code-f3271bba96bd48d3c515",
+      "product": "claude-code",
+      "version": "2.1.276",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-97bdd34a24b324905d28",
+      "product": "codex",
+      "version": "0.155.0",
+      "sourceCount": 230,
+      "explainedCount": 230,
+      "complete": true
+    },
+    {
+      "id": "claude-code-8657a249b60c2d2164b2",
+      "product": "claude-code",
+      "version": "2.1.275",
+      "sourceCount": 96,
+      "explainedCount": 96,
+      "complete": true
+    },
+    {
+      "id": "claude-code-0876027e2735c9c6dc49",
+      "product": "claude-code",
+      "version": "2.1.274",
+      "sourceCount": 108,
+      "explainedCount": 108,
+      "complete": true
+    },
+    {
+      "id": "kiro-8eb2957903cb9c02d315",
+      "product": "kiro",
+      "version": "2.22.1",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "kiro-75aa4ed81078a38d45e1",
+      "product": "kiro",
+      "version": "2.22.0",
+      "sourceCount": 26,
+      "explainedCount": 26,
+      "complete": true
+    },
+    {
+      "id": "kiro-b9a5eeabf9c8e068a66a",
+      "product": "kiro",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "claude-code-49586dd1fa093bbfa486",
+      "product": "claude-code",
+      "version": "2.1.273",
+      "sourceCount": 64,
+      "explainedCount": 64,
+      "complete": true
+    },
+    {
+      "id": "claude-code-4bd3eac7e8d8aced5beb",
+      "product": "claude-code",
+      "version": "2.1.272",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-7043d8f333626fda6864",
+      "product": "claude-code",
+      "version": "2.1.271",
+      "sourceCount": 96,
+      "explainedCount": 96,
+      "complete": true
+    },
+    {
+      "id": "codex-049089805d5ffd13c821",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "codex-6ff8aba8a2a93c9ea09c",
+      "product": "codex",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-988f5260c2511b5de9f8",
+      "product": "kiro",
+      "version": "1.1",
+      "sourceCount": 28,
+      "explainedCount": 28,
+      "complete": true
+    },
+    {
+      "id": "kiro-ee0abf21f645443637f1",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-fcc05b4379a0fe8e15c9",
+      "product": "claude-code",
+      "version": "2.1.270",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-6ab4041710e50f97a84d",
+      "product": "claude-code",
+      "version": "2.1.269",
+      "sourceCount": 98,
+      "explainedCount": 98,
+      "complete": true
+    },
+    {
+      "id": "codex-28f6087049c58c7f17e4",
+      "product": "codex",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "kiro-9acd6d4b5eda0cf7b2ac",
+      "product": "kiro",
+      "version": "2.21.4",
+      "sourceCount": 14,
+      "explainedCount": 14,
+      "complete": true
+    },
+    {
+      "id": "claude-code-f896e6c8054fb03a3e23",
+      "product": "claude-code",
+      "version": "2.1.268",
+      "sourceCount": 96,
+      "explainedCount": 96,
+      "complete": true
+    },
+    {
+      "id": "codex-94bf6e711cee1f8943dc",
+      "product": "codex",
+      "version": "python-v0.154.0",
+      "sourceCount": 10,
+      "explainedCount": 10,
+      "complete": true
+    },
+    {
+      "id": "kiro-778aa28af830be7aa6cc",
+      "product": "kiro",
+      "version": "2.21.3",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "codex-298a8357a1cfc64e58d6",
+      "product": "codex",
+      "version": "0.154.0",
+      "sourceCount": 267,
+      "explainedCount": 267,
+      "complete": true
+    },
+    {
+      "id": "claude-code-c3fa7922b40498d718a7",
+      "product": "claude-code",
+      "version": "2.1.267",
+      "sourceCount": 53,
+      "explainedCount": 53,
+      "complete": true
+    },
+    {
+      "id": "claude-code-bbd70aba1ce8f94e1422",
+      "product": "claude-code",
+      "version": "2.1.266",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-22816aafc8eaee74081d",
+      "product": "claude-code",
+      "version": "2.1.265",
+      "sourceCount": 50,
+      "explainedCount": 50,
+      "complete": true
+    },
+    {
+      "id": "codex-aad824b35579b156e7ba",
+      "product": "codex",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "kiro-765ff43cf7dfcf29f5d6",
+      "product": "kiro",
+      "version": "2.21.2",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "claude-code-a3fb8dea4a04b1bdda5e",
+      "product": "claude-code",
+      "version": "2.1.263",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-01e0e3e615dae3826046",
+      "product": "codex",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-257fea4b56aa2023cafa",
+      "product": "kiro",
+      "version": "0.6.0",
+      "sourceCount": 52,
+      "explainedCount": 52,
+      "complete": true
+    },
+    {
+      "id": "codex-e10bfe5aa59b39304497",
+      "product": "codex",
+      "version": "0.153.4",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "claude-code-4956ea167758385bac46",
+      "product": "claude-code",
+      "version": "2.1.261",
+      "sourceCount": 67,
+      "explainedCount": 67,
+      "complete": true
+    },
+    {
+      "id": "codex-f9d97946c6e75a757533",
+      "product": "codex",
+      "version": "0.153.3",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "codex-51c07315611c25a03e29",
+      "product": "codex",
+      "version": "0.153.2",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2953a8af2f668b53be78",
+      "product": "claude-code",
+      "version": "2.1.260",
+      "sourceCount": 66,
+      "explainedCount": 66,
+      "complete": true
+    },
+    {
+      "id": "codex-58143fe28d4d20899195",
+      "product": "codex",
+      "version": "0.153.1",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "codex-ae106198fe7c506229f8",
+      "product": "codex",
+      "version": "0.153.0",
+      "sourceCount": 113,
+      "explainedCount": 113,
+      "complete": true
+    },
+    {
+      "id": "claude-code-6d972bf19de823549dab",
+      "product": "claude-code",
+      "version": "2.1.259",
+      "sourceCount": 37,
+      "explainedCount": 37,
+      "complete": true
+    },
+    {
+      "id": "claude-code-05423dda8f00f0bf2947",
+      "product": "claude-code",
+      "version": "2.1.258",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-2af283417b55aac08458",
+      "product": "codex",
+      "version": "0.152.1",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2f054404e7fc12e0e975",
+      "product": "claude-code",
+      "version": "2.1.257",
+      "sourceCount": 104,
+      "explainedCount": 104,
+      "complete": true
+    },
+    {
+      "id": "codex-7a78a1bf8d53cc6fd7e2",
+      "product": "codex",
+      "version": "0.152.0",
+      "sourceCount": 110,
+      "explainedCount": 110,
+      "complete": true
+    },
+    {
+      "id": "kiro-0d5289cfe2caa3434dd4",
+      "product": "kiro",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-3d5cc928fea8a161a327",
+      "product": "kiro",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-924b611fab18b884c5a9",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-926cb958480a07b7b888",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-ac4b6d2ac48db4738270",
+      "product": "kiro",
+      "version": "1.0.437",
+      "sourceCount": 10,
+      "explainedCount": 10,
+      "complete": true
+    },
+    {
+      "id": "kiro-cd89d4963d5b74e429f7",
+      "product": "kiro",
+      "version": "2.21.0",
+      "sourceCount": 17,
+      "explainedCount": 17,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e9f7a4574b0dbc48b9bf",
+      "product": "claude-code",
+      "version": "2.1.252",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-0cac1612ab71c101c358",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-3f321cec86e638b6f0d4",
+      "product": "kiro",
+      "version": "1.0.411",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-493ba253a72397be690d",
+      "product": "kiro",
+      "version": "2.20.2",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-317deaf7f26286e40372",
+      "product": "codex",
+      "version": "0.151.0",
+      "sourceCount": 32,
+      "explainedCount": 32,
+      "complete": true
+    },
+    {
+      "id": "kiro-fae327313651aa6e0f4f",
+      "product": "kiro",
+      "version": "0.5.0",
+      "sourceCount": 51,
+      "explainedCount": 51,
+      "complete": true
+    },
+    {
+      "id": "claude-code-7c1e155e51c80a3e73b1",
+      "product": "claude-code",
+      "version": "2.1.251",
+      "sourceCount": 71,
+      "explainedCount": 71,
+      "complete": true
+    },
+    {
+      "id": "claude-code-996add1163171a6f8641",
+      "product": "claude-code",
+      "version": "2.1.250",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-f37896a59efab4713d3e",
+      "product": "kiro",
+      "version": "0.4.1",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-4d04fa8dd9fb84ba85f2",
+      "product": "claude-code",
+      "version": "2.1.248",
+      "sourceCount": 49,
+      "explainedCount": 49,
+      "complete": true
+    },
+    {
+      "id": "codex-5911cdd604d1b7273978",
+      "product": "codex",
+      "version": "0.150.1",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-109d39a1e00684f52365",
+      "product": "kiro",
+      "version": "1.0.395",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "kiro-99ec828c71836c3a2813",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-9a22fac4a51f3c0ccc38",
+      "product": "kiro",
+      "version": "2.20.1",
+      "sourceCount": 12,
+      "explainedCount": 12,
+      "complete": true
+    },
+    {
+      "id": "claude-code-29dc31dc2842ddfac769",
+      "product": "claude-code",
+      "version": "2.1.247",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "codex-c9977bf24d1a9583c638",
+      "product": "codex",
+      "version": "0.150.0",
+      "sourceCount": 222,
+      "explainedCount": 222,
+      "complete": true
+    },
+    {
+      "id": "codex-2e71e30374437b2239d6",
+      "product": "codex",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "kiro-4164980892b236d69c2d",
+      "product": "kiro",
+      "version": "2.20.0",
+      "sourceCount": 16,
+      "explainedCount": 16,
+      "complete": true
+    },
+    {
+      "id": "claude-code-78f2643fb0b539296b57",
+      "product": "claude-code",
+      "version": "2.1.246",
+      "sourceCount": 61,
+      "explainedCount": 61,
+      "complete": true
+    },
+    {
+      "id": "claude-code-ec49aabdce02d54fa68a",
+      "product": "claude-code",
+      "version": "2.1.245",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-923bfd4e14139b070ff6",
+      "product": "claude-code",
+      "version": "2.1.243",
+      "sourceCount": 64,
+      "explainedCount": 64,
+      "complete": true
+    },
+    {
+      "id": "codex-7c6d8ce97095478fc68a",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "codex-7ea42d958f4b86a688a8",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-1df4bbfffb37e8733015",
+      "product": "kiro",
+      "version": "0.4.0",
+      "sourceCount": 56,
+      "explainedCount": 56,
+      "complete": true
+    },
+    {
+      "id": "kiro-a83ff58ba105ad372271",
+      "product": "kiro",
+      "version": "2.19.2",
+      "sourceCount": 22,
+      "explainedCount": 22,
+      "complete": true
+    },
+    {
+      "id": "codex-76d07d31805ad765a35e",
+      "product": "codex",
+      "version": "0.149.1",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-80b369e4774953919bee",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-f1ef01c0659c31dd339b",
+      "product": "claude-code",
+      "version": "2.1.241",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-128b6add65bcf5a60900",
+      "product": "claude-code",
+      "version": "2.1.240",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-05c97da3af8b48ab6dde",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-3e6de5f28096d8261da2",
+      "product": "claude-code",
+      "version": "2.1.239",
+      "sourceCount": 59,
+      "explainedCount": 59,
+      "complete": true
+    },
+    {
+      "id": "kiro-26b71f4b3164fc0f1042",
+      "product": "kiro",
+      "version": "2.19.1",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "codex-cff3a9eb9dc79c71177f",
+      "product": "codex",
+      "version": "0.149.0",
+      "sourceCount": 260,
+      "explainedCount": 260,
+      "complete": true
+    },
+    {
+      "id": "claude-code-1a12c029e097fc274fca",
+      "product": "claude-code",
+      "version": "2.1.238",
+      "sourceCount": 39,
+      "explainedCount": 39,
+      "complete": true
+    },
+    {
+      "id": "claude-code-befc58789505d56a71e1",
+      "product": "claude-code",
+      "version": "2.1.237",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-a46e358a6d39f2362188",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-1dcb443406242904b10e",
+      "product": "claude-code",
+      "version": "2.1.236",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "codex-21d69d55746bca4d3bcb",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-6f56cf847abd18520d80",
+      "product": "kiro",
+      "version": "2.19.0",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "kiro-b92ef19c5e8266e54bc5",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-84b33f84aaa6caddb95f",
+      "product": "codex",
+      "version": "0.148.0",
+      "sourceCount": 398,
+      "explainedCount": 398,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2c71adbc0884cb787313",
+      "product": "claude-code",
+      "version": "2.1.235",
+      "sourceCount": 19,
+      "explainedCount": 19,
+      "complete": true
+    },
+    {
+      "id": "codex-bcca9f749acf0a3f0773",
+      "product": "codex",
+      "sourceCount": 12,
+      "explainedCount": 12,
+      "complete": true
+    },
+    {
+      "id": "kiro-6018c69272ba4229bb86",
+      "product": "kiro",
+      "version": "1.0.337",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "claude-code-3543b27f87b9804875e6",
+      "product": "claude-code",
+      "version": "2.1.234",
+      "sourceCount": 51,
+      "explainedCount": 51,
+      "complete": true
+    },
+    {
+      "id": "codex-8f7578e6ed9fafe5063a",
+      "product": "codex",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-0a8554ffc659ce07e9aa",
+      "product": "kiro",
+      "version": "0.3.0",
+      "sourceCount": 55,
+      "explainedCount": 55,
+      "complete": true
+    },
+    {
+      "id": "kiro-f5239f6fac7fc76d25e3",
+      "product": "kiro",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "claude-code-8161cbdb5acdadbd25a7",
+      "product": "claude-code",
+      "version": "2.1.233",
+      "sourceCount": 20,
+      "explainedCount": 20,
+      "complete": true
+    },
+    {
+      "id": "kiro-840d773841d85dacf798",
+      "product": "kiro",
+      "version": "2.18.1",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "claude-code-c3c4476a457ac1bea0c5",
+      "product": "claude-code",
+      "version": "2.1.232",
+      "sourceCount": 49,
+      "explainedCount": 49,
+      "complete": true
+    },
+    {
+      "id": "claude-code-4062678597047c17e8d9",
+      "product": "claude-code",
+      "version": "2.1.231",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-bd539a44e54ae353daab",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-42dee98ee5f52a3e242d",
+      "product": "kiro",
+      "version": "1.0.309",
+      "sourceCount": 20,
+      "explainedCount": 20,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9a2af88646280960afd8",
+      "product": "claude-code",
+      "version": "2.1.229",
+      "sourceCount": 32,
+      "explainedCount": 32,
+      "complete": true
+    },
+    {
+      "id": "kiro-db5a870778c6f8a22b0e",
+      "product": "kiro",
+      "version": "2.18.0",
+      "sourceCount": 22,
+      "explainedCount": 22,
+      "complete": true
+    },
+    {
+      "id": "claude-code-d20b7eb952c5aebd311b",
+      "product": "claude-code",
+      "version": "2.1.228",
+      "sourceCount": 18,
+      "explainedCount": 18,
+      "complete": true
+    },
+    {
+      "id": "codex-2fce7788d9cb3d73635a",
+      "product": "codex",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-2df358c4ad7f4ca6b0dd",
+      "product": "kiro",
+      "version": "2.17.0",
+      "sourceCount": 13,
+      "explainedCount": 13,
+      "complete": true
+    },
+    {
+      "id": "kiro-5a6e2fb9be68d6760fa8",
+      "product": "kiro",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "kiro-afac560b7feae45d0a8a",
+      "product": "kiro",
+      "version": "1.0.293",
+      "sourceCount": 15,
+      "explainedCount": 15,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e2b33d5bdbbb213f761d",
+      "product": "claude-code",
+      "version": "2.1.227",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "codex-efe3beb77f34ce74ce97",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "kiro-fd86a00c137c727c57e1",
+      "product": "kiro",
+      "version": "0.2.0",
+      "sourceCount": 47,
+      "explainedCount": 47,
+      "complete": true
+    },
+    {
+      "id": "claude-code-b26cc1d5e10a2a44b069",
+      "product": "claude-code",
+      "version": "2.1.226",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-dbcd8a19eb6101750339",
+      "product": "claude-code",
+      "version": "2.1.225",
+      "sourceCount": 14,
+      "explainedCount": 14,
+      "complete": true
+    },
+    {
+      "id": "claude-code-b23b5fad9133a6fa773c",
+      "product": "claude-code",
+      "version": "2.1.224",
+      "sourceCount": 31,
+      "explainedCount": 31,
+      "complete": true
+    },
+    {
+      "id": "codex-477e0df0b389f216a2c8",
+      "product": "codex",
+      "version": "0.147.0",
+      "sourceCount": 366,
+      "explainedCount": 366,
+      "complete": true
+    },
+    {
+      "id": "kiro-0b8e08befb401ab85e6e",
+      "product": "kiro",
+      "version": "1.0.288",
+      "sourceCount": 61,
+      "explainedCount": 61,
+      "complete": true
+    },
+    {
+      "id": "kiro-30ec8411501927999394",
+      "product": "kiro",
+      "version": "0.1.3",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2677985541a61bbcfd30",
+      "product": "claude-code",
+      "version": "2.1.223",
+      "sourceCount": 19,
+      "explainedCount": 19,
+      "complete": true
+    },
+    {
+      "id": "kiro-5505a3e6e9b3a1c37524",
+      "product": "kiro",
+      "version": "2.16.2",
+      "sourceCount": 20,
+      "explainedCount": 20,
+      "complete": true
+    },
+    {
+      "id": "codex-d82a2c298a64a106d71c",
+      "product": "codex",
+      "version": "0.146.1",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "claude-code-ca790e1f8dd8067d3d43",
+      "product": "claude-code",
+      "version": "2.1.222",
+      "sourceCount": 21,
+      "explainedCount": 21,
+      "complete": true
+    },
+    {
+      "id": "claude-code-41b8f7dd5c80ef7552d6",
+      "product": "claude-code",
+      "version": "2.1.221",
+      "sourceCount": 39,
+      "explainedCount": 39,
+      "complete": true
+    },
+    {
+      "id": "kiro-fa486e2fce67c7ba84e0",
+      "product": "kiro",
+      "version": "0.1.2",
+      "sourceCount": 23,
+      "explainedCount": 23,
+      "complete": true
+    },
+    {
+      "id": "kiro-faa5cd5cfd7dca1baeea",
+      "product": "kiro",
+      "version": "2.16.1",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "codex-8769cfcc71fc555c80bc",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "codex-f90f4d7a6f32e68a8e22",
+      "product": "codex",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-a583726041881ef7bfc6",
+      "product": "kiro",
+      "version": "2.16.0",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "kiro-b94cb91161cc9982643e",
+      "product": "kiro",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "codex-13ba632023eb41d0519c",
+      "product": "codex",
+      "sourceCount": 13,
+      "explainedCount": 13,
+      "complete": true
+    },
+    {
+      "id": "codex-b5437dcedff16f660d5d",
+      "product": "codex",
+      "version": "0.146.0",
+      "sourceCount": 245,
+      "explainedCount": 245,
+      "complete": true
+    },
+    {
+      "id": "codex-cc0b3e7182aff2652ede",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-e9f489105523ad8b4121",
+      "product": "kiro",
+      "version": "2.15.2",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-169f16cff35317b6bb33",
+      "product": "kiro",
+      "version": "2.15.1",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-b460c915eeafc865c04b",
+      "product": "kiro",
+      "version": "1.0.242",
+      "sourceCount": 38,
+      "explainedCount": 38,
+      "complete": true
+    },
+    {
+      "id": "kiro-e1cb9a869185dbbb0bb7",
+      "product": "kiro",
+      "version": "2.15.0",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "claude-code-36e628e26586ce46e2fa",
+      "product": "claude-code",
+      "version": "2.1.220",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e5d4fc3a27c41bef5edb",
+      "product": "claude-code",
+      "version": "2.1.219",
+      "sourceCount": 27,
+      "explainedCount": 27,
+      "complete": true
+    },
+    {
+      "id": "kiro-59ed132d877ecc824475",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-6d6fa34fa5c5b0a1bbe0",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-a0eaaa27f602d665000b",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-f46010ec138aaedda646",
+      "product": "kiro",
+      "version": "2.14.2",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "codex-b677425fdbea84650821",
+      "product": "codex",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-bbed2f6c3811ec991779",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-c4bc7c9fabf36aff827f",
+      "product": "kiro",
+      "version": "2.14.1",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9ff89ab42681fef53bcf",
+      "product": "claude-code",
+      "version": "2.1.218",
+      "sourceCount": 37,
+      "explainedCount": 37,
+      "complete": true
+    },
+    {
+      "id": "kiro-2b2189b40fe333bb0764",
+      "product": "kiro",
+      "version": "2.13.1",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-473b3d8ddb79c85963b4",
+      "product": "kiro",
+      "version": "2.14.0",
+      "sourceCount": 16,
+      "explainedCount": 16,
+      "complete": true
+    },
+    {
+      "id": "claude-code-1fde7f282b82fdf86aca",
+      "product": "claude-code",
+      "version": "2.1.217",
+      "sourceCount": 20,
+      "explainedCount": 20,
+      "complete": true
+    },
+    {
+      "id": "codex-0c7e4477de50178d3928",
+      "product": "codex",
+      "version": "0.145.0",
+      "sourceCount": 362,
+      "explainedCount": 362,
+      "complete": true
+    },
+    {
+      "id": "claude-code-a8de685d382e035a1381",
+      "product": "claude-code",
+      "version": "2.1.216",
+      "sourceCount": 40,
+      "explainedCount": 40,
+      "complete": true
+    },
+    {
+      "id": "codex-f4fe52eef92c874f524a",
+      "product": "codex",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "kiro-67c15020e2609d8d01d1",
+      "product": "kiro",
+      "version": "1.0.182",
+      "sourceCount": 24,
+      "explainedCount": 24,
+      "complete": true
+    },
+    {
+      "id": "kiro-69d67ad2b4093f71fdca",
+      "product": "kiro",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e4780ff64b6de60458e1",
+      "product": "claude-code",
+      "version": "2.1.215",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-d22adf81e7fff519ea8f",
+      "product": "codex",
+      "version": "0.144.6",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-8e56ba4f237cb72e9d51",
+      "product": "claude-code",
+      "version": "2.1.214",
+      "sourceCount": 47,
+      "explainedCount": 47,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9be5288172bd028720d3",
+      "product": "claude-code",
+      "version": "2.1.212",
+      "sourceCount": 48,
+      "explainedCount": 48,
+      "complete": true
+    },
+    {
+      "id": "kiro-6eba182b4ec1c18c83dd",
+      "product": "kiro",
+      "version": "2.13.0",
+      "sourceCount": 12,
+      "explainedCount": 12,
+      "complete": true
+    },
+    {
+      "id": "codex-2aed6040774b10eca1a0",
+      "product": "codex",
+      "version": "0.144.5",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-0ca67da8ebe58a39bd3d",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-592b1d96d495cf5cb8f8",
+      "product": "claude-code",
+      "version": "2.1.211",
+      "sourceCount": 37,
+      "explainedCount": 37,
+      "complete": true
+    },
+    {
+      "id": "kiro-c9ba81b192fb4dad1583",
+      "product": "kiro",
+      "version": "2.12.3",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-80b3fb066e7d09c4a46c",
+      "product": "claude-code",
+      "version": "2.1.210",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "claude-code-24789f0209ee2a7cfff9",
+      "product": "claude-code",
+      "version": "2.1.209",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-04233d8c2993e92d7347",
+      "product": "codex",
+      "version": "0.144.4",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "claude-code-efc06eb32d15951bafa1",
+      "product": "claude-code",
+      "version": "2.1.208",
+      "sourceCount": 45,
+      "explainedCount": 45,
+      "complete": true
+    },
+    {
+      "id": "kiro-0dfd2b74f504bbf82504",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-c1f9d4582dbbf01f9d9d",
+      "product": "kiro",
+      "version": "2.12.2",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "codex-5f789806c668334f38ad",
+      "product": "codex",
+      "version": "0.144.3",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "codex-610d049c79f36bb1eb08",
+      "product": "codex",
+      "version": "0.144.2",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "codex-0a98ded1681e20eb8385",
+      "product": "codex",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "kiro-558dd6db6d81e51a9277",
+      "product": "kiro",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-d657cfadc24aed44900f",
+      "product": "kiro",
+      "version": "1.0.138",
+      "sourceCount": 21,
+      "explainedCount": 21,
+      "complete": true
+    },
+    {
+      "id": "claude-code-32129890dc7118295505",
+      "product": "claude-code",
+      "version": "2.1.207",
+      "sourceCount": 24,
+      "explainedCount": 24,
+      "complete": true
+    },
+    {
+      "id": "claude-code-070183d9a8388e4def14",
+      "product": "claude-code",
+      "version": "2.1.206",
+      "sourceCount": 27,
+      "explainedCount": 27,
+      "complete": true
+    },
+    {
+      "id": "codex-ebd6b1d554b30dbf7e75",
+      "product": "codex",
+      "version": "0.144.1",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "codex-ddf8f9c58ceb9e99e6fa",
+      "product": "codex",
+      "version": "0.144.0",
+      "sourceCount": 102,
+      "explainedCount": 102,
+      "complete": true
+    },
+    {
+      "id": "codex-bf0b93fb2716c912aefb",
+      "product": "codex",
+      "sourceCount": 14,
+      "explainedCount": 14,
+      "complete": true
+    },
+    {
+      "id": "kiro-77b95820b20b4cf4d61e",
+      "product": "kiro",
+      "version": "2.12.1",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-8a0ebeb9978116a20041",
+      "product": "kiro",
+      "version": "1.0.116",
+      "sourceCount": 16,
+      "explainedCount": 16,
+      "complete": true
+    },
+    {
+      "id": "kiro-aeb02224df187cd57a70",
+      "product": "kiro",
+      "version": "2.12.0",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "claude-code-a06d261627b967844cac",
+      "product": "claude-code",
+      "version": "2.1.205",
+      "sourceCount": 23,
+      "explainedCount": 23,
+      "complete": true
+    },
+    {
+      "id": "codex-953bc6af3e019626dd86",
+      "product": "codex",
+      "version": "0.143.0",
+      "sourceCount": 299,
+      "explainedCount": 299,
+      "complete": true
+    },
+    {
+      "id": "claude-code-289d370a82f57f9715fa",
+      "product": "claude-code",
+      "version": "2.1.204",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-39af0741cd5fb53dff8a",
+      "product": "claude-code",
+      "version": "2.1.203",
+      "sourceCount": 37,
+      "explainedCount": 37,
+      "complete": true
+    },
+    {
+      "id": "claude-code-1f59d6c8868155034863",
+      "product": "claude-code",
+      "version": "2.1.202",
+      "sourceCount": 18,
+      "explainedCount": 18,
+      "complete": true
+    },
+    {
+      "id": "codex-0dee21d6aa4b02b20304",
+      "product": "codex",
+      "sourceCount": 18,
+      "explainedCount": 18,
+      "complete": true
+    },
+    {
+      "id": "claude-code-ab956a12d85c56c71529",
+      "product": "claude-code",
+      "version": "2.1.201",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-0bc1fd58589eb9cd3eb8",
+      "product": "claude-code",
+      "version": "2.1.200",
+      "sourceCount": 17,
+      "explainedCount": 17,
+      "complete": true
+    },
+    {
+      "id": "kiro-0ce7deb310057ffcc86d",
+      "product": "kiro",
+      "version": "1.0.89",
+      "sourceCount": 47,
+      "explainedCount": 47,
+      "complete": true
+    },
+    {
+      "id": "claude-code-b80d359816b2d23a6a1b",
+      "product": "claude-code",
+      "version": "2.1.199",
+      "sourceCount": 24,
+      "explainedCount": 24,
+      "complete": true
+    },
+    {
+      "id": "kiro-b42ce5d1ef62005a622d",
+      "product": "kiro",
+      "version": "1.0.52",
+      "sourceCount": 80,
+      "explainedCount": 80,
+      "complete": true
+    },
+    {
+      "id": "kiro-cd02cc19ed7a69438bd0",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-dc5bd29684f1a1708594",
+      "product": "kiro",
+      "version": "2.11.0",
+      "sourceCount": 13,
+      "explainedCount": 13,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9722b16083fee0960d2d",
+      "product": "claude-code",
+      "version": "2.1.198",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "codex-0b09a2a80f6b4783f415",
+      "product": "codex",
+      "version": "0.142.5",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-5fd4fca5ef51c4185262",
+      "product": "kiro",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "kiro-a060ae8c42bb2e2485b4",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-c8072e4f27cef6970961",
+      "product": "kiro",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "claude-code-86c7fd4cd17279117f88",
+      "product": "claude-code",
+      "version": "2.1.197",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-19918086386546fdb274",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-941864e2a4de6f795dc3",
+      "product": "claude-code",
+      "version": "2.1.196",
+      "sourceCount": 27,
+      "explainedCount": 27,
+      "complete": true
+    },
+    {
+      "id": "codex-2ad9d3439fb58d80e238",
+      "product": "codex",
+      "version": "0.142.4",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "claude-code-4e14e707917ad4d5a887",
+      "product": "claude-code",
+      "version": "2.1.195",
+      "sourceCount": 12,
+      "explainedCount": 12,
+      "complete": true
+    },
+    {
+      "id": "codex-7981f36f167ce053452d",
+      "product": "codex",
+      "version": "0.142.3",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-097340a3831b472b5dd0",
+      "product": "kiro",
+      "version": "2.10.0",
+      "sourceCount": 13,
+      "explainedCount": 13,
+      "complete": true
+    },
+    {
+      "id": "claude-code-33b1ca46faca53c86bcd",
+      "product": "claude-code",
+      "version": "2.1.193",
+      "sourceCount": 15,
+      "explainedCount": 15,
+      "complete": true
+    },
+    {
+      "id": "codex-4bf54eff6069d5aa7633",
+      "product": "codex",
+      "version": "0.142.2",
+      "sourceCount": 38,
+      "explainedCount": 38,
+      "complete": true
+    },
+    {
+      "id": "codex-d5000557c98a6cd99e1c",
+      "product": "codex",
+      "version": "0.142.1",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "codex-f62350fba0b034158c0b",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-350bd44e6118c8264b63",
+      "product": "kiro",
+      "version": "1.0.0",
+      "sourceCount": 21,
+      "explainedCount": 21,
+      "complete": true
+    },
+    {
+      "id": "kiro-b4c9a8551f0a92197e94",
+      "product": "kiro",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-25c8a8f111a09002710b",
+      "product": "claude-code",
+      "version": "2.1.191",
+      "sourceCount": 20,
+      "explainedCount": 20,
+      "complete": true
+    },
+    {
+      "id": "claude-code-12ea985c719de5616327",
+      "product": "claude-code",
+      "version": "2.1.190",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-46cf478725e53795f3dc",
+      "product": "kiro",
+      "version": "2.9.0",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2c5631362bf9a713ad0b",
+      "product": "claude-code",
+      "version": "2.1.187",
+      "sourceCount": 21,
+      "explainedCount": 21,
+      "complete": true
+    },
+    {
+      "id": "codex-f4d254199eb37a68687d",
+      "product": "codex",
+      "version": "0.142.0",
+      "sourceCount": 199,
+      "explainedCount": 199,
+      "complete": true
+    },
+    {
+      "id": "claude-code-021186debcf275ab01f9",
+      "product": "claude-code",
+      "version": "2.1.186",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "claude-code-c070e087e4b13db19d58",
+      "product": "claude-code",
+      "version": "2.1.185",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e7d63869d3608caed931",
+      "product": "claude-code",
+      "version": "2.1.183",
+      "sourceCount": 17,
+      "explainedCount": 17,
+      "complete": true
+    },
+    {
+      "id": "kiro-1a674e1faab7729363fa",
+      "product": "kiro",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "codex-40fffc0ae2e4c33263ef",
+      "product": "codex",
+      "version": "0.141.0",
+      "sourceCount": 92,
+      "explainedCount": 92,
+      "complete": true
+    },
+    {
+      "id": "codex-695749c5cd9101f97e54",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-076cbc3e52b9f28b74cd",
+      "product": "claude-code",
+      "version": "2.1.181",
+      "sourceCount": 39,
+      "explainedCount": 39,
+      "complete": true
+    },
+    {
+      "id": "kiro-183f95cf50b3fd857706",
+      "product": "kiro",
+      "version": "2.8.1",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-4eee88c65b459efc3d46",
+      "product": "kiro",
+      "version": "2.8.0",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-fe37cc90f1cf68719725",
+      "product": "claude-code",
+      "version": "2.1.179",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "codex-fb808b77391d13cb51d4",
+      "product": "codex",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-501637459c48d67125fa",
+      "product": "kiro",
+      "version": "2.7.1",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e1793ed1a30ebff58dd2",
+      "product": "claude-code",
+      "version": "2.1.178",
+      "sourceCount": 22,
+      "explainedCount": 22,
+      "complete": true
+    },
+    {
+      "id": "codex-08ae7ee759cfa77b1851",
+      "product": "codex",
+      "version": "0.140.0",
+      "sourceCount": 214,
+      "explainedCount": 214,
+      "complete": true
+    },
+    {
+      "id": "codex-221bc0233eb077eca5d3",
+      "product": "codex",
+      "sourceCount": 12,
+      "explainedCount": 12,
+      "complete": true
+    },
+    {
+      "id": "claude-code-b44025f445c41c12de2f",
+      "product": "claude-code",
+      "version": "2.1.176",
+      "sourceCount": 22,
+      "explainedCount": 22,
+      "complete": true
+    },
+    {
+      "id": "claude-code-c3ef1a48bda9af0cc54b",
+      "product": "claude-code",
+      "version": "2.1.175",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-5ee430be08915d12a2ff",
+      "product": "claude-code",
+      "version": "2.1.174",
+      "sourceCount": 13,
+      "explainedCount": 13,
+      "complete": true
+    },
+    {
+      "id": "kiro-4a17cfd2dc3e5408b8a3",
+      "product": "kiro",
+      "version": "2.7.0",
+      "sourceCount": 15,
+      "explainedCount": 15,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9f59d06a7d7907ed1371",
+      "product": "claude-code",
+      "version": "2.1.173",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-468f3baf0d4c7d1ffddd",
+      "product": "codex",
+      "sourceCount": 16,
+      "explainedCount": 16,
+      "complete": true
+    },
+    {
+      "id": "kiro-36bc0a6e361e888239c7",
+      "product": "kiro",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-0b42c3da32f20876051e",
+      "product": "claude-code",
+      "version": "2.1.172",
+      "sourceCount": 30,
+      "explainedCount": 30,
+      "complete": true
+    },
+    {
+      "id": "kiro-398123a700341838facb",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-bed48fd0f0fff5602127",
+      "product": "kiro",
+      "version": "0.12.333",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-83af429eb0422af1214b",
+      "product": "codex",
+      "version": "0.139.0",
+      "sourceCount": 61,
+      "explainedCount": 61,
+      "complete": true
+    },
+    {
+      "id": "claude-code-b1487ee0bc5d37e990ee",
+      "product": "claude-code",
+      "version": "2.1.170",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-735938d7c9aa667445c2",
+      "product": "codex",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "codex-8a02b9ef56adc31fe1d1",
+      "product": "codex",
+      "sourceCount": 10,
+      "explainedCount": 10,
+      "complete": true
+    },
+    {
+      "id": "kiro-6bd198562274f4e7865c",
+      "product": "kiro",
+      "version": "0.12.318",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-690f513d3b667b483e61",
+      "product": "codex",
+      "version": "0.138.0",
+      "sourceCount": 121,
+      "explainedCount": 121,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2e6f411ea491503fd64a",
+      "product": "claude-code",
+      "version": "2.1.169",
+      "sourceCount": 30,
+      "explainedCount": 30,
+      "complete": true
+    },
+    {
+      "id": "kiro-41cc0286e6bffc0f16cf",
+      "product": "kiro",
+      "version": "2.6.1",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-7eb63ebcf8526e3f260a",
+      "product": "kiro",
+      "version": "0.12.316",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-c680e344a5759c9e019c",
+      "product": "claude-code",
+      "version": "2.1.168",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-536302172e9029fd5ba1",
+      "product": "claude-code",
+      "version": "2.1.167",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e6e23b5ab6043346feae",
+      "product": "claude-code",
+      "version": "2.1.166",
+      "sourceCount": 21,
+      "explainedCount": 21,
+      "complete": true
+    },
+    {
+      "id": "claude-code-d222d1e3d7e699a2157b",
+      "product": "claude-code",
+      "version": "2.1.165",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-8e57922d2171a13daa1d",
+      "product": "kiro",
+      "version": "2.6.0",
+      "sourceCount": 26,
+      "explainedCount": 26,
+      "complete": true
+    },
+    {
+      "id": "claude-code-6f1a8cee4ae7ca404045",
+      "product": "claude-code",
+      "version": "2.1.163",
+      "sourceCount": 22,
+      "explainedCount": 22,
+      "complete": true
+    },
+    {
+      "id": "codex-55a62793ba7182f14f76",
+      "product": "codex",
+      "version": "0.137.0",
+      "sourceCount": 142,
+      "explainedCount": 142,
+      "complete": true
+    },
+    {
+      "id": "codex-d596ef192a1cd7cbad39",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-275f982cdd7c863ab7bd",
+      "product": "claude-code",
+      "version": "2.1.162",
+      "sourceCount": 28,
+      "explainedCount": 28,
+      "complete": true
+    },
+    {
+      "id": "claude-code-81892e81f2853609c5c9",
+      "product": "claude-code",
+      "version": "2.1.161",
+      "sourceCount": 22,
+      "explainedCount": 22,
+      "complete": true
+    },
+    {
+      "id": "claude-code-a210cd33ccb21052ad86",
+      "product": "claude-code",
+      "version": "2.1.160",
+      "sourceCount": 27,
+      "explainedCount": 27,
+      "complete": true
+    },
+    {
+      "id": "codex-2b5a7aff919968e4b9a4",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "codex-78611901a21cf52b745a",
+      "product": "codex",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-7810e50d3c9822db5ec8",
+      "product": "kiro",
+      "sourceCount": 20,
+      "explainedCount": 20,
+      "complete": true
+    },
+    {
+      "id": "codex-a973ac0aaf6922f00edc",
+      "product": "codex",
+      "version": "0.136.0",
+      "sourceCount": 135,
+      "explainedCount": 135,
+      "complete": true
+    },
+    {
+      "id": "codex-64e31eb5482205ce996a",
+      "product": "codex",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-6f9b3521d641dd5ead54",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-2ee606ff2c8ae1eebf47",
+      "product": "kiro",
+      "version": "2.5.1",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-25cbd46256b6b06d1bec",
+      "product": "claude-code",
+      "version": "2.1.159",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-20f2d7f88d7ec380c15e",
+      "product": "claude-code",
+      "version": "2.1.158",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2247dacaff1e7892606b",
+      "product": "claude-code",
+      "version": "2.1.157",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "claude-code-13e198898f13484d3d94",
+      "product": "claude-code",
+      "version": "2.1.156",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-3fd89201bbd04a5e63ea",
+      "product": "codex",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "kiro-ab04d6f4c46ceafc8ca2",
+      "product": "kiro",
+      "version": "2.5.0",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "kiro-c2e93b344565a2bfbd5a",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-4db861238fb1dacf59bc",
+      "product": "claude-code",
+      "version": "2.1.154",
+      "sourceCount": 44,
+      "explainedCount": 44,
+      "complete": true
+    },
+    {
+      "id": "codex-ead5add0bc88984be883",
+      "product": "codex",
+      "version": "0.135.0",
+      "sourceCount": 110,
+      "explainedCount": 110,
+      "complete": true
+    },
+    {
+      "id": "claude-code-6c67ba505790135f17f8",
+      "product": "claude-code",
+      "version": "2.1.153",
+      "sourceCount": 36,
+      "explainedCount": 36,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2ad2b843889ab9a9e1a6",
+      "product": "claude-code",
+      "version": "2.1.152",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "kiro-4e207fc9e6017d707e07",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-79558a0bf2990ba10542",
+      "product": "codex",
+      "version": "0.134.0",
+      "sourceCount": 86,
+      "explainedCount": 86,
+      "complete": true
+    },
+    {
+      "id": "codex-fe53727dc3385ca20415",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-b0893353de900a4fcb33",
+      "product": "kiro",
+      "version": "2.4.2",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-d14674d3d6c915fee04a",
+      "product": "kiro",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "codex-fb07fcf892b4d6efa28b",
+      "product": "codex",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2faf57a098ad63b06840",
+      "product": "claude-code",
+      "version": "2.1.150",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-0781387ce1bd33b438a4",
+      "product": "claude-code",
+      "version": "2.1.149",
+      "sourceCount": 26,
+      "explainedCount": 26,
+      "complete": true
+    },
+    {
+      "id": "claude-code-3e2a731cb27372aa6601",
+      "product": "claude-code",
+      "version": "2.1.148",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-f967f8b6de82258c85e1",
+      "product": "claude-code",
+      "version": "2.1.147",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "codex-49a1916e5346c2b6d90d",
+      "product": "codex",
+      "version": "0.133.0",
+      "sourceCount": 144,
+      "explainedCount": 144,
+      "complete": true
+    },
+    {
+      "id": "claude-code-fbce714221faacf4f610",
+      "product": "claude-code",
+      "version": "2.1.146",
+      "sourceCount": 16,
+      "explainedCount": 16,
+      "complete": true
+    },
+    {
+      "id": "codex-791197f4974d57f0d14b",
+      "product": "codex",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "kiro-3bdfd397be2cba812d83",
+      "product": "kiro",
+      "version": "2.4.1",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-d8944eb7269c25d15d2a",
+      "product": "codex",
+      "version": "0.132.0",
+      "sourceCount": 68,
+      "explainedCount": 68,
+      "complete": true
+    },
+    {
+      "id": "kiro-081cf415e9c1558b3bb7",
+      "product": "kiro",
+      "version": "2.4.0",
+      "sourceCount": 28,
+      "explainedCount": 28,
+      "complete": true
+    },
+    {
+      "id": "claude-code-bcea9adf45e44652881f",
+      "product": "claude-code",
+      "version": "2.1.145",
+      "sourceCount": 20,
+      "explainedCount": 20,
+      "complete": true
+    },
+    {
+      "id": "claude-code-17a357ec96982e38be01",
+      "product": "claude-code",
+      "version": "2.1.144",
+      "sourceCount": 50,
+      "explainedCount": 50,
+      "complete": true
+    },
+    {
+      "id": "kiro-730d92fd886759246dd8",
+      "product": "kiro",
+      "sourceCount": 15,
+      "explainedCount": 15,
+      "complete": true
+    },
+    {
+      "id": "codex-1e8f43cb3bc60366e549",
+      "product": "codex",
+      "version": "0.131.0",
+      "sourceCount": 295,
+      "explainedCount": 295,
+      "complete": true
+    },
+    {
+      "id": "codex-b4f59ee222df6ea5510f",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "claude-code-d644dcd68a87b57e0901",
+      "product": "claude-code",
+      "version": "2.1.143",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "claude-code-09404853be45db33246e",
+      "product": "claude-code",
+      "version": "2.1.142",
+      "sourceCount": 24,
+      "explainedCount": 24,
+      "complete": true
+    },
+    {
+      "id": "codex-169d164d3d1b96a679fb",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-a5a1da1cb59ab40c5a61",
+      "product": "claude-code",
+      "version": "2.1.141",
+      "sourceCount": 61,
+      "explainedCount": 61,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9817c5378136b805b8a9",
+      "product": "claude-code",
+      "version": "2.1.140",
+      "sourceCount": 13,
+      "explainedCount": 13,
+      "complete": true
+    },
+    {
+      "id": "kiro-e0a5f7a4b775425c3b37",
+      "product": "kiro",
+      "version": "2.3.0",
+      "sourceCount": 24,
+      "explainedCount": 24,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e42f92770eb42f734129",
+      "product": "claude-code",
+      "version": "2.1.139",
+      "sourceCount": 50,
+      "explainedCount": 50,
+      "complete": true
+    },
+    {
+      "id": "codex-7215c2cd91b4b3f6c9a4",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-36badb48381c3aa280d8",
+      "product": "claude-code",
+      "version": "2.1.138",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9806b01930675dc0a951",
+      "product": "claude-code",
+      "version": "2.1.137",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-d817b1ebea31a7d5225d",
+      "product": "codex",
+      "version": "0.130.0",
+      "sourceCount": 66,
+      "explainedCount": 66,
+      "complete": true
+    },
+    {
+      "id": "claude-code-911ebf459bc775f12467",
+      "product": "claude-code",
+      "version": "2.1.136",
+      "sourceCount": 52,
+      "explainedCount": 52,
+      "complete": true
+    },
+    {
+      "id": "codex-71830eb76aa89de8e462",
+      "product": "codex",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "claude-code-682236935ace0b9d5c5c",
+      "product": "claude-code",
+      "version": "2.1.133",
+      "sourceCount": 17,
+      "explainedCount": 17,
+      "complete": true
+    },
+    {
+      "id": "codex-70da182d059f307de8a9",
+      "product": "codex",
+      "version": "0.129.0",
+      "sourceCount": 249,
+      "explainedCount": 249,
+      "complete": true
+    },
+    {
+      "id": "codex-8e5715721cc1c17c3be7",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-033eb9ed1a6e89579cea",
+      "product": "kiro",
+      "sourceCount": 10,
+      "explainedCount": 10,
+      "complete": true
+    },
+    {
+      "id": "kiro-fec0c9d91d62a6eaed0b",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-00602fe0e17455b0b902",
+      "product": "claude-code",
+      "version": "2.1.132",
+      "sourceCount": 28,
+      "explainedCount": 28,
+      "complete": true
+    },
+    {
+      "id": "claude-code-0cc55ba6de18dd692621",
+      "product": "claude-code",
+      "version": "2.1.131",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-7580ee916a4ff2bc8660",
+      "product": "claude-code",
+      "version": "2.1.129",
+      "sourceCount": 27,
+      "explainedCount": 27,
+      "complete": true
+    },
+    {
+      "id": "codex-d3ef74fdd5f7f2a70ddd",
+      "product": "codex",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-cb771af3cecf95066591",
+      "product": "kiro",
+      "version": "0.12",
+      "sourceCount": 18,
+      "explainedCount": 18,
+      "complete": true
+    },
+    {
+      "id": "codex-41c6e69322bf1ea82123",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-bb180dc8466c96437b72",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-175bc22130da8c31791f",
+      "product": "claude-code",
+      "version": "2.1.128",
+      "sourceCount": 37,
+      "explainedCount": 37,
+      "complete": true
+    },
+    {
+      "id": "kiro-a3d2ade2211970b3855b",
+      "product": "kiro",
+      "version": "2.2.1",
+      "sourceCount": 16,
+      "explainedCount": 16,
+      "complete": true
+    },
+    {
+      "id": "claude-code-8041ef51b7a49428a0f4",
+      "product": "claude-code",
+      "version": "2.1.126",
+      "sourceCount": 32,
+      "explainedCount": 32,
+      "complete": true
+    },
+    {
+      "id": "codex-f6280f353d7f1b89dbec",
+      "product": "codex",
+      "version": "0.128.0",
+      "sourceCount": 280,
+      "explainedCount": 280,
+      "complete": true
+    },
+    {
+      "id": "claude-code-24264b38516fca55b781",
+      "product": "claude-code",
+      "version": "2.1.123",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-8d03ba13b40f00d36221",
+      "product": "claude-code",
+      "version": "2.1.122",
+      "sourceCount": 18,
+      "explainedCount": 18,
+      "complete": true
+    },
+    {
+      "id": "claude-code-7e86cc1d295121418bb8",
+      "product": "claude-code",
+      "version": "2.1.121",
+      "sourceCount": 39,
+      "explainedCount": 39,
+      "complete": true
+    },
+    {
+      "id": "claude-code-15cdada5e6c3b4b2855e",
+      "product": "claude-code",
+      "version": "2.1.120",
+      "sourceCount": 25,
+      "explainedCount": 25,
+      "complete": true
+    },
+    {
+      "id": "kiro-08bdccb38af78aaac580",
+      "product": "kiro",
+      "version": "2.2.0",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "codex-34ab24a57d210647ba28",
+      "product": "codex",
+      "version": "0.125.0",
+      "sourceCount": 75,
+      "explainedCount": 75,
+      "complete": true
+    },
+    {
+      "id": "codex-385c4dd67cfc4d222329",
+      "product": "codex",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-12547efd4bfd228442e7",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-7862dabd289123ce15c1",
+      "product": "kiro",
+      "version": "2.1.1",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-d7a743e90530ccd915c1",
+      "product": "kiro",
+      "version": "2.1",
+      "sourceCount": 31,
+      "explainedCount": 31,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2e30df0ab6fd53f86565",
+      "product": "claude-code",
+      "version": "2.1.119",
+      "sourceCount": 51,
+      "explainedCount": 51,
+      "complete": true
+    },
+    {
+      "id": "codex-f9460ccfb2e2d935aeee",
+      "product": "codex",
+      "version": "0.124.0",
+      "sourceCount": 101,
+      "explainedCount": 101,
+      "complete": true
+    },
+    {
+      "id": "codex-159738250637f1ca8274",
+      "product": "codex",
+      "version": "0.123.0",
+      "sourceCount": 102,
+      "explainedCount": 102,
+      "complete": true
+    },
+    {
+      "id": "claude-code-176c74f5b804684837a9",
+      "product": "claude-code",
+      "version": "2.1.118",
+      "sourceCount": 34,
+      "explainedCount": 34,
+      "complete": true
+    },
+    {
+      "id": "codex-05030c67ecd6d261af67",
+      "product": "codex",
+      "sourceCount": 10,
+      "explainedCount": 10,
+      "complete": true
+    },
+    {
+      "id": "claude-code-b31a8231c4ed467fe799",
+      "product": "claude-code",
+      "version": "2.1.117",
+      "sourceCount": 28,
+      "explainedCount": 28,
+      "complete": true
+    },
+    {
+      "id": "kiro-26f36df758a35221011e",
+      "product": "kiro",
+      "version": "0.11.133",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "claude-code-dd3a05e06daec1c7cda6",
+      "product": "claude-code",
+      "version": "2.1.116",
+      "sourceCount": 24,
+      "explainedCount": 24,
+      "complete": true
+    },
+    {
+      "id": "codex-7bb1097318728b30b489",
+      "product": "codex",
+      "version": "0.122.0",
+      "sourceCount": 188,
+      "explainedCount": 188,
+      "complete": true
+    },
+    {
+      "id": "codex-350b0f8e8d9eb7b10e5a",
+      "product": "codex",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "claude-code-d80875b24fe32478c175",
+      "product": "claude-code",
+      "version": "2.1.114",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-351e521d9c824e11757a",
+      "product": "claude-code",
+      "version": "2.1.113",
+      "sourceCount": 38,
+      "explainedCount": 38,
+      "complete": true
+    },
+    {
+      "id": "kiro-0f9917cf45ead9df8d67",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-37496f00f66fcefb7ee0",
+      "product": "kiro",
+      "version": "0.11.132",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-773360fa80e7b5200f32",
+      "product": "claude-code",
+      "version": "2.1.112",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-8821141df50b4bdb5a2c",
+      "product": "claude-code",
+      "version": "2.1.111",
+      "sourceCount": 35,
+      "explainedCount": 35,
+      "complete": true
+    },
+    {
+      "id": "codex-4d6fda217822816893dc",
+      "product": "codex",
+      "sourceCount": 17,
+      "explainedCount": 17,
+      "complete": true
+    },
+    {
+      "id": "kiro-f7f40e77d2915b0a3625",
+      "product": "kiro",
+      "version": "2.0.1",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-0c1f692e80da5e8e80a2",
+      "product": "claude-code",
+      "version": "2.1.110",
+      "sourceCount": 33,
+      "explainedCount": 33,
+      "complete": true
+    },
+    {
+      "id": "codex-bc845a2caf6a8544da9b",
+      "product": "codex",
+      "version": "0.121.0",
+      "sourceCount": 160,
+      "explainedCount": 160,
+      "complete": true
+    },
+    {
+      "id": "claude-code-f3622372ecaf2fc1250b",
+      "product": "claude-code",
+      "version": "2.1.109",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9197060c2778f47507da",
+      "product": "claude-code",
+      "version": "2.1.108",
+      "sourceCount": 24,
+      "explainedCount": 24,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9345c180919ce2ba48ef",
+      "product": "claude-code",
+      "version": "2.1.107",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-6c6000687fad7ee02ec6",
+      "product": "claude-code",
+      "version": "2.1.105",
+      "sourceCount": 37,
+      "explainedCount": 37,
+      "complete": true
+    },
+    {
+      "id": "kiro-e1f97ce153cb9367f3ea",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-e605b6dc3d71fb7688d4",
+      "product": "kiro",
+      "version": "2.0",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "codex-a1f2ace9366208dbde10",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "codex-d23f63e33660478bc95c",
+      "product": "codex",
+      "version": "0.120.0",
+      "sourceCount": 53,
+      "explainedCount": 53,
+      "complete": true
+    },
+    {
+      "id": "codex-84cc0592e8c16e613091",
+      "product": "codex",
+      "version": "0.119.0",
+      "sourceCount": 298,
+      "explainedCount": 298,
+      "complete": true
+    },
+    {
+      "id": "claude-code-08a04f49ecb728487d63",
+      "product": "claude-code",
+      "version": "2.1.101",
+      "sourceCount": 46,
+      "explainedCount": 46,
+      "complete": true
+    },
+    {
+      "id": "codex-2e34d4f7835bfd16525d",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-794e2a820d4b666f0fcb",
+      "product": "claude-code",
+      "version": "2.1.98",
+      "sourceCount": 57,
+      "explainedCount": 57,
+      "complete": true
+    },
+    {
+      "id": "codex-1e6d3253e90628205468",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-558950795898e2d8ca6d",
+      "product": "claude-code",
+      "version": "2.1.97",
+      "sourceCount": 46,
+      "explainedCount": 46,
+      "complete": true
+    },
+    {
+      "id": "claude-code-a95b1dd6c5db8710a53f",
+      "product": "claude-code",
+      "version": "2.1.96",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-aed20dfab46eedd1e36a",
+      "product": "kiro",
+      "version": "0.11.131",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-219da7628710e86b672a",
+      "product": "claude-code",
+      "version": "2.1.94",
+      "sourceCount": 25,
+      "explainedCount": 25,
+      "complete": true
+    },
+    {
+      "id": "codex-d3fa5deaa25e83ac2ff9",
+      "product": "codex",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2402c182e49e332bb2ef",
+      "product": "claude-code",
+      "version": "2.1.92",
+      "sourceCount": 21,
+      "explainedCount": 21,
+      "complete": true
+    },
+    {
+      "id": "claude-code-3900bd0c6367da0e4464",
+      "product": "claude-code",
+      "version": "2.1.91",
+      "sourceCount": 13,
+      "explainedCount": 13,
+      "complete": true
+    },
+    {
+      "id": "kiro-03fe5bd267396abba139",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-4234efdd0d4ba363834d",
+      "product": "claude-code",
+      "version": "2.1.90",
+      "sourceCount": 19,
+      "explainedCount": 19,
+      "complete": true
+    },
+    {
+      "id": "claude-code-b617405b4db1f85b92dd",
+      "product": "claude-code",
+      "version": "2.1.89",
+      "sourceCount": 52,
+      "explainedCount": 52,
+      "complete": true
+    },
+    {
+      "id": "codex-b40b124a1b34c85705c7",
+      "product": "codex",
+      "sourceCount": 10,
+      "explainedCount": 10,
+      "complete": true
+    },
+    {
+      "id": "codex-7017d5b9fbe3a83b3df3",
+      "product": "codex",
+      "version": "0.118.0",
+      "sourceCount": 109,
+      "explainedCount": 109,
+      "complete": true
+    },
+    {
+      "id": "claude-code-51215610a4eb48348e01",
+      "product": "claude-code",
+      "version": "2.1.87",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-0263f69e3e2b54ac18b9",
+      "product": "kiro",
+      "version": "1.28.3",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-076a2b850bf63285d9de",
+      "product": "claude-code",
+      "version": "2.1.86",
+      "sourceCount": 26,
+      "explainedCount": 26,
+      "complete": true
+    },
+    {
+      "id": "kiro-f31f1896f3f95612df98",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-48e99bb5d83e5bcaeadc",
+      "product": "claude-code",
+      "version": "2.1.85",
+      "sourceCount": 30,
+      "explainedCount": 30,
+      "complete": true
+    },
+    {
+      "id": "codex-366a06b4cd8952dde83f",
+      "product": "codex",
+      "version": "0.117.0",
+      "sourceCount": 252,
+      "explainedCount": 252,
+      "complete": true
+    },
+    {
+      "id": "claude-code-bf5c5e9dcef48339cf0b",
+      "product": "claude-code",
+      "version": "2.1.84",
+      "sourceCount": 40,
+      "explainedCount": 40,
+      "complete": true
+    },
+    {
+      "id": "kiro-95c563265185ba09ce6b",
+      "product": "kiro",
+      "version": "1.28.2",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-c6eeccc0d60fe1ca4ff4",
+      "product": "claude-code",
+      "version": "2.1.83",
+      "sourceCount": 59,
+      "explainedCount": 59,
+      "complete": true
+    },
+    {
+      "id": "codex-07668d67bac096cd2ab7",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "codex-57aa16e4b1bad97652c9",
+      "product": "codex",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "codex-981cdb3ea7818e4bb1ae",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-326251b25547a54d0fd7",
+      "product": "kiro",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-45bc1d8d9fa29d0df3a8",
+      "product": "kiro",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-d29b50f35ac2f6b5cff5",
+      "product": "claude-code",
+      "version": "2.1.81",
+      "sourceCount": 27,
+      "explainedCount": 27,
+      "complete": true
+    },
+    {
+      "id": "codex-9f6e0bb0bf59b7fddd97",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "kiro-81f975773cd75619507f",
+      "product": "kiro",
+      "version": "1.28.1",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "kiro-e05c960c22a6f49d9afc",
+      "product": "kiro",
+      "version": "1.28.0",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "claude-code-3bef534f8f2ed4c07e24",
+      "product": "claude-code",
+      "version": "2.1.80",
+      "sourceCount": 17,
+      "explainedCount": 17,
+      "complete": true
+    },
+    {
+      "id": "codex-98a3ad8262ef29ceba4b",
+      "product": "codex",
+      "version": "0.116.0",
+      "sourceCount": 83,
+      "explainedCount": 83,
+      "complete": true
+    },
+    {
+      "id": "codex-02f774f4bccb64bdebe2",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "claude-code-d7b80c4c2dbac0ee4987",
+      "product": "claude-code",
+      "version": "2.1.79",
+      "sourceCount": 18,
+      "explainedCount": 18,
+      "complete": true
+    },
+    {
+      "id": "codex-68fca6113251a8e79583",
+      "product": "codex",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-78183d99922bfd387025",
+      "product": "kiro",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-b1a7493537ce8cd59a4d",
+      "product": "kiro",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "claude-code-c9a13b012c7e1642a51c",
+      "product": "claude-code",
+      "version": "2.1.78",
+      "sourceCount": 26,
+      "explainedCount": 26,
+      "complete": true
+    },
+    {
+      "id": "claude-code-7d291f1979aaeb7dd262",
+      "product": "claude-code",
+      "version": "2.1.77",
+      "sourceCount": 44,
+      "explainedCount": 44,
+      "complete": true
+    },
+    {
+      "id": "codex-f5b691a4bfbe603a21a8",
+      "product": "codex",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "kiro-e5256f5bb05d7ca4851e",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-c856198994553b2a0d2b",
+      "product": "codex",
+      "version": "0.115.0",
+      "sourceCount": 136,
+      "explainedCount": 136,
+      "complete": true
+    },
+    {
+      "id": "codex-fb59e5434faae2c654a5",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "claude-code-19d76518c905d64ea596",
+      "product": "claude-code",
+      "version": "2.1.76",
+      "sourceCount": 35,
+      "explainedCount": 35,
+      "complete": true
+    },
+    {
+      "id": "claude-code-7994700d62bb6fad1e78",
+      "product": "claude-code",
+      "version": "2.1.75",
+      "sourceCount": 23,
+      "explainedCount": 23,
+      "complete": true
+    },
+    {
+      "id": "claude-code-eef41c00f6b95a4c183e",
+      "product": "claude-code",
+      "version": "2.1.74",
+      "sourceCount": 17,
+      "explainedCount": 17,
+      "complete": true
+    },
+    {
+      "id": "codex-c77cda793d2006d68af2",
+      "product": "codex",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9915b3486ca249b4ea3a",
+      "product": "claude-code",
+      "version": "2.1.73",
+      "sourceCount": 26,
+      "explainedCount": 26,
+      "complete": true
+    },
+    {
+      "id": "codex-200a4f20f95124ee3315",
+      "product": "codex",
+      "version": "0.114.0",
+      "sourceCount": 51,
+      "explainedCount": 51,
+      "complete": true
+    },
+    {
+      "id": "codex-964d32de230cf6540356",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-0aaf82ce442ef818973b",
+      "product": "kiro",
+      "version": "0.11",
+      "sourceCount": 35,
+      "explainedCount": 35,
+      "complete": true
+    },
+    {
+      "id": "codex-7f290b28eb02ebd2352b",
+      "product": "codex",
+      "version": "0.113.0",
+      "sourceCount": 128,
+      "explainedCount": 128,
+      "complete": true
+    },
+    {
+      "id": "claude-code-317fb3101c8a3aacdb98",
+      "product": "claude-code",
+      "version": "2.1.72",
+      "sourceCount": 54,
+      "explainedCount": 54,
+      "complete": true
+    },
+    {
+      "id": "codex-e8045da8cb5d1ed59b12",
+      "product": "codex",
+      "version": "0.112.0",
+      "sourceCount": 30,
+      "explainedCount": 30,
+      "complete": true
+    },
+    {
+      "id": "claude-code-59291e9fda0dedb02169",
+      "product": "claude-code",
+      "version": "2.1.71",
+      "sourceCount": 28,
+      "explainedCount": 28,
+      "complete": true
+    },
+    {
+      "id": "claude-code-36e829c5f559398b235b",
+      "product": "claude-code",
+      "version": "2.1.70",
+      "sourceCount": 29,
+      "explainedCount": 29,
+      "complete": true
+    },
+    {
+      "id": "codex-0333de1b29095139b457",
+      "product": "codex",
+      "version": "0.111.0",
+      "sourceCount": 34,
+      "explainedCount": 34,
+      "complete": true
+    },
+    {
+      "id": "codex-59dd4b73688f0131afa2",
+      "product": "codex",
+      "version": "0.110.0",
+      "sourceCount": 132,
+      "explainedCount": 132,
+      "complete": true
+    },
+    {
+      "id": "claude-code-ce62a258a2adbd4b8bd0",
+      "product": "claude-code",
+      "version": "2.1.69",
+      "sourceCount": 103,
+      "explainedCount": 103,
+      "complete": true
+    },
+    {
+      "id": "codex-232cd33f3c7406e296f0",
+      "product": "codex",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "codex-a08091edbee7eeb69d8c",
+      "product": "codex",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-01ce311ac9d360073825",
+      "product": "kiro",
+      "version": "0.10.78",
+      "sourceCount": 13,
+      "explainedCount": 13,
+      "complete": true
+    },
+    {
+      "id": "claude-code-3ddd8c95e1a155b13b91",
+      "product": "claude-code",
+      "version": "2.1.68",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2991cdf9a3d9ed084ac1",
+      "product": "claude-code",
+      "version": "2.1.66",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-cea678cd46cda8d2dd3d",
+      "product": "codex",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "codex-ae9e1939481a3ef233f3",
+      "product": "codex",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "codex-aba6cf93aa35df8f2322",
+      "product": "codex",
+      "version": "0.107.0",
+      "sourceCount": 71,
+      "explainedCount": 71,
+      "complete": true
+    },
+    {
+      "id": "kiro-ecd1418ae7832cae3019",
+      "product": "kiro",
+      "version": "1.27",
+      "sourceCount": 28,
+      "explainedCount": 28,
+      "complete": true
+    },
+    {
+      "id": "claude-code-0d55b833b8badf5462ce",
+      "product": "claude-code",
+      "version": "2.1.63",
+      "sourceCount": 26,
+      "explainedCount": 26,
+      "complete": true
+    },
+    {
+      "id": "codex-79e9084888b9232fdb07",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-67fe327d858ee4242201",
+      "product": "claude-code",
+      "version": "2.1.62",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-7ebcee598fa5faca46d0",
+      "product": "codex",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "codex-3cbe2842a1649a007565",
+      "product": "codex",
+      "version": "0.106.0",
+      "sourceCount": 69,
+      "explainedCount": 69,
+      "complete": true
+    },
+    {
+      "id": "claude-code-1bcc1a3dac8f4ac74d87",
+      "product": "claude-code",
+      "version": "2.1.61",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-bcba10d4667b616e76f6",
+      "product": "claude-code",
+      "version": "2.1.59",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "codex-02ce4c0108a5681e84f6",
+      "product": "codex",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "claude-code-c92c778a2cc237fe7a40",
+      "product": "claude-code",
+      "version": "2.1.58",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-2162797d0b12548576ab",
+      "product": "codex",
+      "version": "0.105.0",
+      "sourceCount": 258,
+      "explainedCount": 258,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e44a5641ea7b3cd27872",
+      "product": "claude-code",
+      "version": "2.1.56",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-826bad67f692a41d86eb",
+      "product": "claude-code",
+      "version": "2.1.55",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-8471d0e0216a613d3e7f",
+      "product": "claude-code",
+      "version": "2.1.53",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "claude-code-ca4d09f3c98e21953016",
+      "product": "claude-code",
+      "version": "2.1.52",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-3e7aa3e939dcebc4d516",
+      "product": "claude-code",
+      "version": "2.1.51",
+      "sourceCount": 12,
+      "explainedCount": 12,
+      "complete": true
+    },
+    {
+      "id": "kiro-c819c0a8c9ceb239c329",
+      "product": "kiro",
+      "version": "0.10.32",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-eaa2a6b4e0c93603f53a",
+      "product": "claude-code",
+      "version": "2.1.50",
+      "sourceCount": 25,
+      "explainedCount": 25,
+      "complete": true
+    },
+    {
+      "id": "kiro-8918e9d2f50f31d1434f",
+      "product": "kiro",
+      "version": "0.10.16",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-1361f0a9c131287b47b2",
+      "product": "claude-code",
+      "version": "2.1.49",
+      "sourceCount": 20,
+      "explainedCount": 20,
+      "complete": true
+    },
+    {
+      "id": "claude-code-1cfb468aae38a5d2c821",
+      "product": "claude-code",
+      "version": "2.1.47",
+      "sourceCount": 68,
+      "explainedCount": 68,
+      "complete": true
+    },
+    {
+      "id": "codex-46ee413fe3470a0f5e8f",
+      "product": "codex",
+      "version": "0.104.0",
+      "sourceCount": 21,
+      "explainedCount": 21,
+      "complete": true
+    },
+    {
+      "id": "claude-code-f1a2eb5337c0778b25df",
+      "product": "claude-code",
+      "version": "2.1.46",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-a74e313a43ce8761dd8e",
+      "product": "kiro",
+      "version": "0.10",
+      "sourceCount": 35,
+      "explainedCount": 35,
+      "complete": true
+    },
+    {
+      "id": "kiro-e062c647aa992905a5e4",
+      "product": "kiro",
+      "sourceCount": 6,
+      "explainedCount": 6,
+      "complete": true
+    },
+    {
+      "id": "codex-c20f9a143b415de957f4",
+      "product": "codex",
+      "version": "0.103.0",
+      "sourceCount": 19,
+      "explainedCount": 19,
+      "complete": true
+    },
+    {
+      "id": "codex-3cff90053f0bc851ca96",
+      "product": "codex",
+      "version": "0.102.0",
+      "sourceCount": 131,
+      "explainedCount": 131,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9955ad2757ac350c1a38",
+      "product": "claude-code",
+      "version": "2.1.45",
+      "sourceCount": 15,
+      "explainedCount": 15,
+      "complete": true
+    },
+    {
+      "id": "codex-b2e12f112c229eddb7a6",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-85c0bc0fca4c68694d81",
+      "product": "kiro",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-f3dee61a25447079b012",
+      "product": "kiro",
+      "version": "0.9.47",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-a3dc29f4dbd035babdbf",
+      "product": "claude-code",
+      "version": "2.1.44",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9a8ce45c9b943b53b13a",
+      "product": "claude-code",
+      "version": "2.1.43",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-8033d94a8efa47937f6e",
+      "product": "claude-code",
+      "version": "2.1.42",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-c902a8c25a16af9a97d1",
+      "product": "claude-code",
+      "version": "2.1.41",
+      "sourceCount": 15,
+      "explainedCount": 15,
+      "complete": true
+    },
+    {
+      "id": "kiro-875cb381b412a829f6bc",
+      "product": "kiro",
+      "version": "1.26.0",
+      "sourceCount": 26,
+      "explainedCount": 26,
+      "complete": true
+    },
+    {
+      "id": "codex-df6d148f04c5e0f31616",
+      "product": "codex",
+      "version": "0.101.0",
+      "sourceCount": 15,
+      "explainedCount": 15,
+      "complete": true
+    },
+    {
+      "id": "codex-1db44d0b1e844efbe057",
+      "product": "codex",
+      "version": "0.100.0",
+      "sourceCount": 107,
+      "explainedCount": 107,
+      "complete": true
+    },
+    {
+      "id": "codex-6037dcddb0a1865da3e7",
+      "product": "codex",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "codex-6268aa71b00a86624443",
+      "product": "codex",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-9276816bff0762974407",
+      "product": "kiro",
+      "version": "0.9.40",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-c98230eec8e2dbc6d403",
+      "product": "kiro",
+      "version": "1.25.1",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "codex-7ee61b4db58291f4ef64",
+      "product": "codex",
+      "version": "0.99.0",
+      "sourceCount": 214,
+      "explainedCount": 214,
+      "complete": true
+    },
+    {
+      "id": "claude-code-dc57b85bc0e27927943a",
+      "product": "claude-code",
+      "version": "2.1.39",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "claude-code-549d60f92a565c701078",
+      "product": "claude-code",
+      "version": "2.1.38",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "codex-46ce2d406af751c4bf38",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-bd7bbbe5cce48ea83905",
+      "product": "kiro",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "codex-06e5d8129af4da149c4f",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-3e1423536d00f148d888",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "codex-bb3226826bbb22ad3a72",
+      "product": "codex",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-e8c8bf396e6c38e88231",
+      "product": "claude-code",
+      "version": "2.1.37",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-176c78b6341d1bcced86",
+      "product": "claude-code",
+      "version": "2.1.36",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-b9f8c8f58af417bcec62",
+      "product": "claude-code",
+      "version": "2.1.34",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2efd72884a0bed07988b",
+      "product": "claude-code",
+      "version": "2.1.33",
+      "sourceCount": 16,
+      "explainedCount": 16,
+      "complete": true
+    },
+    {
+      "id": "codex-2c646e42b3a0222a91b1",
+      "product": "codex",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2772bd227a5bb4db05c9",
+      "product": "claude-code",
+      "version": "2.1.32",
+      "sourceCount": 12,
+      "explainedCount": 12,
+      "complete": true
+    },
+    {
+      "id": "codex-66d063db334fd5b6be0f",
+      "product": "codex",
+      "version": "0.98.0",
+      "sourceCount": 21,
+      "explainedCount": 21,
+      "complete": true
+    },
+    {
+      "id": "codex-15d9c3c80b70defbf2ca",
+      "product": "codex",
+      "version": "0.97.0",
+      "sourceCount": 45,
+      "explainedCount": 45,
+      "complete": true
+    },
+    {
+      "id": "codex-b4c7aca48e4efaca41b4",
+      "product": "codex",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "codex-d218807386de57c3528f",
+      "product": "codex",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "kiro-4c766e7a9bb7711f9925",
+      "product": "kiro",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-8b2b2c86a1e80fd9cbe2",
+      "product": "kiro",
+      "version": "0.9",
+      "sourceCount": 29,
+      "explainedCount": 29,
+      "complete": true
+    },
+    {
+      "id": "codex-1573fded495348434853",
+      "product": "codex",
+      "version": "0.96.0",
+      "sourceCount": 35,
+      "explainedCount": 35,
+      "complete": true
+    },
+    {
+      "id": "codex-edae099551f4e53346aa",
+      "product": "codex",
+      "version": "0.95.0",
+      "sourceCount": 87,
+      "explainedCount": 87,
+      "complete": true
+    },
+    {
+      "id": "claude-code-c5a4cbc6cfb992c46c3d",
+      "product": "claude-code",
+      "version": "2.1.31",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "codex-f46903353bee8dc2dacc",
+      "product": "codex",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "kiro-32242e099bdde7ca3626",
+      "product": "kiro",
+      "version": "1.25.0",
+      "sourceCount": 29,
+      "explainedCount": 29,
+      "complete": true
+    },
+    {
+      "id": "claude-code-fff43e1623cdf04dbeaf",
+      "product": "claude-code",
+      "version": "2.1.30",
+      "sourceCount": 19,
+      "explainedCount": 19,
+      "complete": true
+    },
+    {
+      "id": "codex-f35124cc6a18e11e3687",
+      "product": "codex",
+      "sourceCount": 3,
+      "explainedCount": 3,
+      "complete": true
+    },
+    {
+      "id": "codex-542b58cb36b06c3c79d1",
+      "product": "codex",
+      "version": "0.94.0",
+      "sourceCount": 41,
+      "explainedCount": 41,
+      "complete": true
+    },
+    {
+      "id": "codex-f2546f2ba6b90aa682a3",
+      "product": "codex",
+      "sourceCount": 12,
+      "explainedCount": 12,
+      "complete": true
+    },
+    {
+      "id": "claude-code-ba5539956ea544a91312",
+      "product": "claude-code",
+      "version": "2.1.29",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-3a791ec843226a7bd8a2",
+      "product": "codex",
+      "version": "0.93.0",
+      "sourceCount": 155,
+      "explainedCount": 155,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2d962aa7908348163d63",
+      "product": "claude-code",
+      "version": "2.1.27",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "claude-code-0887898d221d7a894944",
+      "product": "claude-code",
+      "version": "2.1.25",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-af7b9080035f0025798f",
+      "product": "claude-code",
+      "version": "2.1.23",
+      "sourceCount": 11,
+      "explainedCount": 11,
+      "complete": true
+    },
+    {
+      "id": "claude-code-abe80e5b91e0d95492e0",
+      "product": "claude-code",
+      "version": "2.1.22",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-f8d274c56a6ac84ede62",
+      "product": "claude-code",
+      "version": "2.1.21",
+      "sourceCount": 10,
+      "explainedCount": 10,
+      "complete": true
+    },
+    {
+      "id": "codex-3ce5970b1c3de63bd190",
+      "product": "codex",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "kiro-7d5c96df152818503c16",
+      "product": "kiro",
+      "version": "0.8.206",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-898d64768d8f1e8f4266",
+      "product": "codex",
+      "version": "0.92.0",
+      "sourceCount": 77,
+      "explainedCount": 77,
+      "complete": true
+    },
+    {
+      "id": "claude-code-5e0c55d9c1142cf50bc5",
+      "product": "claude-code",
+      "version": "2.1.20",
+      "sourceCount": 29,
+      "explainedCount": 29,
+      "complete": true
+    },
+    {
+      "id": "codex-42ba7b840c54ea600302",
+      "product": "codex",
+      "version": "0.91.0",
+      "sourceCount": 5,
+      "explainedCount": 5,
+      "complete": true
+    },
+    {
+      "id": "codex-07619a026a2cdd1b07b8",
+      "product": "codex",
+      "version": "0.90.0",
+      "sourceCount": 68,
+      "explainedCount": 68,
+      "complete": true
+    },
+    {
+      "id": "claude-code-211437b7fae412b4359f",
+      "product": "claude-code",
+      "version": "2.1.19",
+      "sourceCount": 14,
+      "explainedCount": 14,
+      "complete": true
+    },
+    {
+      "id": "claude-code-5438af4218a14a50231f",
+      "product": "claude-code",
+      "version": "2.1.18",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-4cbee45b69d1f29c122d",
+      "product": "codex",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "claude-code-5b752ef5a41301b5c4e1",
+      "product": "claude-code",
+      "version": "2.1.17",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-a8f2b5c34e415dd6774d",
+      "product": "codex",
+      "version": "0.89.0",
+      "sourceCount": 48,
+      "explainedCount": 48,
+      "complete": true
+    },
+    {
+      "id": "claude-code-ede3207cc3b00ec6606e",
+      "product": "claude-code",
+      "version": "2.1.16",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "codex-00af84520ca1f205f3ab",
+      "product": "codex",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-eddda90a3c69c570cefb",
+      "product": "claude-code",
+      "version": "2.1.15",
+      "sourceCount": 4,
+      "explainedCount": 4,
+      "complete": true
+    },
+    {
+      "id": "codex-3c8515fa463ed62ee20a",
+      "product": "codex",
+      "version": "0.88.0",
+      "sourceCount": 109,
+      "explainedCount": 109,
+      "complete": true
+    },
+    {
+      "id": "claude-code-98692700ebb48af8f41f",
+      "product": "claude-code",
+      "version": "2.1.14",
+      "sourceCount": 16,
+      "explainedCount": 16,
+      "complete": true
+    },
+    {
+      "id": "claude-code-46d12ef530d6392a7935",
+      "product": "claude-code",
+      "version": "2.1.12",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-fc46d10b25bb928a9900",
+      "product": "claude-code",
+      "version": "2.1.11",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-8f5011223853d4211819",
+      "product": "claude-code",
+      "version": "2.1.10",
+      "sourceCount": 7,
+      "explainedCount": 7,
+      "complete": true
+    },
+    {
+      "id": "codex-2c7485ed38ec696c7c97",
+      "product": "codex",
+      "version": "0.87.0",
+      "sourceCount": 28,
+      "explainedCount": 28,
+      "complete": true
+    },
+    {
+      "id": "claude-code-d946127229d3533bc13d",
+      "product": "claude-code",
+      "version": "2.1.9",
+      "sourceCount": 9,
+      "explainedCount": 9,
+      "complete": true
+    },
+    {
+      "id": "codex-fd4e00132f25a3b2f0af",
+      "product": "codex",
+      "version": "0.86.0",
+      "sourceCount": 21,
+      "explainedCount": 21,
+      "complete": true
+    },
+    {
+      "id": "kiro-62623d0bc5a49e962d7d",
+      "product": "kiro",
+      "version": "1.24.0",
+      "sourceCount": 27,
+      "explainedCount": 27,
+      "complete": true
+    },
+    {
+      "id": "codex-41ef3ccddb3fe9abf260",
+      "product": "codex",
+      "version": "0.85.0",
+      "sourceCount": 20,
+      "explainedCount": 20,
+      "complete": true
+    },
+    {
+      "id": "codex-d6c0c02deb10ca7bba44",
+      "product": "codex",
+      "version": "0.84.0",
+      "sourceCount": 8,
+      "explainedCount": 8,
+      "complete": true
+    },
+    {
+      "id": "kiro-6ea59a72c15a76142a20",
+      "product": "kiro",
+      "version": "0.8.140",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-8084d1f9084847680379",
+      "product": "codex",
+      "version": "0.81.0",
+      "sourceCount": 117,
+      "explainedCount": 117,
+      "complete": true
+    },
+    {
+      "id": "claude-code-718cf20d679f19c30e6b",
+      "product": "claude-code",
+      "version": "2.1.7",
+      "sourceCount": 15,
+      "explainedCount": 15,
+      "complete": true
+    },
+    {
+      "id": "codex-dd62e0ee7802d6bdeca1",
+      "product": "codex",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "kiro-a6da0e8662a7934c76e8",
+      "product": "kiro",
+      "version": "0.8.135",
+      "sourceCount": 45,
+      "explainedCount": 45,
+      "complete": true
+    },
+    {
+      "id": "claude-code-b9fb377352518aa10b98",
+      "product": "claude-code",
+      "version": "2.1.6",
+      "sourceCount": 25,
+      "explainedCount": 25,
+      "complete": true
+    },
+    {
+      "id": "claude-code-39bc2a5f268035f81082",
+      "product": "claude-code",
+      "version": "2.1.5",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-601c640f90d355616b09",
+      "product": "claude-code",
+      "version": "2.1.4",
+      "sourceCount": 2,
+      "explainedCount": 2,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2824020a945803a3204b",
+      "product": "claude-code",
+      "version": "2.1.3",
+      "sourceCount": 13,
+      "explainedCount": 13,
+      "complete": true
+    },
+    {
+      "id": "codex-a984ac84700bcb10009b",
+      "product": "codex",
+      "version": "0.80.0",
+      "sourceCount": 90,
+      "explainedCount": 90,
+      "complete": true
+    },
+    {
+      "id": "claude-code-9fd81c904251f100fad9",
+      "product": "claude-code",
+      "version": "2.1.2",
+      "sourceCount": 22,
+      "explainedCount": 22,
+      "complete": true
+    },
+    {
+      "id": "claude-code-3f9ba28487b4764e3880",
+      "product": "claude-code",
+      "version": "2.0.76",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "codex-2f4abd27a3a4122b2613",
+      "product": "codex",
+      "version": "0.79.0",
+      "sourceCount": 48,
+      "explainedCount": 48,
+      "complete": true
+    },
+    {
+      "id": "claude-code-2f01cfb2e90f81faf993",
+      "product": "claude-code",
+      "version": "2.0.75",
+      "sourceCount": 1,
+      "explainedCount": 1,
+      "complete": true
+    },
+    {
+      "id": "claude-code-b3ecc38891a078748dd2",
+      "product": "claude-code",
+      "version": "2.1.0",
+      "sourceCount": 113,
+      "explainedCount": 113,
+      "complete": true
+    },
+    {
+      "id": "codex-73175c10b956bdd511cc",
+      "product": "codex",
+      "version": "0.78.0",
+      "sourceCount": 106,
+      "explainedCount": 106,
+      "complete": true
+    }
+  ]
+}

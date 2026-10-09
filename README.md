@@ -3,12 +3,16 @@
 [GitHub 저장소](https://github.com/whchoi98/code-pulse)에서 소스와 이슈를 관리합니다.
 
 <!-- app-version:start -->
-현재 소스 버전: **1.2.0**. [변경 기록](CHANGELOG.md)과 [릴리스 노트](docs/releases/1.2.0.md)를 함께 관리합니다.
+현재 소스 버전: **1.3.0**. [변경 기록](CHANGELOG.md)과 [릴리스 노트](docs/releases/1.3.0.md)를 함께 관리합니다.
 <!-- app-version:end -->
 
-2026년 1월 1일부터 현재까지 Claude Code, Codex, Kiro의 공식 변경 기록을 모아 한국어로 소개하는 웹사이트입니다. 바뀐 기능과 적용할 때 확인할 사항을 설명하고 공식 원문으로 연결합니다.
+2026년 1월 1일부터 현재까지 Claude Code, Codex, Kiro의 공식 변경 기록을 모아 한국어와 영어로 제공하는 웹사이트입니다. 바뀐 기능과 적용할 때 확인할 사항을 설명하고 공식 원문으로 연결합니다.
 
-매일 오전 9시(Asia/Seoul)에 수집합니다. 발표일과 수집 시각을 따로 보관하며, 같은 릴리스가 여러 출처에 있으면 글 하나로 합칩니다. 한국어 해설은 원문과 대조하고 human-ton 기준으로 한 번 더 다듬습니다. 엠대시와 가운뎃점은 서비스 문구와 생성 해설에서 사용하지 않습니다. 직접 인용과 코드는 원문 표기를 유지합니다.
+매일 오전 7시(Asia/Seoul)에 수집합니다. 발표일과 수집 시각을 따로 보관하며, 같은 릴리스가 여러 출처에 있으면 글 하나로 합칩니다. 한국어 해설은 원문과 대조하고 human-ton 기준으로 한 번 더 다듬습니다. 엠대시와 가운뎃점은 서비스 문구와 생성 해설에서 사용하지 않습니다. 직접 인용과 코드는 원문 표기를 유지합니다.
+
+상단에서 한국어와 영어를 전환할 수 있습니다. 한국어는 AI 해설을, 영어는 공식 영문 변경 항목 전체를 제공합니다. 언어 선택은 공유 주소, RSS와 Markdown에도 반영합니다.
+
+목록과 상세 페이지를 수집 후 S3에 미리 만들어 CloudFront에서 제공합니다. 화면에 가까운 글은 상세 내용을 미리 읽고 브라우저에 캐시합니다. 전체 검색 색인은 검색할 때 읽습니다. 데이터가 나뉘어 있어도 전체 항목은 그대로 검색하고 내보낼 수 있습니다.
 
 화면에서 제품, 날짜, 변경 종류와 검색어로 글을 찾을 수 있습니다. 저장한 글은 같은 브라우저에서 다시 볼 수 있습니다. 모바일 화면, 키보드 탐색, 라이트 모드와 다크 모드를 지원합니다. 로그인은 필요 없습니다.
 
@@ -29,6 +33,7 @@
 | 목적 | 문서 |
 | --- | --- |
 | 로컬 개발 시작 | [개발 시작 안내](docs/onboarding.md) |
+| 정적 파일 발행과 속도 개선 운영 | [정적 배포 안내](docs/static-delivery.md) |
 | 구성 요소와 데이터 흐름 이해 | [아키텍처](docs/architecture.md) |
 | HTTP API와 RSS 사용 | [API 참조](docs/reference/api.md) |
 | 수집, 도메인과 방문 집계 운영 | [운영 안내](docs/runbook.md) |
@@ -43,20 +48,22 @@
 ```mermaid
 flowchart LR
     User["독자"] --> CF["CloudFront HTTPS"]
+    CF --> Site["비공개 S3: 정적 페이지와 공개 데이터"]
     CF --> SG["CloudFront Prefix List 보안 그룹"]
     SG --> ALB["ALB, 전용 헤더 확인"]
     ALB --> Web["프라이빗 ECS Fargate 웹 서버"]
     Web --> S3["비공개 S3"]
     Web --> Visitors["DynamoDB 방문 집계"]
-    Schedule["매일 09:00 한국 시간"] --> Worker["프라이빗 Fargate 수집 태스크"]
+    Schedule["매일 07:00 한국 시간"] --> Worker["프라이빗 Fargate 수집 태스크"]
     Worker --> Sources["공식 변경 기록, 연결된 공식 블로그"]
     Worker --> Bedrock["Bedrock 한국어 해설과 윤문"]
     Worker --> S3
+    Worker --> Site
 ```
 
 CloudFront에서 ALB까지는 기존 게임 사이트와 같은 HTTP 원본 연결을 사용합니다. ALB는 CloudFront origin-facing Prefix List와 전용 헤더로 접근을 제한합니다. 웹 서버와 수집 태스크에는 공인 IP를 할당하지 않습니다.
 
-웹 태스크는 공개용 스냅샷을 읽고 별도 방문 집계 테이블을 갱신합니다. 원문 저장과 모델 호출은 수집 태스크가 담당합니다. 전체 원문은 비공개 S3에 보관하고, API에는 한국어 해설과 짧은 근거 인용만 제공합니다.
+페이지와 공개 데이터는 CloudFront가 S3에서 직접 읽습니다. 웹 태스크는 호환 API와 RSS를 위해 스냅샷을 읽고 별도 방문 집계 테이블을 갱신합니다. 원문 저장과 모델 호출은 수집 태스크가 담당합니다. 전체 원문은 비공개 S3에 보관하고, 한국어 API에는 해설과 짧은 근거 인용을, 영어 API에는 공식 항목별 영문을 제공합니다. 보관용 원문 필드와 모델 내부 정보는 공개하지 않습니다.
 
 ## 공식 출처
 
@@ -120,7 +127,9 @@ npm run dev:client
 | `AWS_REGION` | AWS 리전 |
 | `BEDROCK_MODEL_ID` | 한국어 해설에 사용할 추론 프로필 |
 | `PORT` | 웹 서버 포트. 기본 `8080` |
-| `STATIC_DIR` | 빌드된 화면 경로. 기본 `./dist/public` |
+| `STATIC_DIR` | 발행할 빌드 화면 경로. 기본 `./dist/public` |
+| `SITE_BUCKET` | 정적 사이트 전용 S3 버킷. 수집과 편집이 끝나면 발행 |
+| `SITE_DIR` | 로컬 정적 발행 및 미리보기 폴더. `SITE_BUCKET`과 동시 사용 금지 |
 | `ENABLE_METRICS` | 수집 EMF 지표 출력 여부 |
 | `PRESENCE_TABLE` | 운영 방문 집계용 DynamoDB 테이블 |
 | `PRESENCE_SECRET` | 서버 발급 방문 쿠키의 서명 키. 운영에서는 Secrets Manager에서 주입 |
@@ -176,6 +185,8 @@ npm audit --omit=dev
 ```bash
 npm run deploy
 ```
+
+정적 사이트의 첫 전환은 기존 웹 이미지를 유지한 채 버킷을 준비하고, 파일 검증 후 트래픽을 넘깁니다. 이후 화면 변경도 새 정적 빌드를 발행해야 합니다. 절차는 [정적 배포 안내](docs/static-delivery.md)를 참고하세요.
 
 배포 대상은 계정 `061525506239`, 리전 `ap-northeast-2`입니다. 배포 결과의 `SiteUrl`에서 사이트를 열 수 있습니다. 세부 운영 방법과 실제 검증 결과는 `docs/runbook.md`, `docs/verification.md`를 확인하세요.
 

@@ -211,7 +211,7 @@ test('copies a canonical entry link without personal search filters', async ({ p
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto('/?q=workspace&saved=1&entry=claude-latest');
   await page.getByRole('button', { name: '글 주소 복사', exact: true }).click();
-  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe('http://127.0.0.1:4173/?entry=claude-latest');
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe('http://127.0.0.1:4173/?entry=claude-latest&lang=ko');
 });
 
 test('saving still works within the current tab when browser storage is unavailable', async ({ page }) => {

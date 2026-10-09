@@ -1,0 +1,51 @@
+{
+  "task": {
+    "taskArn": "arn:aws:ecs:ap-northeast-2:061525506239:task/CodePulse-ClusterEB0386A7-vgzNxE18nT12/e2cfa96c313440f4ad52cb6703fa0208",
+    "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:061525506239:task-definition/CodePulseWorkerTask14FE9E2F:5",
+    "lastStatus": "STOPPED",
+    "stopCode": "EssentialContainerExited",
+    "containers": [
+      {
+        "name": "aws-guardduty-agent-awfQFg",
+        "lastStatus": "STOPPED",
+        "exitCode": 0
+      },
+      {
+        "name": "collector",
+        "lastStatus": "STOPPED",
+        "exitCode": 0
+      }
+    ]
+  },
+  "publication": {
+    "event": "site_published",
+    "records": 616,
+    "generatedAt": "2026-10-09T01:41:56.101Z",
+    "immutableObjects": 1385,
+    "htmlPages": 1234,
+    "catalogBytes": {
+      "ko": 857055,
+      "en": 623391
+    },
+    "status": "published",
+    "generation": 2,
+    "uploadedObjects": 1238,
+    "reusedObjects": 1385
+  },
+  "collection": {
+    "event": "collection_completed",
+    "id": "72c00959-5ec6-409f-a13a-596dfc3b6200",
+    "startedAt": "2026-10-09T01:40:00.302Z",
+    "completedAt": "2026-10-09T01:41:56.101Z",
+    "status": "success",
+    "newEntries": 0,
+    "updatedEntries": 0,
+    "summarizedEntries": 0,
+    "failedSources": []
+  },
+  "collectionMetric": {
+    "Application": "code-pulse",
+    "CollectionSuccess": 1,
+    "CollectionFailure": 0
+  }
+}

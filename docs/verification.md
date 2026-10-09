@@ -1,5 +1,41 @@
 # 배포 검증
 
+## v1.3.0 정적 배포와 영어 지원
+
+2026년 10월 9일 `code-pulse.whchoi.net`에 v1.3.0을 배포했다. 목록과 상세 HTML, 간결한 목록 데이터 및 전체 상세와 검색 파일을 비공개 S3에 만들고 CloudFront OAC로 제공한다. 방문 집계, RSS와 호환 API는 기존 ALB와 프라이빗 Fargate를 사용한다. 새 VPC나 NAT는 만들지 않았다.
+
+| 항목 | 확인 결과 | 근거 |
+| --- | --- | --- |
+| 모든 버전의 전체 항목 | 616개 기록의 원문 항목 20,428개와 한국어 및 영어 항목 ID와 순서, 내용을 전수 대조. 준비 중 0개, 누락 0개 | [원문 검증](full-changes-v1.3.0-verification.json), [공개 정적 데이터 검증](static-content-verification.json) |
+| 제품별 범위 | Claude Code 242개 기록과 6,809개 항목, Codex 201개와 11,443개, Kiro 173개와 2,176개. v2.1.293은 56개 전부 포함 | 같은 전수 검증 |
+| 정적 페이지 | 두 언어 HTML 1,234개. 실제 홈페이지는 `Server: AmazonS3`, 초기 20개 글과 부팅용 목록을 포함 | [첫 발행](static-publication.json), [화면 검증](screenshots/bilingual-production/bilingual-report.json) |
+| 자동 갱신 | 실제 수집 태스크가 success, 종료 코드 0으로 완료. 새 발행 generation 2, 변경 없는 상세와 자산 1,385개 재사용 | [수집과 발행 로그](static-collector-verification.json) |
+| 수집 시각 | `cron(0 7 * * ? *)`, `Asia/Seoul`, ENABLED | [실제 인프라](static-infrastructure-verification.json) |
+| 영어 화면 | 언어 전환, 공유와 RSS, 상세 항목, 버전 표시를 운영에서 확인. 한국어와 영어 모두 JavaScript 없이 v2.1.293의 56개 항목 표시 | [영어 및 정적 화면](screenshots/bilingual-production/bilingual-report.json) |
+| 검색과 내보내기 | 전체 본문의 마지막 항목 검색, 저장 글 전체 Markdown, RSS 50개 글 각각의 전체 목록 및 모바일 검사 통과 | [운영 한국어 화면](screenshots/static-production/full-changes-report.json) |
+| 캐시 | 운영에서 같은 상세를 다시 열 때 추가 상세 요청 0개. 화면 근처 요청 두 개 제한과 갱신, 오류, 읽음 상태는 브라우저 회귀로 확인 | [운영 캐시](screenshots/bilingual-production/bilingual-report.json), `tests/browser/demand-loading.spec.ts` |
+| 보안과 가용성 | 두 버킷 비공개, AES256 및 버전 관리, OAC SigV4, 제어 기록 403, 기존 방문 권한 분리, GuardDuty와 정상 웹 대상 확인 | [실제 인프라](static-infrastructure-verification.json) |
+| 구현 검증 | 최종 타입 검사와 단위/인프라 655개 통과. 전체 브라우저 97개와 이후 RSS를 포함한 언어 회귀 8개 통과. 빌드, CDK 합성과 별도 검토 통과 | [검토 기록](static-delivery-review.md) |
+
+영어는 공식 원문에서 추출한 항목이며 영어 AI 해설로 표시하지 않는다. 한국어는 기존 Haiku 5.5 해설과 윤문을 유지한다. 내부 원문 필드, 원문 해시와 모델 식별자는 공개 정적 데이터에 넣지 않았다.
+
+배포는 기존 화면을 유지한 준비 단계, 정적 파일 발행, S3 원본 전환 순서로 진행했다. 기존 도메인 리디렉션 함수를 바꾸지 않고 미리 준비한 정적 함수를 S3 원본과 함께 연결해 전환 중 잘못된 원본으로 재작성 주소가 전달되지 않게 했다. 준비 단계에서도 운영 HTTP 200을 확인했다.
+
+### 같은 조건에서 측정한 로딩 시간
+
+Pixel 7 화면, 다운로드 1.6Mbps와 지연 80ms, CPU 4배 제한 조건에서 세 번씩 측정한 중앙값이다. 각 측정은 새 브라우저 컨텍스트를 사용했으며 첫 글과 항목 수는 동일했다. CloudFront 엣지의 캐시 상태는 통제하지 않았다.
+
+| 모바일 항목 | 이전 | v1.3.0 |
+| --- | --- | --- |
+| 목록 준비 | 10.64초 | 4.48초 |
+| 첫 상세 열기 | 1.59초 | 0.38초 |
+| 같은 상세 재열기 | 0.23초 | 0.44초 |
+
+목록 준비는 약 58%, 첫 상세 열기는 약 76% 짧아졌다. 재열기의 전체 측정 시간은 더 길었으나 추가 상세 요청은 없었다. 클릭 측정에는 자동 스크롤과 클릭 가능 상태 대기, 렌더링이 포함되므로 이 수치를 네트워크 응답 시간으로 해석하지 않는다. 데스크톱 목록 준비는 346ms에서 247ms, 첫 상세는 148ms에서 78ms였다. [이전 측정](delivery-before.json), [배포 후 측정](delivery-after.json), [조건과 비교](delivery-comparison.json)를 함께 보관한다.
+
+한국어 초기 목록 JSON은 6,469,112바이트에서 857,055바이트로 줄었다. 실제 초기 HTML은 이 목록과 첫 20개 글을 포함하며, 압축된 운영 응답은 약 217KB였다. 전체 본문을 없앤 것이 아니라 상세 파일과 필요할 때 읽는 전체 검색 색인으로 옮겼다.
+
+
 최종 확인일은 2026년 10월 8일 UTC다. 공개 주소는 `https://code-pulse.whchoi.net`이며 앱 버전은 1.2.0이다.
 
 ## v1.2.0 전체 변경 사항

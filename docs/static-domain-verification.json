@@ -1,0 +1,39 @@
+{
+  "checks": [
+    {
+      "url": "https://dxdh24n4uucjz.cloudfront.net/?lang=en&entry=claude-code-f0dfd4cdfef10f9572e0",
+      "status": 308,
+      "location": "https://code-pulse.whchoi.net/?lang=en&entry=claude-code-f0dfd4cdfef10f9572e0"
+    },
+    {
+      "url": "https://code-pulse.whchoi.net/?entry=missing-entry",
+      "status": 404,
+      "location": null
+    },
+    {
+      "url": "https://codepulse-sitebucket397a1860-dt50x7syqpht.s3.ap-northeast-2.amazonaws.com/pages/ko/index.html",
+      "status": 403,
+      "location": null
+    },
+    {
+      "url": "https://code-pulse.whchoi.net/_publication/control.json",
+      "status": 403,
+      "location": null
+    },
+    {
+      "url": "https://code-pulse.whchoi.net/feed.xml?lang=ko",
+      "status": 200,
+      "language": "ko",
+      "items": 50,
+      "articleLinksPinLanguage": true
+    },
+    {
+      "url": "https://code-pulse.whchoi.net/feed.xml?lang=en",
+      "status": 200,
+      "language": "en",
+      "items": 50,
+      "articleLinksPinLanguage": true
+    }
+  ],
+  "complete": true
+}

@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import type { Entry, FeedEntry } from '../shared/types';
+import { entryRevision } from '../shared/reading-revision';
+import { useLocale } from './i18n';
+export { entryRevision } from '../shared/reading-revision';
 
 export type ReadingStorage = Pick<Storage, 'length' | 'key' | 'getItem' | 'setItem' | 'removeItem'>;
 export type ReadRecord = { id: string; revision: string };
@@ -16,38 +19,6 @@ export type ReadingStore = ReadingState & {
   refresh(): void;
   syncStorage(event: ReadingStorageEvent): void;
 };
-
-/** A local change marker shared by feed and detail responses, never a security hash. */
-export function entryRevision(entry: FeedEntry | Entry): string {
-  const explanation = entry.explanation;
-  const fullChanges = entry.fullChanges;
-  // Fixed field order ignores JSON property order and collection/editorial clocks.
-  // Private source hashes are absent from the feed; updatedAt tracks source changes.
-  const visible = JSON.stringify([
-    entry.product, entry.channel, entry.version, entry.originalTitle,
-    entry.publishedAt, entry.publishedDate, entry.datePrecision,
-    entry.sourceUrl, entry.updatedAt,
-    entry.references.map(reference => [reference.title, reference.url, reference.kind]),
-    entry.explanationStatus,
-    explanation ? [
-      explanation.title, explanation.summary, explanation.whyItMatters,
-      explanation.actionItems, explanation.audience, explanation.category, explanation.impact,
-      explanation.highlights.map(highlight => [highlight.title, highlight.detail, highlight.evidence]),
-    ] : null,
-    // Keep legacy fingerprints unchanged until a list arrives. Generation clocks,
-    // model, source hash and format version do not describe a reader-visible edit.
-    ...(fullChanges ? [[fullChanges.status, fullChanges.sourceCount,
-      fullChanges.items.map(item => [item.id, item.text])]] : []),
-  ]);
-  let first = 0x811c9dc5;
-  let second = 0x9e3779b9;
-  for (let index = 0; index < visible.length; index++) {
-    const code = visible.charCodeAt(index);
-    first = Math.imul(first ^ code, 0x01000193);
-    second = Math.imul(second ^ code, 0x5f356495);
-  }
-  return `${(first >>> 0).toString(16).padStart(8, '0')}${(second >>> 0).toString(16).padStart(8, '0')}`;
-}
 
 const READING_KEY_PREFIX = 'code-pulse-read:v1:';
 const MAX_ID_LENGTH = 512;
@@ -172,6 +143,7 @@ export function createReadingStore(getStorage: () => ReadingStorage): ReadingSto
 }
 
 export function useReading(onNotice: (message: string) => void): ReadingState {
+  const { t } = useLocale();
   const [store] = useState(() => createReadingStore(() => window.localStorage));
   const snapshot = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
   const noticeSent = useRef(false);
@@ -186,8 +158,8 @@ export function useReading(onNotice: (message: string) => void): ReadingState {
   useEffect(() => {
     if (!snapshot.storageFailed || noticeSent.current) return;
     noticeSent.current = true;
-    onNotice('브라우저 저장소를 사용할 수 없습니다. 읽음 상태는 이 창을 닫기 전까지 유지합니다.');
-  }, [snapshot.storageFailed, onNotice]);
+    onNotice(t('브라우저 저장소를 사용할 수 없습니다. 읽음 상태는 이 창을 닫기 전까지 유지합니다.', 'Browser storage is unavailable. Reading status will remain until you close this tab.'));
+  }, [snapshot.storageFailed, onNotice, t]);
 
   const isRead = useCallback((entry: FeedEntry | Entry) => {
     const revision = snapshot.revisions.get(entry.id);

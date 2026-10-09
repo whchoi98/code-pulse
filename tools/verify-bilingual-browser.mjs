@@ -1,0 +1,83 @@
+import assert from 'node:assert/strict';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { chromium, expect } from '@playwright/test';
+
+const base = process.argv[2] ?? 'https://code-pulse.whchoi.net';
+const output = process.argv[3] ?? 'docs/screenshots/bilingual-production';
+const version = JSON.parse(await readFile('package.json', 'utf8')).version;
+const feed = await (await fetch(`${base}/content/en/feed.json`)).json();
+const exemplar = feed.entries.find(entry => entry.product === 'claude-code' && entry.version === '2.1.293');
+assert.ok(exemplar);
+const full = await (await fetch(`${base}${exemplar.detailUrl}`)).json();
+const browser = await chromium.launch({ headless: true });
+const errors = [], badResponses = [], reports = [];
+await mkdir(output, { recursive: true });
+try {
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  const page = await context.newPage();
+  const requests = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('response', response => { if (response.status() >= 400) badResponses.push({ url: response.url(), status: response.status() }); });
+  page.on('request', request => requests.push(new URL(request.url()).pathname));
+  await page.goto(`${base}/?lang=en`, { waitUntil: 'domcontentloaded' });
+  await expect(page.getByRole('searchbox', { name: 'Search changes' })).toBeVisible();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.locator('link[type="application/rss+xml"]')).toHaveAttribute('href', '/feed.xml?lang=en');
+  const firstId = await page.getByTestId('entry-card').first().getAttribute('data-entry-id');
+  const first = feed.entries.find(entry => entry.id === firstId);
+  await page.getByTestId('entry-card').first().locator('h3 a').click();
+  await expect(page.locator('.full-change-item')).toHaveCount(first.changeSummary.sourceCount);
+  await page.locator('.back-button').click();
+  await expect(page.getByTestId('entry-card').first()).toBeVisible();
+  const before = requests.filter(path => path === first.detailUrl).length;
+  await page.getByTestId('entry-card').first().locator('h3 a').click();
+  await expect(page.locator('.full-change-item')).toHaveCount(first.changeSummary.sourceCount);
+  assert.equal(requests.filter(path => path === first.detailUrl).length, before, 'A cached repeat must not request the detail again.');
+  reports.push({ check: 'repeat-detail-cache', entry: firstId, additionalRequests: 0 });
+
+  await page.goto(`${base}/?lang=en&entry=${exemplar.id}`);
+  await expect(page.getByRole('heading', { name: full.explanation.title, exact: true })).toBeVisible();
+  await expect(page.locator('.full-change-item')).toHaveCount(56);
+  await expect(page.locator('.source-disclosure')).toBeVisible();
+  await expect(page.locator('.why-section, .pending-explanation')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Copy article link', exact: true }).click();
+  const shared = new URL(await page.evaluate(() => navigator.clipboard.readText()));
+  assert.equal(shared.searchParams.get('lang'), 'en');
+  assert.equal(shared.searchParams.get('entry'), exemplar.id);
+  await expect(page.getByRole('button', { name: new RegExp(`version ${version.replaceAll('.', '\\.')}`) })).toHaveText(`v${version}`);
+  await page.getByRole('button', { name: 'Sources', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText('07:00');
+  await expect(page.getByRole('dialog')).not.toContainText(/[가-힣]/);
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page.screenshot({ path: `${output}/english-desktop.png` });
+  await page.setViewportSize({ width: 320, height: 760 });
+  await expect(page.locator('.full-change-item')).toHaveCount(56);
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+  await page.screenshot({ path: `${output}/english-mobile.png` });
+  await page.locator('header').getByRole('button', { name: '한국어', exact: true }).click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'ko');
+  await expect(page.locator('.full-change-item')).toHaveCount(56);
+  await expect(page.locator('link[type="application/rss+xml"]')).toHaveAttribute('href', '/feed.xml?lang=ko');
+  reports.push({ check: 'english-and-korean', entry: exemplar.id, itemsPerLanguage: 56, mobileWidth: 320, sharedLanguage: 'en', appVersion: version });
+  await context.close();
+
+  for (const language of ['ko', 'en']) {
+    const noScript = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+    const page = await noScript.newPage();
+    const response = await page.goto(`${base}/?lang=${language}&entry=${exemplar.id}`, { waitUntil: 'load' });
+    assert.equal(response.status(), 200);
+    assert.equal(response.headers().server, 'AmazonS3');
+    await expect(page.locator('html')).toHaveAttribute('lang', language);
+    await expect(page.locator('.full-change-item')).toHaveCount(56);
+    assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    await page.screenshot({ path: `${output}/${language}-without-javascript.png` });
+    reports.push({ check: 'rendered-without-javascript', language, items: 56, server: 'AmazonS3' });
+    await noScript.close();
+  }
+  assert.deepEqual(errors, []);
+  assert.deepEqual(badResponses, []);
+  const report = { checkedAt: new Date().toISOString(), base, version, reports, errors, badResponses, complete: true };
+  await writeFile(`${output}/bilingual-report.json`, `${JSON.stringify(report, null, 2)}\n`);
+  console.log(JSON.stringify(report));
+} finally { await browser.close(); }

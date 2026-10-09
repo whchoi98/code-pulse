@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-10-09T01:36:14.120Z",
+  "conditions": {
+    "mobile": "Pixel 7, 80ms latency, 1.6Mbps down, 750Kbps up, CPU 4x",
+    "desktop": "1440x1000, native network/CPU",
+    "cache": "Fresh context per run; repeated detail in same context"
+  },
+  "samplesPerMode": 3,
+  "sameFirstEntry": true,
+  "metrics": [
+    {
+      "mode": "desktop",
+      "metric": "listReadyMs",
+      "beforeMs": 345.9,
+      "afterMs": 246.6,
+      "changePercent": -28.7
+    },
+    {
+      "mode": "desktop",
+      "metric": "firstDetailMs",
+      "beforeMs": 148.3,
+      "afterMs": 77.7,
+      "changePercent": -47.6
+    },
+    {
+      "mode": "desktop",
+      "metric": "repeatedDetailMs",
+      "beforeMs": 83.6,
+      "afterMs": 54.9,
+      "changePercent": -34.3
+    },
+    {
+      "mode": "mobile",
+      "metric": "listReadyMs",
+      "beforeMs": 10642.7,
+      "afterMs": 4479.9,
+      "changePercent": -57.9
+    },
+    {
+      "mode": "mobile",
+      "metric": "firstDetailMs",
+      "beforeMs": 1585.2,
+      "afterMs": 378.1,
+      "changePercent": -76.1
+    },
+    {
+      "mode": "mobile",
+      "metric": "repeatedDetailMs",
+      "beforeMs": 230.6,
+      "afterMs": 440.1,
+      "changePercent": 90.8
+    }
+  ],
+  "limits": "Browser-context caches start empty. Edge cache state is uncontrolled. Click durations include automation scroll/actionability and rendering; repeated mobile elapsed time is higher despite zero extra detail requests, separately verified."
+}

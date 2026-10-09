@@ -2,6 +2,7 @@ import { BedrockExplainer, EDITORIAL_VERSION } from '../src/collector/explanatio
 import { configuredStore, WriteConflict } from '../src/collector/store.js';
 import type { Entry } from '../src/shared/types.js';
 import { mergeEditorialEdit } from './editorial-merge.js';
+import { publishConfiguredSite } from '../src/publishing/index.js';
 
 const store = configuredStore();
 const explainer = new BedrockExplainer();
@@ -38,5 +39,7 @@ for (const entry of current.snapshot.entries) {
   }
 }
 await save();
+const publication = await publishConfiguredSite(store);
+if (publication) console.log(JSON.stringify({ event: 'site_published', ...publication }));
 console.log(JSON.stringify({ event: 'polish_completed', edited: changes.size, failures }));
 if (failures) process.exitCode = 1;

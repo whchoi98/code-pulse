@@ -1,0 +1,53 @@
+{
+  "checkedAt": "2026-10-09T01:44:55.307Z",
+  "base": "https://code-pulse.whchoi.net/",
+  "snapshotGeneratedAt": "2026-10-09T01:41:56.101Z",
+  "schedule": {
+    "timezone": "Asia/Seoul",
+    "hour": 7
+  },
+  "languages": [
+    {
+      "language": "ko",
+      "records": 616,
+      "items": 20428,
+      "products": {
+        "claude-code": {
+          "records": 242,
+          "items": 6809
+        },
+        "codex": {
+          "records": 201,
+          "items": 11443
+        },
+        "kiro": {
+          "records": 173,
+          "items": 2176
+        }
+      },
+      "searchRecords": 616
+    },
+    {
+      "language": "en",
+      "records": 616,
+      "items": 20428,
+      "products": {
+        "claude-code": {
+          "records": 242,
+          "items": 6809
+        },
+        "codex": {
+          "records": 201,
+          "items": 11443
+        },
+        "kiro": {
+          "records": 173,
+          "items": 2176
+        }
+      },
+      "searchRecords": 616
+    }
+  ],
+  "complete": true,
+  "privateFieldsExposed": false
+}

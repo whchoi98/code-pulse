@@ -8,6 +8,7 @@ import { DEFAULT_MODEL_ID } from '../src/collector/explanation.js';
 import { S3Store, WriteConflict } from '../src/collector/store.js';
 import type { Snapshot } from '../src/shared/types.js';
 import { assertFullPublication } from './full-publication.js';
+import { publishConfiguredSite } from '../src/publishing/index.js';
 
 const { values } = parseArgs({
   options: { input: { type: 'string' }, write: { type: 'boolean', default: false }, output: { type: 'string', default: 'docs/backfill-publication.json' } },
@@ -52,6 +53,9 @@ if (values.write) {
   assert.ok(published);
   const after = await store.read();
   assertFullPublication(after.snapshot);
+  if (!process.env.SITE_BUCKET && !process.env.SITE_DIR && outputs.SiteBucketName) process.env.SITE_BUCKET = outputs.SiteBucketName;
+  const sitePublication = await publishConfiguredSite(store);
+  if (sitePublication) console.log(JSON.stringify({ event: 'site_published', ...sitePublication }));
   const report = {
     publishedAt: new Date().toISOString(), bucket: outputs.DataBucketName, etag: after.etag,
     importedEntries: incoming.entries.length, publishedEntries: after.snapshot.entries.length,

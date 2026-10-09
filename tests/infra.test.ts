@@ -108,7 +108,7 @@ describe('existing network and the CloudFront origin boundary', () => {
     const header = rule.Properties.Conditions.find((condition: any) => condition.Field === 'http-header').HttpHeaderConfig;
     expect(rule.Properties.Actions[0].Type).toBe('forward');
     const [, distribution] = resources('AWS::CloudFront::Distribution')[0]!;
-    const originHeader = distribution.Properties.DistributionConfig.Origins[0].OriginCustomHeaders[0];
+    const originHeader = distribution.Properties.DistributionConfig.Origins.find((origin: any) => origin.CustomOriginConfig).OriginCustomHeaders[0];
     expect(originHeader.HeaderName).toBe(header.HttpHeaderName);
     expect(originHeader.HeaderValue).toEqual(header.Values[0]);
     expect(JSON.stringify(originHeader.HeaderValue)).toContain('{{resolve:secretsmanager:');
@@ -290,7 +290,7 @@ describe('private Fargate runtime and storage isolation', () => {
     ]));
     expect(container.Environment.some((item: any) => item.Name === 'PRESENCE_SECRET')).toBe(false);
     const [, distribution] = resources('AWS::CloudFront::Distribution')[0]!;
-    expect(JSON.stringify(distribution.Properties.DistributionConfig.Origins[0].OriginCustomHeaders)).not.toContain(secretId);
+    expect(JSON.stringify(distribution.Properties.DistributionConfig.Origins.find((origin: any) => origin.CustomOriginConfig).OriginCustomHeaders)).not.toContain(secretId);
     const secretGrants = roleStatements(web.Properties.ExecutionRoleArn)
       .filter(statement => actions(statement).some(action => action.startsWith('secretsmanager:')));
     expect(secretGrants).toHaveLength(1);
@@ -304,7 +304,7 @@ describe('private Fargate runtime and storage isolation', () => {
 
   it('limits the collector to the snapshot, raw writes and the requested Haiku 5.5 inference profile', () => {
     const statements = roleStatements(task('collector')[1].Properties.TaskRoleArn).filter(statement => statement.Effect === 'Allow');
-    const s3Statements = statements.filter(statement => actions(statement).some(action => action.startsWith('s3:')));
+    const s3Statements = statements.filter(statement => actions(statement).some(action => action.startsWith('s3:')) && JSON.stringify(statement.Resource).includes('DataBucket'));
     expect(s3Statements.flatMap(actions).sort()).toEqual(['s3:GetObject', 's3:ListBucket', 's3:PutObject', 's3:PutObject']);
     const snapshot = s3Statements.find(statement => actions(statement).includes('s3:GetObject'))!;
     expect(actions(snapshot).sort()).toEqual(['s3:GetObject', 's3:PutObject']);
@@ -334,10 +334,10 @@ describe('private Fargate runtime and storage isolation', () => {
 });
 
 describe('scheduled collection and monitoring', () => {
-  it('runs one private worker at 09:00 Seoul with retries and a dead letter queue', () => {
+  it('runs one private worker at 07:00 Seoul with retries and a dead letter queue', () => {
     const [workerId] = task('collector');
     template.hasResourceProperties('AWS::Scheduler::Schedule', {
-      ScheduleExpression: 'cron(0 9 * * ? *)',
+      ScheduleExpression: 'cron(0 7 * * ? *)',
       ScheduleExpressionTimezone: 'Asia/Seoul',
       FlexibleTimeWindow: { Mode: 'OFF' },
       State: 'ENABLED',
@@ -446,14 +446,17 @@ describe('edge caching and operational outputs', () => {
 
   it('redirects alternate hosts before caching and preserves encoded queries and repeated values', () => {
     const functions = resources('AWS::CloudFront::Function');
-    expect(functions).toHaveLength(1);
-    const [functionId, redirect] = functions[0]!;
+    expect(functions).toHaveLength(2);
+    const [functionId, redirect] = functions.find(([id]) => id.startsWith('CanonicalHost'))!;
     expect(redirect.Properties.AutoPublish).toBe(true);
     const [, distribution] = resources('AWS::CloudFront::Distribution')[0]!;
     const config = distribution.Properties.DistributionConfig;
+    const [staticFunctionId] = functions.find(([id]) => id.startsWith('StaticRouter'))!;
+    const staticOrigin = config.Origins.find((origin: any) => origin.S3OriginConfig);
     for (const behavior of [config.DefaultCacheBehavior, ...config.CacheBehaviors]) {
+      const selectedFunction = behavior.TargetOriginId === staticOrigin.Id ? staticFunctionId : functionId;
       expect(behavior.FunctionAssociations).toEqual([{
-        EventType: 'viewer-request', FunctionARN: { 'Fn::GetAtt': [functionId, 'FunctionARN'] },
+        EventType: 'viewer-request', FunctionARN: { 'Fn::GetAtt': [selectedFunction, 'FunctionARN'] },
       }]);
     }
     const handler = runInNewContext(`${redirect.Properties.FunctionCode}\nhandler;`);
@@ -480,8 +483,8 @@ describe('edge caching and operational outputs', () => {
 
   it('keeps canonical requests and non-read requests on the normal origin-check path', () => {
     const functions = resources('AWS::CloudFront::Function');
-    expect(functions).toHaveLength(1);
-    const handler = runInNewContext(`${functions[0]![1].Properties.FunctionCode}\nhandler;`);
+    expect(functions).toHaveLength(2);
+    const handler = runInNewContext(`${functions.find(([id]) => id.startsWith('CanonicalHost'))![1].Properties.FunctionCode}\nhandler;`);
     const canonical = {
       method: 'GET', uri: '/', querystring: {},
       headers: { host: { value: 'code-pulse.whchoi.net' } },
@@ -526,7 +529,7 @@ describe('edge caching and operational outputs', () => {
     const [, distribution] = resources('AWS::CloudFront::Distribution')[0]!;
     const config = distribution.Properties.DistributionConfig;
     expect(config.DefaultCacheBehavior.ViewerProtocolPolicy).toBe('redirect-to-https');
-    expect(config.Origins[0].CustomOriginConfig.OriginProtocolPolicy).toBe('http-only');
+    expect(config.Origins.find((origin: any) => origin.CustomOriginConfig).CustomOriginConfig.OriginProtocolPolicy).toBe('http-only');
     const api = config.CacheBehaviors.find((behavior: any) => behavior.PathPattern === '/api/*');
     expect(api.AllowedMethods).toEqual(['GET', 'HEAD']);
     const cachePolicy = template.toJSON().Resources[api.CachePolicyId.Ref].Properties.CachePolicyConfig;
@@ -541,7 +544,7 @@ describe('edge caching and operational outputs', () => {
       expect(response.ErrorCachingMinTTL).toBe(0);
     }
     for (const [, policy] of resources('AWS::CloudFront::ResponseHeadersPolicy')) {
-      expect(policy.Properties.ResponseHeadersPolicyConfig.SecurityHeadersConfig.ContentSecurityPolicy).toBeUndefined();
+      expect(policy.Properties.ResponseHeadersPolicyConfig.SecurityHeadersConfig.ContentSecurityPolicy).toMatchObject({ Override: true, ContentSecurityPolicy: expect.stringContaining("script-src 'self'") });
     }
   });
 
@@ -569,7 +572,7 @@ describe('edge caching and operational outputs', () => {
     const outputs = template.toJSON().Outputs ?? {};
     for (const name of ['SiteUrl', 'DistributionId', 'DistributionDomainName', 'AlbDnsName', 'ClusterName', 'ServiceName',
       'WorkerTaskDefinitionArn', 'WorkerSecurityGroupId', 'PrivateSubnetIds', 'DataBucketName', 'ScheduleName',
-      'WebLogGroupName', 'CollectorLogGroupName', 'PresenceTableName']) {
+      'WebLogGroupName', 'CollectorLogGroupName', 'PresenceTableName', 'SiteBucketName']) {
       expect(outputs[name], name).toBeDefined();
     }
     expect(outputs.PrivateSubnetIds.Value).toBe(privateSubnets.join(','));
@@ -580,4 +583,86 @@ describe('edge caching and operational outputs', () => {
     expect(Annotations.fromStack(stack).findError('*', Match.anyValue())).toEqual([]);
     expect(Annotations.fromStack(stack).findWarning('*', Match.anyValue())).toEqual([]);
   });
+});
+
+
+describe('private pre-rendered site delivery', () => {
+  it('serves pages and immutable public objects from a separate S3 bucket using SigV4 OAC', () => {
+    template.resourceCountIs('AWS::S3::Bucket', 2);
+    template.hasResourceProperties('AWS::CloudFront::OriginAccessControl', {
+      OriginAccessControlConfig: { OriginAccessControlOriginType: 's3', SigningBehavior: 'always', SigningProtocol: 'sigv4' },
+    });
+    const config = resources('AWS::CloudFront::Distribution')[0]![1].Properties.DistributionConfig;
+    const s3Origin = config.Origins.find((origin: any) => origin.S3OriginConfig);
+    expect(s3Origin).toBeDefined();
+    expect(config.DefaultCacheBehavior.TargetOriginId).toBe(s3Origin.Id);
+    expect(config.DefaultRootObject).toBe('pages/ko/index.html');
+    for (const path of ['/content/*', '/content/objects/*', '/assets/*', '/fonts/*', '/brand/*']) {
+      const behavior = config.CacheBehaviors.find((item: any) => item.PathPattern === path);
+      expect(behavior?.TargetOriginId, path).toBe(s3Origin.Id);
+    }
+    for (const path of ['/api/presence', '/api/*', '/feed.xml', '/healthz']) {
+      expect(config.CacheBehaviors.find((item: any) => item.PathPattern === path).TargetOriginId).not.toBe(s3Origin.Id);
+    }
+    const collector = task('collector')[1].Properties.ContainerDefinitions[0];
+    expect(collector.Environment).toContainEqual({ Name: 'SITE_BUCKET', Value: template.toJSON().Outputs.SiteBucketName.Value });
+    expect(task('web')[1].Properties.ContainerDefinitions[0].Environment.some((item: any) => item.Name === 'SITE_BUCKET')).toBe(false);
+  });
+
+  it('rewrites shared query URLs before the cache key and rejects traversal without losing the viewer query', () => {
+    const fn = resources('AWS::CloudFront::Function').find(([id]) => id.startsWith('StaticRouter'))![1].Properties.FunctionCode;
+    const handler = runInNewContext(`${fn}\nhandler;`);
+    const request = (querystring: object) => ({ method: 'GET', uri: '/', headers: { host: { value: 'code-pulse.whchoi.net' } }, querystring });
+    const english = handler({ request: request({ lang: { value: 'en' }, q: { value: 'hooks' } }) });
+    expect(english.uri).toBe('/pages/en/index.html');
+    expect(Object.keys(english.querystring)).toEqual([]);
+    const detail = handler({ request: request({ lang: { value: 'en' }, entry: { value: 'claude-code-f0dfd4cdfef10f9572e0' } }) });
+    expect(detail.uri).toBe('/pages/en/claude-code-f0dfd4cdfef10f9572e0.html');
+    const malicious = handler({ request: request({ entry: { value: '../_publication/control' } }) });
+    expect(malicious.statusCode).toBe(404);
+    const api = { ...request({ product: { value: 'kiro' } }), uri: '/feed.xml' };
+    expect(handler({ request: api }).querystring).toEqual(api.querystring);
+  });
+
+  it('keeps publication control records inaccessible to the CloudFront reader', () => {
+    const statements = resources('AWS::S3::BucketPolicy').flatMap(([, value]) => value.Properties.PolicyDocument.Statement);
+    expect(statements).toContainEqual(expect.objectContaining({
+      Effect: 'Deny', Principal: { Service: 'cloudfront.amazonaws.com' }, Action: 's3:GetObject',
+      Resource: expect.anything(),
+    }));
+    expect(statements.some(statement => statement.Effect === 'Deny' && JSON.stringify(statement.Resource).includes('/_publication/*'))).toBe(true);
+    const worker = roleStatements(task('collector')[1].Properties.TaskRoleArn);
+    expect(worker.some(statement => actions(statement).includes('s3:PutObject') && JSON.stringify(statement.Resource).includes('SiteBucket'))).toBe(true);
+    expect(roleStatements(task('web')[1].Properties.TaskRoleArn).some(statement => JSON.stringify(statement.Resource).includes('SiteBucket'))).toBe(false);
+  });
+});
+
+
+it('can provision static delivery while retaining the currently served web image', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'code-pulse-stage-'));
+  try {
+    const retained = '061525506239.dkr.ecr.ap-northeast-2.amazonaws.com/cdk-hnb659fds-container-assets-061525506239-ap-northeast-2:old-build';
+    const app = new App({ outdir: directory, context: { staticRouting: 'false', retainedWebImage: retained } });
+    const staged = new CodePulseStack(app, 'CodePulse', { env: { account: '061525506239', region: 'ap-northeast-2' } });
+    Aspects.of(app).add(new AwsSolutionsChecks({ verbose: true }));
+    const result = Template.fromStack(staged);
+    // Changing a published function in place can rewrite a request before the
+    // distribution has switched its origin. Prepare a separate function once.
+    const stagedFunctions = result.findResources('AWS::CloudFront::Function');
+    const finalFunctions = template.findResources('AWS::CloudFront::Function');
+    for (const [id, fn] of Object.entries(stagedFunctions)) {
+      expect(fn.Properties.FunctionCode).toBe(finalFunctions[id].Properties.FunctionCode);
+    }
+    const definitions = Object.values(result.findResources('AWS::ECS::TaskDefinition')) as Resource[];
+    const web = definitions.find(definition => definition.Properties.ContainerDefinitions[0].Name === 'web')!;
+    expect(JSON.stringify(web.Properties.ContainerDefinitions[0].Image)).toContain('container-assets-061525506239-ap-northeast-2:old-build');
+    const config = (Object.values(result.findResources('AWS::CloudFront::Distribution'))[0] as Resource).Properties.DistributionConfig;
+    expect(config.Origins.find((origin: any) => origin.Id === config.DefaultCacheBehavior.TargetOriginId).CustomOriginConfig).toBeDefined();
+    const execution = web.Properties.ExecutionRoleArn['Fn::GetAtt'][0];
+    const policies = (Object.values(result.findResources('AWS::IAM::Policy')) as Resource[]).filter(policy => policy.Properties.Roles.some((role: any) => role.Ref === execution));
+    expect(policies.some(policy => policy.Properties.PolicyDocument.Statement.some((statement: Statement) =>
+      actions(statement).includes('ecr:BatchGetImage') && JSON.stringify(statement.Resource).includes('container-assets')))).toBe(true);
+    expect(Annotations.fromStack(staged).findError('*', Match.anyValue())).toEqual([]);
+    expect(Annotations.fromStack(staged).findWarning('*', Match.anyValue())).toEqual([]);
+  } finally { rmSync(directory, { recursive: true, force: true }); }
 });

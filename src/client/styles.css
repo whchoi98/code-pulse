@@ -89,6 +89,11 @@ button, a, input, select, summary { outline-offset: 4px; }
 .nav-link.active::after { content: ""; width: 100%; position: absolute; bottom: 0; height: 2px; left: 0; background: var(--accent); border-radius: 2px 2px 0 0; }
 .saved-count { min-width: 19px; height: 19px; padding: 0 4px; display: grid; place-items: center; color: var(--accent); background: var(--accent-wash); border-radius: 5px; font-size: 10px; }
 .header-actions { display: flex; align-items: center; gap: 19px; margin-left: auto; }
+.language-switch { display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 8px; flex-shrink: 0; }
+.language-switch button { min-width: 31px; min-height: 30px; padding: 5px; border-radius: 5px; font-family: "IBM Plex Mono", monospace; font-size: 11px; color: var(--muted); }
+.language-switch button:hover { color: var(--ink); background: var(--subtle); }
+.language-switch button[aria-pressed="true"] { color: var(--accent-dark); background: var(--accent-wash); font-weight: 600; }
+.source-label { font-size: 10px; color: var(--muted); }
 .source-button { display: flex; gap: 6px; align-items: center; color: var(--muted); font-size: 12px; padding: 10px 0; }
 .header-divider { width: 1px; height: 18px; background: var(--line); }
 .icon-button { width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center; color: var(--muted); border-radius: 7px; padding: 0; flex-shrink: 0; transition: color 150ms, background 150ms; }
@@ -363,9 +368,9 @@ button, a, input, select, summary { outline-offset: 4px; }
 .detail-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 25px; }
 .detail-actions .primary-button, .detail-actions .secondary-button { font-size: 11px; min-height: 38px; }
 .reading-toggle[aria-pressed="true"] > svg { color: var(--accent); }
-.ai-disclosure { display: flex; gap: 11px; align-items: flex-start; border-radius: 8px; background: var(--accent-wash); padding: 14px 16px; margin-top: 31px; }
-.ai-disclosure > span { color: var(--accent); font-size: 10px; white-space: nowrap; font-weight: 600; line-height: 1.9; }
-.ai-disclosure > p { font-size: 11px; line-height: 1.85; color: var(--muted); word-break: keep-all; }
+.ai-disclosure, .source-disclosure { display: flex; gap: 11px; align-items: flex-start; border-radius: 8px; background: var(--accent-wash); padding: 14px 16px; margin-top: 31px; }
+.ai-disclosure > span, .source-disclosure > span { color: var(--accent); font-size: 10px; white-space: nowrap; font-weight: 600; line-height: 1.9; }
+.ai-disclosure > p, .source-disclosure > p { font-size: 11px; line-height: 1.85; color: var(--muted); word-break: keep-all; }
 .detail-section { padding-top: 32px; margin-top: 31px; border-top: 1px solid var(--line); }
 .detail-section.why-section { border-top: 0; padding-top: 0; margin-top: 37px; }
 .section-label { font-family: "IBM Plex Mono", monospace; color: var(--accent); font-size: 9px; letter-spacing: 1px; margin-bottom: 10px; }
@@ -467,9 +472,11 @@ button, a, input, select, summary { outline-offset: 4px; }
   .primary-nav { margin-left: 0; width: 100%; order: 3; height: 43px; gap: 23px; }
   .nav-link { font-size: 11px; padding: 0 0 13px; }
   .nav-link > svg { width: 13px; }
-  .header-actions { margin-left: auto; gap: 8px; }
-  .header-divider { height: 15px; margin: 0 3px; }
-  .source-button { padding: 10px; }
+  .header-actions { margin-left: auto; gap: 4px; }
+  .header-divider { display: none; }
+  .language-switch { padding: 2px; gap: 0; }
+  .language-switch button { min-width: 30px; min-height: 30px; }
+  .source-button { padding: 7px; }
   .theme-button { width: 29px; }
   .page-shell { padding: 0 20px; }
   .hero { grid-template-columns: minmax(0, 1fr); gap: 29px; padding: 35px 0 31px; }
@@ -590,8 +597,8 @@ button, a, input, select, summary { outline-offset: 4px; }
   .detail-actions { gap: 6px; margin-top: 21px; }
   .detail-actions .primary-button, .detail-actions .secondary-button { font-size: 10px; padding: 7px 9px; gap: 5px; min-height: 37px; }
   .detail-actions svg { width: 13px; }
-  .ai-disclosure { flex-direction: column; gap: 5px; padding: 12px 13px; margin-top: 24px; }
-  .ai-disclosure > p { font-size: 10px; }
+  .ai-disclosure, .source-disclosure { flex-direction: column; gap: 5px; padding: 12px 13px; margin-top: 24px; }
+  .ai-disclosure > p, .source-disclosure > p { font-size: 10px; }
   .detail-section { margin-top: 27px; padding-top: 27px; }
   .detail-section.why-section { margin-top: 29px; }
   .section-label { font-size: 8px; margin-bottom: 9px; }

@@ -8,6 +8,7 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as cloudwatch from 'aws-cdk-lib/aws-cloudwatch';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as ecrAssets from 'aws-cdk-lib/aws-ecr-assets';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
@@ -19,6 +20,7 @@ import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import { Construct } from 'constructs';
 import { NagSuppressions } from 'cdk-nag';
+import { COLLECTION_SCHEDULE } from '../../src/shared/schedule.js';
 
 const APP_PORT = 8080;
 const ORIGIN_HEADER = 'X-Code-Pulse-Origin';
@@ -34,6 +36,14 @@ export class CodePulseStack extends Stack {
   constructor(scope: Construct, id: string, props: StackProps) {
     super(scope, id, props);
     Tags.of(this).add('Application', 'code-pulse');
+    // Provision and populate the new origin before switching existing traffic.
+    const staticRouting = ![false, 'false'].includes(this.node.tryGetContext('staticRouting'));
+    const retainedWebImage: unknown = this.node.tryGetContext('retainedWebImage');
+    const retainedImageParts = typeof retainedWebImage === 'string'
+      ? retainedWebImage.match(/^061525506239\.dkr\.ecr\.ap-northeast-2\.amazonaws\.com\/([a-z0-9][a-z0-9._/-]+)(?::([a-zA-Z0-9_.-]+)|@(sha256:[a-f0-9]{64}))$/) : null;
+    if (retainedWebImage !== undefined && !retainedImageParts) {
+      throw new Error('retainedWebImage must refer to the existing Code Pulse ECR image.');
+    }
 
     // These identifiers were verified with AWS before implementation. Importing
     // attributes avoids lookups and cannot create or mutate the shared network.
@@ -84,6 +94,26 @@ export class CodePulseStack extends Stack {
         { id: 'IncompleteUploads', abortIncompleteMultipartUploadAfter: Duration.days(1) },
       ],
     });
+    const siteBucket = new s3.Bucket(this, 'SiteBucket', {
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      objectOwnership: s3.ObjectOwnership.BUCKET_OWNER_ENFORCED,
+      enforceSSL: true,
+      versioned: true,
+      removalPolicy: RemovalPolicy.RETAIN,
+      lifecycleRules: [
+        { id: 'ReplacedPages', noncurrentVersionExpiration: Duration.days(30) },
+        { id: 'IncompleteUploads', abortIncompleteMultipartUploadAfter: Duration.days(1) },
+      ],
+    });
+    // Publication control includes private source-version information. The OAC
+    // can read site files but must never return this prefix to a viewer.
+    siteBucket.addToResourcePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.DENY,
+      principals: [new iam.ServicePrincipal('cloudfront.amazonaws.com')],
+      actions: ['s3:GetObject'],
+      resources: [siteBucket.arnForObjects('_publication/*')],
+    }));
     const presenceTable = new dynamodb.Table(this, 'PresenceTable', {
       partitionKey: { name: 'pk', type: dynamodb.AttributeType.STRING },
       sortKey: { name: 'sk', type: dynamodb.AttributeType.STRING },
@@ -148,8 +178,12 @@ export class CodePulseStack extends Stack {
       keepaliveTimeout: Duration.seconds(30),
     });
     const securityHeaders = new cloudfront.ResponseHeadersPolicy(this, 'SecurityHeaders', {
-      comment: 'Code Pulse security headers; the application owns its CSP',
+      comment: 'Code Pulse security headers for both S3 pages and the API',
       securityHeadersBehavior: {
+        contentSecurityPolicy: {
+          contentSecurityPolicy: "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'",
+          override: true,
+        },
         contentTypeOptions: { override: true },
         frameOptions: { frameOption: cloudfront.HeadersFrameOption.DENY, override: true },
         referrerPolicy: { referrerPolicy: cloudfront.HeadersReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN, override: true },
@@ -192,6 +226,46 @@ export class CodePulseStack extends Stack {
   };
 }`),
     });
+    // Publish this separately in the prepare stage. Its association and the S3
+    // origin change together in the distribution, so a rewritten URI can never
+    // reach the legacy ALB merely because a function update propagated first.
+    const staticRouter = new cloudfront.Function(this, 'StaticRouter', {
+      comment: 'Resolve existing shared URLs to pre-rendered S3 pages',
+      runtime: cloudfront.FunctionRuntime.JS_2_0,
+      code: cloudfront.FunctionCode.fromInline(`function handler(event) {
+  var request = event.request;
+  if (request.method !== 'GET' && request.method !== 'HEAD') return request;
+  if (request.headers.host.value.toLowerCase() === '${PUBLIC_DOMAIN}') {
+    if (request.uri === '/' || request.uri === '/index.html') {
+      var language = request.querystring.lang && request.querystring.lang.value === 'en' ? 'en' : 'ko';
+      var entry = request.querystring.entry && request.querystring.entry.value;
+      if (entry && !/^[a-z0-9-]{1,128}$/.test(entry)) {
+        return { statusCode: 404, statusDescription: 'Not Found', headers: { 'cache-control': { value: 'no-store' } } };
+      }
+      request.uri = '/pages/' + language + '/' + (entry || 'index') + '.html';
+      request.querystring = {};
+    } else if (request.uri.indexOf('/api/') !== 0 && request.uri !== '/feed.xml' && request.uri !== '/healthz') {
+      request.querystring = {};
+    }
+    return request;
+  }
+  var query = [];
+  Object.keys(request.querystring).forEach(function (key) {
+    var parameter = request.querystring[key];
+    (parameter.multiValue || [parameter]).forEach(function (item) {
+      query.push(key + '=' + item.value);
+    });
+  });
+  return {
+    statusCode: 308,
+    statusDescription: 'Permanent Redirect',
+    headers: {
+      location: { value: 'https://${PUBLIC_DOMAIN}' + request.uri + (query.length ? '?' + query.join('&') : '') },
+      'cache-control': { value: 'public, max-age=300' }
+    }
+  };
+}`),
+    });
     const publicBehavior = {
       origin,
       viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
@@ -200,12 +274,18 @@ export class CodePulseStack extends Stack {
       functionAssociations: [{ function: canonicalHost, eventType: cloudfront.FunctionEventType.VIEWER_REQUEST }],
       compress: true,
     };
+    const siteOrigin = origins.S3BucketOrigin.withOriginAccessControl(siteBucket);
+    const staticBehavior = {
+      ...publicBehavior, origin: siteOrigin,
+      functionAssociations: [{ function: staticRouter, eventType: cloudfront.FunctionEventType.VIEWER_REQUEST }],
+    };
     const distribution = new cloudfront.Distribution(this, 'Distribution', {
       comment: 'Code Pulse official changelog briefings',
       domainNames: [PUBLIC_DOMAIN],
       certificate: acm.Certificate.fromCertificateArn(this, 'PublicCertificate', CERTIFICATE_ARN),
       minimumProtocolVersion: cloudfront.SecurityPolicyProtocol.TLS_V1_2_2021,
-      defaultBehavior: { ...publicBehavior, cachePolicy: sharedCache },
+      defaultRootObject: staticRouting ? 'pages/ko/index.html' : undefined,
+      defaultBehavior: { ...(staticRouting ? staticBehavior : publicBehavior), cachePolicy: sharedCache },
       additionalBehaviors: {
         '/api/presence': {
           ...publicBehavior,
@@ -215,8 +295,12 @@ export class CodePulseStack extends Stack {
           compress: false,
         },
         '/api/*': { ...publicBehavior, cachePolicy: sharedCache },
-        '/assets/*': { ...publicBehavior, cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED },
-        '/fonts/*': { ...publicBehavior, cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED },
+        '/feed.xml': { ...publicBehavior, cachePolicy: sharedCache },
+        '/content/objects/*': { ...staticBehavior, cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED },
+        '/content/*': { ...staticBehavior, cachePolicy: sharedCache },
+        '/assets/*': { ...(staticRouting ? staticBehavior : publicBehavior), cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED },
+        '/fonts/*': { ...(staticRouting ? staticBehavior : publicBehavior), cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED },
+        '/brand/*': { ...(staticRouting ? staticBehavior : publicBehavior), cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED },
         '/healthz': { ...publicBehavior, cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED, compress: false },
       },
       errorResponses: [400, 403, 404, 500, 502, 503, 504].map(httpStatus => ({ httpStatus, ttl: Duration.seconds(0) })),
@@ -224,6 +308,14 @@ export class CodePulseStack extends Stack {
       enableIpv6: true,
       priceClass: cloudfront.PriceClass.PRICE_CLASS_200,
     });
+    // ListBucket only distinguishes missing objects (404 instead of 403). A
+    // default root and the viewer rewrite prevent bucket-listing root requests.
+    siteBucket.addToResourcePolicy(new iam.PolicyStatement({
+      principals: [new iam.ServicePrincipal('cloudfront.amazonaws.com')],
+      actions: ['s3:ListBucket'],
+      resources: [siteBucket.bucketArn],
+      conditions: { StringEquals: { 'AWS:SourceArn': this.formatArn({ service: 'cloudfront', region: '', resource: 'distribution', resourceName: distribution.distributionId }) } },
+    }));
     const siteUrl = `https://${PUBLIC_DOMAIN}`;
 
     const projectDirectory = fileURLToPath(new URL('../../', import.meta.url));
@@ -271,6 +363,13 @@ export class CodePulseStack extends Stack {
       resources: [dataBucket.arnForObjects('published/snapshot.json')],
     }));
     workerTaskRole.addToPolicy(new iam.PolicyStatement({
+      actions: ['s3:GetObject', 's3:PutObject'],
+      resources: [siteBucket.arnForObjects('*')],
+    }));
+    workerTaskRole.addToPolicy(new iam.PolicyStatement({
+      actions: ['s3:ListBucket'], resources: [siteBucket.bucketArn],
+    }));
+    workerTaskRole.addToPolicy(new iam.PolicyStatement({
       actions: ['s3:PutObject'],
       resources: [dataBucket.arnForObjects('raw/*')],
     }));
@@ -303,7 +402,9 @@ export class CodePulseStack extends Stack {
     });
     webTask.addContainer('web', {
       containerName: 'web',
-      image: ecs.ContainerImage.fromDockerImageAsset(image),
+      image: retainedImageParts
+        ? ecs.ContainerImage.fromEcrRepository(ecr.Repository.fromRepositoryName(this, 'RetainedWebRepository', retainedImageParts[1]), retainedImageParts[2] || retainedImageParts[3])
+        : ecs.ContainerImage.fromDockerImageAsset(image),
       user: 'node',
       readonlyRootFilesystem: true,
       portMappings: [{ containerPort: APP_PORT, protocol: ecs.Protocol.TCP }],
@@ -363,6 +464,8 @@ export class CodePulseStack extends Stack {
         DATA_BUCKET: dataBucket.bucketName,
         AWS_REGION: this.region,
         BEDROCK_MODEL_ID: MODEL_ID,
+        SITE_BUCKET: siteBucket.bucketName,
+        STATIC_DIR: '/app/dist/public',
         ENABLE_METRICS: 'true',
         PUBLIC_BASE_URL: siteUrl,
       },
@@ -396,9 +499,9 @@ export class CodePulseStack extends Stack {
     const dailySchedule = new scheduler.CfnSchedule(this, 'DailyCollection', {
       name: 'code-pulse-daily',
       groupName: scheduleGroup.ref,
-      description: 'Collect official coding assistant changes every day at 09:00 Seoul',
-      scheduleExpression: 'cron(0 9 * * ? *)',
-      scheduleExpressionTimezone: 'Asia/Seoul',
+      description: 'Collect official coding assistant changes every day at 07:00 Seoul',
+      scheduleExpression: `cron(0 ${COLLECTION_SCHEDULE.hour} * * ? *)`,
+      scheduleExpressionTimezone: COLLECTION_SCHEDULE.timezone,
       flexibleTimeWindow: { mode: 'OFF' },
       state: 'ENABLED',
       target: {
@@ -496,6 +599,8 @@ export class CodePulseStack extends Stack {
       WorkerSecurityGroupId: workerSecurityGroup.securityGroupId,
       PrivateSubnetIds: PRIVATE_SUBNET_IDS.join(','),
       DataBucketName: dataBucket.bucketName,
+      SiteBucketName: siteBucket.bucketName,
+      StaticRoutingEnabled: String(staticRouting),
       PresenceTableName: presenceTable.tableName,
       ScheduleName: dailySchedule.ref,
       ScheduleGroupName: scheduleGroup.ref,
@@ -509,6 +614,9 @@ export class CodePulseStack extends Stack {
     // infrastructure report. No stack-level suppressions are used.
     NagSuppressions.addResourceSuppressions(dataBucket, [
       { id: 'AwsSolutions-S1', reason: 'The bucket holds public-source snapshots and raw documents. Object access logging is omitted for the initial low-volume service; application runs and failures are recorded in CloudWatch.' },
+    ]);
+    NagSuppressions.addResourceSuppressions(siteBucket, [
+      { id: 'AwsSolutions-S1', reason: 'This private bucket contains pre-rendered public pages and immutable content. Publication results are logged to CloudWatch; object access logging is omitted for this low-volume public read service.' },
     ]);
     NagSuppressions.addResourceSuppressions(originToken, [
       { id: 'AwsSolutions-SMG4', reason: 'Origin verification requires a coordinated CloudFront and ALB header rollout. Automatic secret rotation alone would not update both dynamic references; rotate through a controlled infrastructure update.' },
@@ -531,6 +639,7 @@ export class CodePulseStack extends Stack {
       ]);
     }
     const bucketLogicalId = this.getLogicalId(dataBucket.node.defaultChild as s3.CfnBucket);
+    const siteBucketLogicalId = this.getLogicalId(siteBucket.node.defaultChild as s3.CfnBucket);
     NagSuppressions.addResourceSuppressions(webTaskRole.node.findChild('DefaultPolicy'), [
       {
         id: 'AwsSolutions-IAM5',
@@ -539,6 +648,11 @@ export class CodePulseStack extends Stack {
       },
     ], true);
     NagSuppressions.addResourceSuppressions(workerTaskRole.node.findChild('DefaultPolicy'), [
+      {
+        id: 'AwsSolutions-IAM5',
+        reason: 'Only the collector publishes this separate site bucket. GetObject and PutObject cover content-addressed public files and conditional publication controls; no object deletion or private source access is granted here.',
+        appliesTo: [`Resource::<${siteBucketLogicalId}.Arn>/*`],
+      },
       {
         id: 'AwsSolutions-IAM5',
         reason: 'The collector writes content-addressed official source documents below raw/. The wildcard covers changing object keys inside this one prefix and permits only PutObject.',

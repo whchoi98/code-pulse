@@ -1,5 +1,5 @@
 import { isOfficialUrl } from '../collector/official-fetch.js';
-import type { FeedEntry, ProductId } from '../shared/types.js';
+import type { FeedEntry, Language, ProductId } from '../shared/types.js';
 
 const PRODUCT_NAMES: Record<ProductId, string> = {
   'claude-code': 'Claude Code',
@@ -33,39 +33,44 @@ function escapeXml(value: string): string {
     .replaceAll('"', '&quot;').replaceAll("'", '&apos;');
 }
 
-function entryUrl(baseUrl: string, id: string): string {
+function entryUrl(baseUrl: string, id: string, language: Language): string {
   const url = new URL(baseUrl);
   url.searchParams.set('entry', id);
+  url.searchParams.set('lang', language);
   return url.href;
 }
 
-function itemXml(entry: FeedEntry, baseUrl: string): string {
+function itemXml(entry: FeedEntry, baseUrl: string, language: Language): string {
+  const en = language === 'en';
   const explanation = entry.explanation!;
-  const link = entryUrl(baseUrl, entry.id);
+  const link = entryUrl(baseUrl, entry.id, language);
+  // Preserve the identity already stored by existing Korean subscribers.
+  const guid = new URL(link);
+  if (language === 'ko') guid.searchParams.delete('lang');
   const published = new Date(entry.publishedAt);
-  const precision = entry.datePrecision === 'day' ? '발표 시각 미제공' : published.toISOString();
+  const precision = entry.datePrecision === 'day' ? en ? 'Publication time not provided' : '발표 시각 미제공' : published.toISOString();
   const sourceUrl = isOfficialUrl(entry.sourceUrl) ? new URL(entry.sourceUrl).href : undefined;
   // Escape text and attributes for HTML first, then encode that complete HTML
   // as XML text. This also keeps source text such as "]]>" out of CDATA syntax.
   const description = [
-    '<p><strong>AI 해설</strong></p>',
-    `<p>원문 발표일: ${escapeXml(entry.publishedDate)} (${escapeXml(precision)})</p>`,
+    `<p><strong>${en ? 'Official English release notes' : 'AI 해설'}</strong></p>`,
+    `<p>${en ? 'Published' : '원문 발표일'}: ${escapeXml(entry.publishedDate)} (${escapeXml(precision)})</p>`,
     `<p>${escapeXml(explanation.summary)}</p>`,
-    `<p>${escapeXml(explanation.whyItMatters)}</p>`,
+    ...(explanation.whyItMatters ? [`<p>${escapeXml(explanation.whyItMatters)}</p>`] : []),
     ...(entry.fullChanges ? [
-      `<h3>전체 변경 사항 (${entry.fullChanges.sourceCount}개)</h3>`,
+      `<h3>${en ? `All changes (${entry.fullChanges.sourceCount})` : `전체 변경 사항 (${entry.fullChanges.sourceCount}개)`}</h3>`,
       ...(entry.fullChanges.status !== 'ready'
-        ? [`<p>전체 ${entry.fullChanges.sourceCount}개 중 ${entry.fullChanges.items.length}개의 한국어 설명을 준비했습니다.</p>`] : []),
+        ? [`<p>${en ? `${entry.fullChanges.items.length} of ${entry.fullChanges.sourceCount} changes are available.` : `전체 ${entry.fullChanges.sourceCount}개 중 ${entry.fullChanges.items.length}개의 한국어 설명을 준비했습니다.`}</p>`] : []),
       `<ol>${entry.fullChanges.items.map(item => `<li>${escapeXml(item.text)}</li>`).join('')}</ol>`,
     ] : []),
-    `<p><a href="${escapeXml(link)}">해설 전체 읽기</a>${sourceUrl
-      ? ` | <a href="${escapeXml(sourceUrl)}">공식 원문</a>` : ''}</p>`,
+    `<p><a href="${escapeXml(link)}">${en ? 'Read all changes' : '해설 전체 읽기'}</a>${sourceUrl
+      ? ` | <a href="${escapeXml(sourceUrl)}">${en ? 'Official source' : '공식 원문'}</a>` : ''}</p>`,
   ].join('');
   return [
     '    <item>',
     `      <title>${escapeXml(`${PRODUCT_NAMES[entry.product]}: ${explanation.title}`)}</title>`,
     `      <link>${escapeXml(link)}</link>`,
-    `      <guid isPermaLink="true">${escapeXml(link)}</guid>`,
+    `      <guid isPermaLink="true">${escapeXml(guid.href)}</guid>`,
     `      <pubDate>${published.toUTCString()}</pubDate>`,
     `      <category>${escapeXml(PRODUCT_NAMES[entry.product])}</category>`,
     `      <description>${escapeXml(description)}</description>`,
@@ -75,9 +80,9 @@ function itemXml(entry: FeedEntry, baseUrl: string): string {
 
 export function renderRss(
   entries: readonly FeedEntry[],
-  options: { publicBaseUrl: string; now: Date; product?: ProductId },
+  options: { publicBaseUrl: string; now: Date; product?: ProductId; language?: Language },
 ): string {
-  const { publicBaseUrl, now, product } = options;
+  const { publicBaseUrl, now, product, language = 'ko' } = options;
   const selected = entries.filter(entry =>
     entry.explanationStatus === 'ready' && entry.explanation
     && (!product || entry.product === product)
@@ -92,8 +97,15 @@ export function renderRss(
     channelUrl.searchParams.set('product', product);
     feedUrl.searchParams.set('product', product);
   }
-  const title = product ? `Code Pulse | ${PRODUCT_NAMES[product]} 변경 기록` : 'Code Pulse | 코딩 도구의 변경 기록';
-  const description = `${product ? PRODUCT_NAMES[product] : 'Claude Code, Codex, Kiro'}의 공식 변경 기록을 정리한 한국어 AI 해설입니다. 해설이 준비된 최근 글을 최대 50개 제공합니다.`;
+  channelUrl.searchParams.set('lang', language);
+  if (language === 'en') {
+    feedUrl.searchParams.set('lang', 'en');
+  }
+  const title = language === 'en' ? `Code Pulse | ${product ? PRODUCT_NAMES[product] : 'Coding tools'} changelog`
+    : product ? `Code Pulse | ${PRODUCT_NAMES[product]} 변경 기록` : 'Code Pulse | 코딩 도구의 변경 기록';
+  const description = language === 'en'
+    ? `Official English changes for ${product ? PRODUCT_NAMES[product] : 'Claude Code, Codex and Kiro'}. Includes complete change lists from the latest 50 records.`
+    : `${product ? PRODUCT_NAMES[product] : 'Claude Code, Codex, Kiro'}의 공식 변경 기록을 정리한 한국어 AI 해설입니다. 해설이 준비된 최근 글을 최대 50개 제공합니다.`;
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">',
@@ -101,9 +113,9 @@ export function renderRss(
     `    <title>${escapeXml(title)}</title>`,
     `    <link>${escapeXml(channelUrl.href)}</link>`,
     `    <description>${escapeXml(description)}</description>`,
-    '    <language>ko</language>',
+    `    <language>${language}</language>`,
     `    <atom:link href="${escapeXml(feedUrl.href)}" rel="self" type="application/rss+xml" />`,
-    ...selected.map(entry => itemXml(entry, publicBaseUrl)),
+    ...selected.map(entry => itemXml(entry, publicBaseUrl, language)),
     '  </channel>',
     '</rss>',
     '',
