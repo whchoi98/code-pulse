@@ -83,6 +83,30 @@ describe('public reading API', () => {
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({ stale: true, generatedAt: snapshot.generatedAt });
   });
+  it('preloads the snapshot and revalidates it by ETag instead of reloading an unchanged copy', async () => {
+    let time = Date.parse('2026-10-07T02:00:00Z');
+    let latest = { snapshot, etag: '"v1"' };
+    const calls: string[] = [];
+    const revalidating: SnapshotStore = {
+      read: async () => { calls.push('read'); return latest; },
+      readIfChanged: async etag => { calls.push(`check ${etag}`); return etag === latest.etag ? undefined : latest; },
+      write: async () => {},
+    };
+    const app = await createServer(revalidating, { staticDirectory: false, now: () => new Date(time), cacheTtlMs: 60_000, preload: true });
+    servers.push(app);
+    expect(calls).toEqual(['read']);
+    expect((await app.inject('/api/feed')).json().entries[0].id).toBe(entry.id);
+    expect(calls).toEqual(['read']);
+
+    time += 61_000;
+    expect((await app.inject('/api/feed')).json().entries[0].id).toBe(entry.id);
+    latest = { snapshot: { ...snapshot, entries: [{ ...entry, id: 'kiro-0987654321' }] }, etag: '"v2"' };
+    time += 61_000;
+    expect((await app.inject('/api/feed')).json().entries[0].id).toBe('kiro-0987654321');
+    time += 61_000;
+    await app.inject('/api/feed');
+    expect(calls).toEqual(['read', 'check "v1"', 'check "v1"', 'check "v2"']);
+  });
   it('serves HTML and static assets with appropriate cache headers and keeps private files outside the public root', async () => {
     const directory = await mkdtemp(join(tmpdir(), 'code-pulse-static-'));
     let app: FastifyInstance | undefined;

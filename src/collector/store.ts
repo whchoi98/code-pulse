@@ -7,6 +7,8 @@ import type { Snapshot } from '../shared/types.js';
 export interface StoredSnapshot { snapshot: Snapshot; etag?: string }
 export interface SnapshotStore {
   read(): Promise<StoredSnapshot>;
+  /** Resolves undefined while the stored snapshot still has this ETag. */
+  readIfChanged?(etag: string): Promise<StoredSnapshot | undefined>;
   write(snapshot: Snapshot, expectedEtag?: string): Promise<void>;
   archive?(sourceId: string, text: string, checkedAt: string): Promise<void>;
 }
@@ -24,6 +26,8 @@ function decode(text: string): Snapshot {
 }
 const hash = (value: string) => createHash('sha256').update(value).digest('hex');
 const missing = (error: unknown) => ['ENOENT', 'NoSuchKey', 'NotFound'].includes(String((error as { code?: string; name?: string }).code ?? (error as Error).name));
+const notModified = (error: unknown) => (error as { $metadata?: { httpStatusCode?: number } }).$metadata?.httpStatusCode === 304
+  || (error as Error).name === 'NotModified';
 
 export class FileStore implements SnapshotStore {
   readonly directory: string;
@@ -76,12 +80,23 @@ export class FileStore implements SnapshotStore {
 export class S3Store implements SnapshotStore {
   constructor(readonly bucket: string, private readonly client = new S3Client({})) {}
   async read(): Promise<StoredSnapshot> {
+    return (await this.get())!;
+  }
+  // The snapshot changes about once a day, so a matching ETag costs a 304
+  // instead of downloading and parsing several megabytes again.
+  readIfChanged(etag: string): Promise<StoredSnapshot | undefined> {
+    return this.get(etag);
+  }
+  private async get(etag?: string): Promise<StoredSnapshot | undefined> {
     try {
-      const object = await this.client.send(new GetObjectCommand({ Bucket: this.bucket, Key: 'published/snapshot.json' }), { abortSignal: AbortSignal.timeout(8000) });
+      const object = await this.client.send(new GetObjectCommand({
+        Bucket: this.bucket, Key: 'published/snapshot.json', ...(etag ? { IfNoneMatch: etag } : {}),
+      }), { abortSignal: AbortSignal.timeout(8000) });
       const body = await object.Body?.transformToString();
       if (!body) throw new Error('저장된 변경 기록이 비어 있습니다.');
       return { snapshot: decode(body), etag: object.ETag };
     } catch (error) {
+      if (etag && notModified(error)) return undefined;
       if (missing(error)) return { snapshot: emptySnapshot() };
       throw error;
     }

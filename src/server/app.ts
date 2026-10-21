@@ -3,7 +3,7 @@ import { resolve } from 'node:path';
 import Fastify, { type FastifyReply } from 'fastify';
 import compress from '@fastify/compress';
 import staticFiles from '@fastify/static';
-import type { SnapshotStore } from '../collector/store.js';
+import type { SnapshotStore, StoredSnapshot } from '../collector/store.js';
 import { SOURCES } from '../collector/sources.js';
 import { PRODUCT_IDS, type Entry, type Feed, type FeedEntry, type Language, type ProductId, type Snapshot, type SourceStatus } from '../shared/types.js';
 import { registerPresenceApi, type PresenceOptions } from './presence.js';
@@ -23,6 +23,8 @@ export interface ServerOptions {
   publicBaseUrl?: string;
   now?: () => Date;
   cacheTtlMs?: number;
+  /** Reads the snapshot at startup so the first reader request does not wait for it. */
+  preload?: boolean;
   presence?: PresenceOptions;
   chat?: ChatOptions | false;
 }
@@ -54,22 +56,34 @@ export async function createServer(store: SnapshotStore, options: ServerOptions 
   const clock = options.now ?? (() => new Date());
   const ttl = options.cacheTtlMs ?? 60_000;
   let cached: Snapshot | undefined;
+  let cachedEtag: string | undefined;
   let publicEntries = new WeakMap<Entry, FeedEntry>();
   let englishEntries = new WeakMap<Entry, FeedEntry>();
   let expiresAt = 0;
   let reading: Promise<{ snapshot: Snapshot; storageStale: boolean }> | undefined;
 
+  function accept({ snapshot, etag }: StoredSnapshot) {
+    cached = snapshot;
+    cachedEtag = etag;
+    publicEntries = new WeakMap();
+    englishEntries = new WeakMap();
+    expiresAt = clock().getTime() + ttl;
+    return { snapshot, storageStale: false };
+  }
   async function current() {
     if (cached && clock().getTime() < expiresAt) return { snapshot: cached, storageStale: false };
     if (!reading) {
       reading = (async () => {
+        const previous = cached;
         try {
-          const { snapshot } = await store.read();
-          cached = snapshot;
-          publicEntries = new WeakMap();
-          englishEntries = new WeakMap();
-          expiresAt = clock().getTime() + ttl;
-          return { snapshot, storageStale: false };
+          if (previous && cachedEtag && store.readIfChanged) {
+            const changed = await store.readIfChanged(cachedEtag);
+            if (changed) return accept(changed);
+            // An unchanged snapshot keeps its parsed form and derived public entries.
+            expiresAt = clock().getTime() + ttl;
+            return { snapshot: previous, storageStale: false };
+          }
+          return accept(await store.read());
         } catch (error) {
           app.log.warn({ err: error }, 'snapshot read failed');
           if (cached) return { snapshot: cached, storageStale: true };
@@ -188,5 +202,12 @@ export async function createServer(store: SnapshotStore, options: ServerOptions 
     }
     return reply.code(404).header('Cache-Control', 'no-store').send({ error: '요청한 페이지를 찾을 수 없습니다.' });
   });
+  // Reading and serializing every record takes seconds on a small task, so do
+  // it before readers arrive. A failed preload is already logged; requests retry.
+  if (options.preload) {
+    void current().then(({ snapshot }) => {
+      for (const language of ['ko', 'en'] as const) for (const entry of snapshot.entries) serializeEntry(entry, language);
+    }).catch(() => {});
+  }
   return app;
 }
