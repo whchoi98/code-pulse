@@ -1,6 +1,22 @@
 {
-  "version": "1.3.0",
+  "version": "1.4.0",
   "releases": [
+    {
+      "version": "1.4.0",
+      "date": "2026-10-21",
+      "changes": [
+        {
+          "category": "Added",
+          "en": "Ask a floating AI agent about versions and features. Claude Haiku 5.5 searches the collected official changes with tools and streams answers that link their sources.",
+          "ko": "플로팅 AI 에이전트 창에서 버전과 기능을 질문하면 Claude Haiku 5.5가 수집한 공식 변경 기록을 도구로 찾아 분석하고 근거 글 링크와 함께 답변"
+        },
+        {
+          "category": "Changed",
+          "en": "Allow the web task to stream answers only from the existing Haiku 5.5 inference profile, with same-site checks and a request budget.",
+          "ko": "웹 태스크에 기존 Haiku 5.5 추론 프로필의 스트리밍 호출만 허용하고 같은 사이트 확인과 요청 한도 적용"
+        }
+      ]
+    },
     {
       "version": "1.3.0",
       "date": "2026-10-09",

@@ -144,3 +144,23 @@ export interface PresenceSnapshot {
   window_seconds: number;
   counting_since: string | null;
 }
+
+/** An entry the AI agent consulted or cited, shown beneath its answer. */
+export interface ChatSource {
+  id: string;
+  product: ProductId;
+  version?: string;
+  title: string;
+  publishedDate: string;
+}
+
+/** One newline-delimited JSON event streamed by POST /api/chat. */
+export type ChatEvent =
+  | { type: 'start' }
+  | { type: 'delta'; text: string }
+  | { type: 'tool'; name: string; input: unknown }
+  /** Text streamed before a tool call was narration; drop it from the answer. */
+  | { type: 'retract' }
+  | { type: 'sources'; sources: ChatSource[] }
+  | { type: 'done' }
+  | { type: 'error'; message: string };

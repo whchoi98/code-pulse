@@ -294,6 +294,14 @@ export class CodePulseStack extends Stack {
           originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
           compress: false,
         },
+        // The AI agent streams answers to same-site POST requests; nothing is cached.
+        '/api/chat': {
+          ...publicBehavior,
+          allowedMethods: cloudfront.AllowedMethods.ALLOW_ALL,
+          cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+          originRequestPolicy: cloudfront.OriginRequestPolicy.ALL_VIEWER,
+          compress: false,
+        },
         '/api/*': { ...publicBehavior, cachePolicy: sharedCache },
         '/feed.xml': { ...publicBehavior, cachePolicy: sharedCache },
         '/content/objects/*': { ...staticBehavior, cachePolicy: cloudfront.CachePolicy.CACHING_OPTIMIZED },
@@ -391,6 +399,17 @@ export class CodePulseStack extends Stack {
       resources: [`arn:${this.partition}:bedrock:*::foundation-model/${FOUNDATION_MODEL_ID}`],
       conditions: { StringEquals: { 'bedrock:InferenceProfileArn': inferenceProfileArn } },
     }));
+    // The web AI agent may only stream answers from the same Haiku 5.5 profile.
+    // It still cannot write published content or invoke non-streaming generation.
+    webTaskRole.addToPolicy(new iam.PolicyStatement({
+      actions: ['bedrock:InvokeModelWithResponseStream'],
+      resources: [inferenceProfileArn],
+    }));
+    webTaskRole.addToPolicy(new iam.PolicyStatement({
+      actions: ['bedrock:InvokeModelWithResponseStream'],
+      resources: [`arn:${this.partition}:bedrock:*::foundation-model/${FOUNDATION_MODEL_ID}`],
+      conditions: { StringEquals: { 'bedrock:InferenceProfileArn': inferenceProfileArn } },
+    }));
 
     const runtimePlatform = { cpuArchitecture: ecs.CpuArchitecture.ARM64, operatingSystemFamily: ecs.OperatingSystemFamily.LINUX };
     const webTask = new ecs.FargateTaskDefinition(this, 'WebTask', {
@@ -418,6 +437,7 @@ export class CodePulseStack extends Stack {
         PUBLIC_BASE_URL: siteUrl,
         PUBLIC_ORIGIN: siteUrl,
         PRESENCE_TABLE: presenceTable.tableName,
+        BEDROCK_MODEL_ID: MODEL_ID,
       },
       secrets: { PRESENCE_SECRET: ecs.Secret.fromSecretsManager(presenceSecret) },
     });
@@ -629,7 +649,7 @@ export class CodePulseStack extends Stack {
     ]);
     NagSuppressions.addResourceSuppressions(distribution, [
       { id: 'AwsSolutions-CFR1', reason: 'The official changelog briefings are public content for readers in all countries. Geographic restrictions are not part of the service requirements.' },
-      { id: 'AwsSolutions-CFR2', reason: 'Public content permits GET and HEAD. The uncached presence endpoint uses server-side GET/POST and origin checks with writes restricted to its dedicated table. Web tasks have no model or S3 write rights, and a managed prefix list and secret header protect the origin. WAF can be added if traffic warrants it.' },
+      { id: 'AwsSolutions-CFR2', reason: 'Public content permits GET and HEAD. The uncached presence and AI agent endpoints accept POST only with same-site origin checks; presence writes are restricted to its dedicated table and the agent may only stream from one model profile under a process-wide request budget. Web tasks have no S3 write rights, and a managed prefix list and secret header protect the origin. WAF can be added if traffic warrants it.' },
       { id: 'AwsSolutions-CFR3', reason: 'CloudFront access logs are omitted for the initial low-volume service; the application records requests and errors and ALB alarms monitor origin health.' },
       { id: 'AwsSolutions-CFR5', reason: 'The approved architecture uses HTTP from CloudFront to the public ALB, matching the existing site. The ALB accepts only the CloudFront managed prefix list and a Secrets Manager header; its default action is 403.' },
     ]);
@@ -643,8 +663,13 @@ export class CodePulseStack extends Stack {
     NagSuppressions.addResourceSuppressions(webTaskRole.node.findChild('DefaultPolicy'), [
       {
         id: 'AwsSolutions-IAM5',
-        reason: 'The web role reads S3 objects only below published/. GetObject is its sole S3 action and object names change with the published dataset. No bucket listing, S3 write or model invocation is allowed; presence operations are scoped separately to their table.',
+        reason: 'The web role reads S3 objects only below published/. GetObject is its sole S3 action and object names change with the published dataset. No bucket listing or S3 write is allowed; presence operations are scoped separately to their table.',
         appliesTo: [`Resource::<${bucketLogicalId}.Arn>/published/*`],
+      },
+      {
+        id: 'AwsSolutions-IAM5',
+        reason: 'Global inference evaluates regional and regionless foundation model ARNs. The AI agent may only stream from the exact Haiku 5.5 model, with a bedrock:InferenceProfileArn condition restricting invocation to the verified profile.',
+        appliesTo: [`Resource::arn:<AWS::Partition>:bedrock:*::foundation-model/${FOUNDATION_MODEL_ID}`],
       },
     ], true);
     NagSuppressions.addResourceSuppressions(workerTaskRole.node.findChild('DefaultPolicy'), [

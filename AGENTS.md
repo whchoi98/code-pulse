@@ -11,6 +11,7 @@ Code Pulse publishes Korean explanations and complete official English changes f
 | Browser | `src/client/main.tsx`, `src/client/App.tsx`, `src/client/remote-cache.ts`, `src/client/i18n.tsx`; filters, language, saved articles, read state and Markdown export stay in the browser |
 | HTTP and RSS | `src/server/index.ts`, `src/server/app.ts`, `src/server/rss.ts`; see `docs/reference/api.md` |
 | Visitor counts | `src/server/presence.ts`, `src/server/presence-store.ts`, `src/client/presence.ts` |
+| AI agent | `src/server/chat.ts`, `src/client/chat.tsx`; Haiku 5.5 answers from public entries through read-only tools |
 | Collection | `src/collector/run.ts`, `src/collector/engine.ts`, `src/collector/sources.ts`, `src/collector/explanation.ts` |
 | Complete changes | `src/collector/change-items.ts`, `src/collector/full-changes.ts`, `tools/backfill-full-changes.ts` |
 | Static publication | `src/publishing/index.ts`, `src/publishing/projection.ts`, `src/publishing/render.ts`, `src/publishing/assets.ts`, `tools/publish-site.ts`; see `docs/static-delivery.md` |
@@ -57,7 +58,7 @@ For documentation-only changes, check affected links, commands, facts and versio
 
 The daily schedule is 07:00 Asia/Seoul, defined in `src/shared/schedule.ts`. Static publication runs after final collection and editorial writes when `SITE_BUCKET` or `SITE_DIR` is configured. Keep content-addressed URLs immutable, promote catalogs after dependencies, and preserve older assets for cached HTML. Deploying an image alone does not update S3 pages; publish the matching compiled frontend as described in `docs/static-delivery.md`.
 
-The collector and server have different privileges. Only the collector may invoke the explanation model or write published content; the web role may update its separate visitor table.
+The collector and server have different privileges. Only the collector may generate stored explanations or write published content; the web role may update its separate visitor table and stream AI agent answers from the same Haiku 5.5 profile. Agent tools read only public serialized entries, and the agent keeps its same-site checks and process-wide request budget without storing visitor addresses.
 
 Keep S3 conditional writes, generation checkpoints, first-visit deduplication and explicit unavailable states. Verify real task completion and the public HTTPS endpoint after deployment. Never expose origin header values, signing secrets or credentials in logs or reports.
 

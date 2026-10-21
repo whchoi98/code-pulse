@@ -237,10 +237,22 @@ describe('private Fargate runtime and storage isolation', () => {
   });
 
   it('limits web writes to the presence table while keeping published content read-only', () => {
-    const statements = roleStatements(task('web')[1].Properties.TaskRoleArn).filter(statement => statement.Effect === 'Allow');
-    expect(statements.flatMap(actions).sort()).toEqual([
+    const allowed = roleStatements(task('web')[1].Properties.TaskRoleArn).filter(statement => statement.Effect === 'Allow');
+    expect(allowed.flatMap(actions).sort()).toEqual([
+      'bedrock:InvokeModelWithResponseStream', 'bedrock:InvokeModelWithResponseStream',
       'dynamodb:GetItem', 'dynamodb:PutItem', 'dynamodb:Query', 'dynamodb:UpdateItem', 's3:GetObject',
     ]);
+    // The AI agent streams from the exact Haiku 5.5 profile and nothing else.
+    const modelStatements = allowed.filter(statement => actions(statement).some(action => action.startsWith('bedrock:')));
+    const profile = modelStatements.find(statement => JSON.stringify(statement.Resource).includes('inference-profile/'))!;
+    expect(JSON.stringify(profile.Resource)).toContain(':inference-profile/global.anthropic.claude-haiku-5-5');
+    expect(JSON.stringify(profile.Resource)).not.toContain('*');
+    const foundation = modelStatements.find(statement => JSON.stringify(statement.Resource).includes('foundation-model/'))!;
+    expect(JSON.stringify(foundation.Resource)).toContain(':bedrock:*::foundation-model/anthropic.claude-haiku-5-5');
+    expect(foundation.Condition).toEqual({ StringEquals: { 'bedrock:InferenceProfileArn': profile.Resource } });
+    expect(task('web')[1].Properties.ContainerDefinitions[0].Environment)
+      .toContainEqual({ Name: 'BEDROCK_MODEL_ID', Value: 'global.anthropic.claude-haiku-5-5' });
+    const statements = allowed.filter(statement => !modelStatements.includes(statement));
     const s3Statements = statements.filter(statement => actions(statement).some(action => action.startsWith('s3:')));
     expect(s3Statements).toHaveLength(1);
     expect(actions(s3Statements[0]!)).toEqual(['s3:GetObject']);
@@ -564,6 +576,14 @@ describe('edge caching and operational outputs', () => {
     });
     expect([...presence.AllowedMethods].sort()).toEqual(['DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT']);
     expect(behaviors[apiIndex].AllowedMethods).toEqual(['GET', 'HEAD']);
+    const chatIndex = behaviors.findIndex((behavior: any) => behavior.PathPattern === '/api/chat');
+    expect(chatIndex).toBeGreaterThanOrEqual(0);
+    expect(chatIndex).toBeLessThan(apiIndex);
+    expect(behaviors[chatIndex]).toMatchObject({
+      CachePolicyId: '4135ea2d-6df8-44a3-9df3-4b5a84be39ad',
+      OriginRequestPolicyId: '216adef6-5c7f-47e4-b989-5492eafa07d3',
+      Compress: false,
+    });
     template.resourceCountIs('AWS::CloudFront::CachePolicy', 1);
     template.resourceCountIs('AWS::CloudFront::OriginRequestPolicy', 0);
   });
@@ -601,7 +621,7 @@ describe('private pre-rendered site delivery', () => {
       const behavior = config.CacheBehaviors.find((item: any) => item.PathPattern === path);
       expect(behavior?.TargetOriginId, path).toBe(s3Origin.Id);
     }
-    for (const path of ['/api/presence', '/api/*', '/feed.xml', '/healthz']) {
+    for (const path of ['/api/presence', '/api/chat', '/api/*', '/feed.xml', '/healthz']) {
       expect(config.CacheBehaviors.find((item: any) => item.PathPattern === path).TargetOriginId).not.toBe(s3Origin.Id);
     }
     const collector = task('collector')[1].Properties.ContainerDefinitions[0];

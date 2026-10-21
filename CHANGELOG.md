@@ -12,6 +12,16 @@ These entries describe application builds. Git tags and hosted releases are veri
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-21
+
+### Added
+
+- Ask a floating AI agent about versions and features. Claude Haiku 5.5 searches the collected official changes with tools and streams answers that link their sources.
+
+### Changed
+
+- Allow the web task to stream answers only from the existing Haiku 5.5 inference profile, with same-site checks and a request budget.
+
 ## [1.3.0] - 2026-10-09
 
 ### Added
@@ -69,6 +79,16 @@ These entries describe application builds. Git tags and hosted releases are veri
 아래 내용은 앱 빌드의 변경 기록입니다. Git 태그와 원격 릴리스는 릴리스 워크플로에서 별도로 확인하며 저장소 주소를 임의로 만들지 않습니다.
 
 ## [Unreleased]
+
+## [1.4.0] - 2026-10-21
+
+### Added
+
+- 플로팅 AI 에이전트 창에서 버전과 기능을 질문하면 Claude Haiku 5.5가 수집한 공식 변경 기록을 도구로 찾아 분석하고 근거 글 링크와 함께 답변
+
+### Changed
+
+- 웹 태스크에 기존 Haiku 5.5 추론 프로필의 스트리밍 호출만 허용하고 같은 사이트 확인과 요청 한도 적용
 
 ## [1.3.0] - 2026-10-09
 

@@ -9,6 +9,7 @@ import { entryRevision, useReading } from './reading';
 import { SubscriptionDialog } from './subscriptions';
 import { downloadSavedMarkdown } from './export';
 import { categoryLabel, LocaleProvider, useLocale } from './i18n';
+import { ChatWidget } from './chat';
 
 export default function App() {
   return <LocaleProvider><ReaderApp /></LocaleProvider>;
@@ -303,6 +304,7 @@ function ReaderApp() {
         <div className="footer-links"><span>{t('공식 발표를 바탕으로 만든 AI 해설', 'English wording from official announcements')}</span><button onClick={() => setModal('sources')}>{t('출처와 이용 안내', 'Sources and about')}<ArrowUpRightIcon /></button></div>
       </div>
     </footer>
+    <ChatWidget entryId={selection.entry} onOpenEntry={openEntry} />
     <div className={`toast ${toast ? 'visible' : ''}`} role="status" aria-live="polite" aria-atomic="true"><span key={toast?.id}>{toast?.message}</span></div>
     {modal === 'sources' && <SourcesDialog feed={feed.data} onClose={() => setModal(null)} />}
     {modal === 'releases' && <ServiceReleaseDialog onClose={() => setModal(null)} />}

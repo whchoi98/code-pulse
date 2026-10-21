@@ -120,7 +120,7 @@ const first = await parallel({
       Behaviors:DistributionConfig.CacheBehaviors.Items[].{
         Path:PathPattern,CachePolicy:CachePolicyId,OriginPolicy:OriginRequestPolicyId,
         Methods:AllowedMethods.Items,Protocol:ViewerProtocolPolicy,Origin:TargetOriginId,
-        FunctionAssociations:FunctionAssociations.Items
+        Compress:Compress,FunctionAssociations:FunctionAssociations.Items
       }
     }`]),
   service: () => aws(['ecs', 'describe-services', '--cluster', outputs.ClusterName, '--services', outputs.ServiceName, '--query', 'services[0]']),
@@ -166,7 +166,8 @@ function functionArn(logicalPrefix) {
 const canonicalFunctionArn = functionArn('CanonicalHost');
 const staticRouterArn = functionArn('StaticRouter');
 assert.notEqual(canonicalFunctionArn, staticRouterArn);
-const dynamicPaths = ['/api/presence', '/api/*', '/feed.xml', '/healthz'];
+const dynamicPaths = ['/api/presence', '/api/chat', '/api/*', '/feed.xml', '/healthz'];
+const writablePaths = ['/api/presence', '/api/chat'];
 const staticPaths = ['/content/objects/*', '/content/*', '/assets/*', '/fonts/*', '/brand/*'];
 assert.deepEqual(first.distribution.Behaviors.map(behavior => behavior.Path).sort(), [...dynamicPaths, ...staticPaths].sort(),
   'The distribution must have exactly the expected API, RSS, health and static behaviors.');
@@ -210,11 +211,11 @@ for (const behavior of first.distribution.Behaviors) {
   const expectedOrigin = dynamicPaths.includes(behavior.Path) ? albOrigin.Id : staticOrigin.Id;
   assert.equal(behavior.Origin, expectedOrigin, `The ${behavior.Path} behavior has the wrong origin.`);
   assert.equal(behavior.Protocol, 'redirect-to-https');
-  const expectedPolicy = ['/api/presence', '/healthz'].includes(behavior.Path) ? PRESENCE_CACHE_POLICY
+  const expectedPolicy = ['/api/presence', '/api/chat', '/healthz'].includes(behavior.Path) ? PRESENCE_CACHE_POLICY
     : ['/content/objects/*', '/assets/*', '/fonts/*', '/brand/*'].includes(behavior.Path)
       ? IMMUTABLE_CACHE_POLICY : first.distribution.DefaultPolicy;
   assert.equal(behavior.CachePolicy, expectedPolicy, `The ${behavior.Path} behavior has the wrong cache policy.`);
-  if (behavior.Path !== '/api/presence') assert.deepEqual([...behavior.Methods].sort(), ['GET', 'HEAD']);
+  if (!writablePaths.includes(behavior.Path)) assert.deepEqual([...behavior.Methods].sort(), ['GET', 'HEAD']);
 }
 assert.ok(first.distribution.Behaviors.findIndex(behavior => behavior.Path === '/content/objects/*')
   < first.distribution.Behaviors.findIndex(behavior => behavior.Path === '/content/*'),
@@ -230,6 +231,15 @@ assert.equal(presenceBehavior.Protocol, 'redirect-to-https');
 assert.deepEqual([...presenceBehavior.Methods].sort(), ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT']);
 assert.deepEqual([...first.distribution.Behaviors[apiIndex].Methods].sort(), ['GET', 'HEAD']);
 assert.equal(presenceBehavior.Origin, first.distribution.Behaviors[apiIndex].Origin);
+// Compression would make CloudFront buffer the agent's newline-delimited stream.
+const chatIndex = first.distribution.Behaviors.findIndex(behavior => behavior.Path === '/api/chat');
+assert.ok(chatIndex >= 0 && chatIndex < apiIndex, 'The AI agent behavior must precede the read-only API behavior.');
+const chatBehavior = first.distribution.Behaviors[chatIndex];
+assert.equal(chatBehavior.CachePolicy, PRESENCE_CACHE_POLICY);
+assert.equal(chatBehavior.OriginPolicy, PRESENCE_ORIGIN_POLICY);
+assert.equal(chatBehavior.Compress, false, 'The AI agent stream must not be compressed at the edge.');
+assert.deepEqual([...chatBehavior.Methods].sort(), ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT']);
+assert.equal(chatBehavior.Origin, first.distribution.Behaviors[apiIndex].Origin);
 assert.equal(first.resources.some(resource => ['AWS::EC2::VPC', 'AWS::EC2::NatGateway', 'AWS::EC2::Subnet', 'AWS::EC2::Route', 'AWS::EC2::VPCEndpoint'].includes(resource.ResourceType)), false);
 assert.equal(first.resources.filter(resource => resource.ResourceType === 'AWS::CloudFront::CachePolicy').length, 1);
 assert.equal(first.service.networkConfiguration.awsvpcConfiguration.assignPublicIp, 'DISABLED');
@@ -419,6 +429,18 @@ assert.ok(modelStatements.some(statement => JSON.stringify([statement.Resource].
 assert.ok(modelStatements.some(statement =>
   JSON.stringify([statement.Resource].flat()) === JSON.stringify(['arn:aws:bedrock:*::foundation-model/anthropic.claude-haiku-5-5'])
   && statement.Condition?.StringEquals?.['bedrock:InferenceProfileArn'] === profileArn));
+// The web AI agent may only stream from the same profile; it never generates stored content.
+assert.equal(webEnvironment.get('BEDROCK_MODEL_ID'), modelId, 'Web BEDROCK_MODEL_ID must match the collector profile.');
+const webModelStatements = policies.web
+  .filter(statement => [statement.Action].flat().some(action => action.startsWith('bedrock:')));
+assert.equal(webModelStatements.length, 2);
+assert.ok(webModelStatements.every(statement => statement.Effect === 'Allow'
+  && [statement.Action].flat().length === 1 && [statement.Action].flat()[0] === 'bedrock:InvokeModelWithResponseStream'),
+'The web role may only stream model responses.');
+assert.ok(webModelStatements.some(statement => JSON.stringify([statement.Resource].flat()) === JSON.stringify([profileArn])));
+assert.ok(webModelStatements.some(statement =>
+  JSON.stringify([statement.Resource].flat()) === JSON.stringify(['arn:aws:bedrock:*::foundation-model/anthropic.claude-haiku-5-5'])
+  && statement.Condition?.StringEquals?.['bedrock:InferenceProfileArn'] === profileArn));
 const albPermissions = third.groups.find(group => group.GroupId === albGroup).IpPermissions;
 assert.equal(albPermissions.length, 1);
 assert.equal(albPermissions[0].FromPort, 80);
@@ -539,6 +561,13 @@ const report = {
       webRole: webRoleName, allowedActions: PRESENCE_ACTIONS, tableArn: first.presenceTable.TableArn,
       collectorRole: workerRoleName, collectorDynamoAllowPermissions: false, includedManagedPolicies: true,
     },
+  },
+  agent: {
+    cloudFront: {
+      path: '/api/chat', cachePolicy: chatBehavior.CachePolicy, originRequestPolicy: chatBehavior.OriginPolicy,
+      allowedMethods: chatBehavior.Methods, compress: chatBehavior.Compress, precedesApi: true,
+    },
+    webModel: { modelId, actions: ['bedrock:InvokeModelWithResponseStream'], profileArn, foundationModelConditionVerified: true },
   },
 };
 await writeFile(options.output, JSON.stringify(report, null, 2));

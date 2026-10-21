@@ -7,6 +7,7 @@ import type { SnapshotStore } from '../collector/store.js';
 import { SOURCES } from '../collector/sources.js';
 import { PRODUCT_IDS, type Entry, type Feed, type FeedEntry, type Language, type ProductId, type Snapshot, type SourceStatus } from '../shared/types.js';
 import { registerPresenceApi, type PresenceOptions } from './presence.js';
+import { registerChatApi, type ChatOptions } from './chat.js';
 import { renderRss, resolvePublicBaseUrl } from './rss.js';
 import { publicEntry } from './public-entry.js';
 import { publicEntryInLanguage, sourceLabelInLanguage } from '../publishing/projection.js';
@@ -23,6 +24,7 @@ export interface ServerOptions {
   now?: () => Date;
   cacheTtlMs?: number;
   presence?: PresenceOptions;
+  chat?: ChatOptions | false;
 }
 
 export const CSP = [
@@ -102,6 +104,11 @@ export async function createServer(store: SnapshotStore, options: ServerOptions 
   await registerPresenceApi(app, {
     ...options.presence, now: options.presence?.now ?? (() => clock().getTime()),
   });
+  if (options.chat !== false) {
+    await registerChatApi(app, async language => (await current()).snapshot.entries.map(entry => serializeEntry(entry, language)), {
+      ...options.chat, now: options.chat?.now ?? clock,
+    });
+  }
 
   app.get('/healthz', async (_request, reply) => {
     reply.header('Cache-Control', 'no-store');

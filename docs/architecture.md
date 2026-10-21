@@ -23,6 +23,7 @@ flowchart TB
         Worker --> Sources["Official sources"]
         Worker --> Bedrock["Bedrock: Claude Haiku 5.5"]
     end
+    Web -->|AI agent stream| Bedrock
     Web -->|Read snapshot| Data["Private S3: snapshot and raw sources"]
     Worker -->|Write snapshot and raw| Data
     Worker -->|Render after collection| Site
@@ -35,6 +36,7 @@ flowchart TB
 | Browser | Filter and read records, save IDs, track content revisions, export Markdown and copy RSS URLs | [App](../src/client/App.tsx), [reading](../src/client/reading.ts), [export](../src/client/export.ts) |
 | HTTP server | Preserve the full API, RSS, health checks and local static preview | [app](../src/server/app.ts), [RSS](../src/server/rss.ts) |
 | Presence | Sign browser cookies, update first-visit markers and count activity within 90 seconds | [API](../src/server/presence.ts), [store](../src/server/presence-store.ts) |
+| AI agent | Answer release and feature questions in a floating window; Haiku 5.5 searches public entries with tools and streams cited answers | [API](../src/server/chat.ts), [window](../src/client/chat.tsx) |
 | Collector | Read official sources, preserve dates, deduplicate releases, generate and validate explanations | [engine](../src/collector/engine.ts), [sources](../src/collector/sources.ts), [explanation](../src/collector/explanation.ts) |
 | Static publisher | Derive both language inventories, render HTML, fingerprint assets and conditionally publish dependencies before catalogs | [Publisher](../src/publishing/index.ts) |
 | Snapshot store | Use local files or `published/snapshot.json` in S3; archive raw material separately | [store](../src/collector/store.ts) |
@@ -42,7 +44,7 @@ flowchart TB
 
 ### Boundaries and recovery
 
-The web task can read `published/*` in S3 and write its separate presence table. It cannot generate explanations or write published content. The collector can update the snapshot, archive sources and publish the separate site bucket, but it has no presence-table permissions. CloudFront cannot read the private snapshot bucket or the site bucket's `_publication/` control prefix.
+The web task can read `published/*` in S3 and write its separate presence table. For the AI agent it may only stream from the same Haiku 5.5 inference profile, reading public serialized entries under a process-wide request budget. It cannot generate stored explanations or write published content. The collector can update the snapshot, archive sources and publish the separate site bucket, but it has no presence-table permissions. CloudFront cannot read the private snapshot bucket or the site bucket's `_publication/` control prefix.
 
 Collection begins at `2026-01-01` by default. Publication dates, source checks and editorial times are separate fields. Failed sources preserve earlier records; failed explanations remain pending. Haiku 5.5 drafts and polishes the explanation, and validation checks source evidence before publication. S3 uses ETag conditions; local files use a lock and atomic replacement. See the [runbook](runbook.md) for retries, checkpoints and historical collection.
 
@@ -83,6 +85,7 @@ flowchart TB
         Worker --> Sources["Official sources"]
         Worker --> Bedrock["Bedrock: Claude Haiku 5.5"]
     end
+    Web -->|AI agent stream| Bedrock
     Web -->|Read snapshot| Data["Private S3: snapshot and raw sources"]
     Worker -->|Write snapshot and raw| Data
     Worker -->|Render after collection| Site
@@ -95,6 +98,7 @@ flowchart TB
 | 브라우저 | 기록 필터와 조회, 글 ID 저장, 내용 변경에 따른 읽음 상태 관리, Markdown 내보내기와 RSS 주소 복사 | [App](../src/client/App.tsx), [읽음 상태](../src/client/reading.ts), [내보내기](../src/client/export.ts) |
 | HTTP 서버 | 호환 API, RSS, 건강 확인과 로컬 정적 미리보기 제공 | [app](../src/server/app.ts), [RSS](../src/server/rss.ts) |
 | 방문 집계 | 브라우저 쿠키 서명, 첫 방문 표식 저장, 최근 90초 활동 집계 | [API](../src/server/presence.ts), [저장소](../src/server/presence-store.ts) |
+| AI 에이전트 | 플로팅 창에서 버전과 기능 질문에 답변, Haiku 5.5가 도구로 공개 글을 검색해 근거 링크와 함께 스트리밍 | [API](../src/server/chat.ts), [창](../src/client/chat.tsx) |
 | 수집기 | 공식 출처 조회, 날짜 보존, 릴리스 중복 제거, 해설 생성과 검증 | [엔진](../src/collector/engine.ts), [출처](../src/collector/sources.ts), [해설](../src/collector/explanation.ts) |
 | 정적 발행기 | 두 언어의 전체 항목과 HTML 생성, 파일별 내용 해시 적용, 상세 파일 준비 후 목록을 조건부 발행 | [발행기](../src/publishing/index.ts) |
 | 스냅샷 저장소 | 로컬 파일 또는 S3의 `published/snapshot.json` 사용, 원문 별도 보관 | [저장소](../src/collector/store.ts) |
@@ -102,7 +106,7 @@ flowchart TB
 
 ### 권한과 장애 처리
 
-웹 태스크는 S3의 `published/*`를 읽고 별도 방문 테이블을 갱신합니다. 해설 생성과 공개 데이터 쓰기 권한은 없습니다. 수집기는 스냅샷과 원문을 저장하고 별도 사이트 버킷에 정적 파일을 발행하며 방문 테이블에는 접근하지 않습니다. CloudFront는 비공개 스냅샷 버킷과 사이트 버킷의 `_publication/` 제어 기록을 읽지 못합니다.
+웹 태스크는 S3의 `published/*`를 읽고 별도 방문 테이블을 갱신합니다. AI 에이전트를 위해 같은 Haiku 5.5 추론 프로필의 스트리밍 호출만 허용하며, 프로세스 단위 요청 한도 안에서 공개 글만 읽습니다. 저장되는 해설 생성과 공개 데이터 쓰기 권한은 없습니다. 수집기는 스냅샷과 원문을 저장하고 별도 사이트 버킷에 정적 파일을 발행하며 방문 테이블에는 접근하지 않습니다. CloudFront는 비공개 스냅샷 버킷과 사이트 버킷의 `_publication/` 제어 기록을 읽지 못합니다.
 
 기본 수집 시작일은 `2026-01-01`입니다. 발표일, 출처 확인 시각과 편집 시각은 별도 필드로 보관합니다. 출처를 읽지 못하면 이전 기록을 유지하고, 해설 생성에 실패한 글은 준비 상태로 남깁니다. Haiku 5.5가 초안과 윤문을 수행하며 공개 전에 원문 근거를 검사합니다. S3는 ETag 조건부 쓰기를, 로컬 파일은 잠금과 원자적 교체를 사용합니다. 재시도, 중간 저장과 과거 자료 수집은 [운영 안내](runbook.md)를 참고합니다.
 

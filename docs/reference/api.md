@@ -6,7 +6,7 @@
 
 ### Endpoints
 
-The public base URL is `https://code-pulse.whchoi.net`. Read endpoints require no login. Presence uses a server-issued signed cookie and same-origin requests. Static paths are produced by the [publisher](../../src/publishing/index.ts) and routed by the [stack](../../infra/lib/stack.ts). Backend routes are in [app.ts](../../src/server/app.ts) and [presence.ts](../../src/server/presence.ts).
+The public base URL is `https://code-pulse.whchoi.net`. Read endpoints require no login. Presence uses a server-issued signed cookie and same-origin requests. Static paths are produced by the [publisher](../../src/publishing/index.ts) and routed by the [stack](../../infra/lib/stack.ts). Backend routes are in [app.ts](../../src/server/app.ts), [presence.ts](../../src/server/presence.ts) and [chat.ts](../../src/server/chat.ts).
 
 | Method | Path | Contract |
 | --- | --- | --- |
@@ -21,6 +21,7 @@ The public base URL is `https://code-pulse.whchoi.net`. Read endpoints require n
 | GET | `/feed.xml?lang=en` | Latest 50 records in official English; combine with `product` when needed |
 | GET | `/api/presence` | Read counts and prepare a signed cookie without recording a visit |
 | POST | `/api/presence` | Record activity for that cookie and return updated counts |
+| POST | `/api/chat` | Ask the AI agent about releases and features; streams newline-delimited JSON |
 | GET | `/robots.txt` | Allow crawler access |
 
 ```bash
@@ -29,7 +30,7 @@ curl --fail --silent --show-error https://code-pulse.whchoi.net/content/ko/feed.
 curl --fail --silent --show-error 'https://code-pulse.whchoi.net/feed.xml?product=kiro&lang=en'
 ```
 
-`/healthz` confirms the server is running; it does not prove the last collection succeeded. GET routes also support HEAD. The edge allows writes only on the exact `/api/presence` behavior.
+`/healthz` confirms the server is running; it does not prove the last collection succeeded. GET routes also support HEAD. The edge allows writes only on the exact `/api/presence` and `/api/chat` behaviors.
 
 ### Feed and entry fields
 
@@ -64,6 +65,12 @@ RSS requires a ready overview in the selected language and a valid publication t
 
 When available, RSS also includes all prepared change items in the selected language as an ordered list. The 50-record subscription limit does not truncate the changes within a record. Incomplete lists state how many source items have been prepared.
 
+### AI agent
+
+POST `/api/chat` requires the exact configured `Origin`, `x-code-pulse-client: 1` and a JSON body `{ language, entryId?, messages }`. `language` is `ko` or `en`; `entryId` names the article the reader is viewing. `messages` holds 1 to 12 turns that alternate from `user` and end with `user`, each at most 2,000 characters. An invalid origin or client header returns 403, a rejected body 400, and an unreadable snapshot 503. When the process-wide budget (8 concurrent answers, 120 per minute) is exhausted, it returns 429 with `Retry-After: 20`; no visitor address is stored.
+
+A successful response is `application/x-ndjson` with `no-store`, uncompressed so events arrive as they are produced. Events are `start`, `delta` (answer text), `tool` (the search the agent ran), `retract` (drop text streamed before a tool call), `sources` (consulted or cited entries), `done` and `error`. Claude Haiku 5.5 searches only the public serialized entries in the selected language through the `search_changes`, `find_version`, `get_entry` and `list_recent` tools, for at most 5 rounds. Answers link entries as `?entry=<id>`. See the [event type](../../src/shared/types.ts).
+
 ### Presence and caching
 
 POST requires the cookie prepared by GET, the exact configured `Origin`, `x-code-pulse-client: 1`, JSON content type and an empty object body `{}`. Missing cookies return 401, invalid origin or client header 403, and a rejected body 400. Oversized bodies can return 413. Backend unavailability returns 503.
@@ -80,7 +87,7 @@ For operating procedures and verification, follow the [runbook](../runbook.md), 
 
 ### 엔드포인트
 
-공개 기준 주소는 `https://code-pulse.whchoi.net`입니다. 읽기 API는 로그인 없이 사용합니다. 방문 집계는 서버가 발급한 서명 쿠키와 같은 Origin의 요청을 사용합니다. 정적 경로는 [발행기](../../src/publishing/index.ts)가 만들고 [스택](../../infra/lib/stack.ts)이 연결합니다. 백엔드 경로는 [app.ts](../../src/server/app.ts)와 [presence.ts](../../src/server/presence.ts)에 있습니다.
+공개 기준 주소는 `https://code-pulse.whchoi.net`입니다. 읽기 API는 로그인 없이 사용합니다. 방문 집계는 서버가 발급한 서명 쿠키와 같은 Origin의 요청을 사용합니다. 정적 경로는 [발행기](../../src/publishing/index.ts)가 만들고 [스택](../../infra/lib/stack.ts)이 연결합니다. 백엔드 경로는 [app.ts](../../src/server/app.ts), [presence.ts](../../src/server/presence.ts), [chat.ts](../../src/server/chat.ts)에 있습니다.
 
 | 메서드 | 경로 | 동작 |
 | --- | --- | --- |
@@ -95,6 +102,7 @@ For operating procedures and verification, follow the [runbook](../runbook.md), 
 | GET | `/feed.xml?lang=en` | 최신 영문 기록 50개. `product` 조건과 함께 사용 가능 |
 | GET | `/api/presence` | 방문을 기록하지 않고 집계를 읽으며 서명 쿠키 준비 |
 | POST | `/api/presence` | 해당 쿠키의 활동을 기록하고 갱신한 집계 반환 |
+| POST | `/api/chat` | AI 에이전트에게 버전과 기능을 질문하고 줄 단위 JSON으로 답변 수신 |
 | GET | `/robots.txt` | 크롤러 접근 허용 |
 
 ```bash
@@ -103,7 +111,7 @@ curl --fail --silent --show-error https://code-pulse.whchoi.net/content/ko/feed.
 curl --fail --silent --show-error 'https://code-pulse.whchoi.net/feed.xml?product=kiro&lang=en'
 ```
 
-`/healthz`는 서버 실행 여부를 확인하며 최근 수집의 성공을 보장하지 않습니다. GET 경로는 HEAD도 지원합니다. 엣지에서 쓰기 요청을 허용하는 경로는 정확히 일치하는 `/api/presence`뿐입니다.
+`/healthz`는 서버 실행 여부를 확인하며 최근 수집의 성공을 보장하지 않습니다. GET 경로는 HEAD도 지원합니다. 엣지에서 쓰기 요청을 허용하는 경로는 정확히 일치하는 `/api/presence`와 `/api/chat`뿐입니다.
 
 ### 피드와 상세 필드
 
@@ -137,6 +145,12 @@ RSS는 `product`와 선택적인 `lang=ko`, `lang=en`을 허용합니다. 영어
 선택한 언어의 개요가 준비됐고 발표 시각이 유효한 글 중 미래 발표를 제외합니다. 전체 목록은 아직 준비 중일 수 있습니다. 최신 발표순으로 정렬하고 시각이 같으면 고정 ID로 순서를 정합니다. 항목에는 제목, 원문 `pubDate`, 개요, 글 링크와 허용된 공식 원문 링크를 담습니다. 한국어는 변경의 의미에 대한 AI 해설을 더하고, 영어는 공식 원문 항목을 제공합니다. 날짜만 있는 글에는 발표 시각이 제공되지 않았음을 표시합니다. 글과 채널 주소에는 선택 언어를 명시합니다. 한국어 GUID는 기존 구독에 중복 글이 생기지 않도록 이전 주소를 유지하며, 영어 GUID는 영어 상세 주소를 사용합니다. 방문 정보와 내부 모델 메타데이터는 포함하지 않습니다. 구현은 [rss.ts](../../src/server/rss.ts)에 있습니다.
 
 전체 목록이 있으면 선택한 언어의 모든 항목을 순서 있는 목록으로 RSS에도 넣습니다. 구독 피드의 글 50개 제한으로 한 글의 변경 목록을 자르지 않습니다. 미완성 목록에는 원문 항목 중 준비한 개수를 표시합니다.
+
+### AI 에이전트
+
+POST `/api/chat`에는 설정값과 정확히 일치하는 `Origin`, `x-code-pulse-client: 1`, JSON 본문 `{ language, entryId?, messages }`가 필요합니다. `language`는 `ko` 또는 `en`이며 `entryId`는 독자가 보고 있는 글입니다. `messages`는 `user`로 시작해 번갈아 이어지고 `user`로 끝나는 1~12개 대화이며, 각 내용은 2,000자 이하입니다. Origin이나 클라이언트 헤더가 올바르지 않으면 403, 허용하지 않는 본문이면 400, 스냅샷을 읽지 못하면 503을 반환합니다. 프로세스 단위 한도(동시 답변 8개, 분당 120개)를 넘으면 `Retry-After: 20`과 함께 429를 반환하며 방문자 주소는 저장하지 않습니다.
+
+성공 응답은 `no-store`인 `application/x-ndjson`이며, 생성되는 대로 전달되도록 압축하지 않습니다. 이벤트는 `start`, `delta`(답변 글), `tool`(에이전트가 실행한 검색), `retract`(도구 호출 전에 보낸 글 삭제), `sources`(참고하거나 인용한 글), `done`, `error`입니다. Claude Haiku 5.5는 `search_changes`, `find_version`, `get_entry`, `list_recent` 도구로 선택한 언어의 공개 글만 최대 5회까지 검색합니다. 답변은 `?entry=<id>` 형식으로 글을 연결합니다. [이벤트 타입](../../src/shared/types.ts)을 참고합니다.
 
 ### 방문 집계와 캐시
 
