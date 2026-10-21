@@ -12,6 +12,12 @@ These entries describe application builds. Git tags and hosted releases are veri
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-21
+
+### Added
+
+- Copy an AI agent answer to the clipboard as Markdown and formatted text. Entry links become shareable addresses, and sources the answer did not link are listed after it.
+
 ## [1.4.0] - 2026-10-21
 
 ### Added
@@ -79,6 +85,12 @@ These entries describe application builds. Git tags and hosted releases are veri
 아래 내용은 앱 빌드의 변경 기록입니다. Git 태그와 원격 릴리스는 릴리스 워크플로에서 별도로 확인하며 저장소 주소를 임의로 만들지 않습니다.
 
 ## [Unreleased]
+
+## [1.5.0] - 2026-10-21
+
+### Added
+
+- AI 에이전트 답변을 Markdown과 서식 있는 텍스트로 클립보드에 복사하고 근거 글 링크는 공유 주소로 바꾸며 답변에 연결되지 않은 참고 글은 목록으로 덧붙임
 
 ## [1.4.0] - 2026-10-21
 

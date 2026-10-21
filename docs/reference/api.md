@@ -69,7 +69,7 @@ When available, RSS also includes all prepared change items in the selected lang
 
 POST `/api/chat` requires the exact configured `Origin`, `x-code-pulse-client: 1` and a JSON body `{ language, entryId?, messages }`. `language` is `ko` or `en`; `entryId` names the article the reader is viewing. `messages` holds 1 to 12 turns that alternate from `user` and end with `user`, each at most 2,000 characters. An invalid origin or client header returns 403, a rejected body 400, and an unreadable snapshot 503. When the process-wide budget (8 concurrent answers, 120 per minute) is exhausted, it returns 429 with `Retry-After: 20`; no visitor address is stored.
 
-A successful response is `application/x-ndjson` with `no-store`, uncompressed so events arrive as they are produced. Events are `start`, `delta` (answer text), `tool` (the search the agent ran), `retract` (drop text streamed before a tool call), `sources` (consulted or cited entries), `done` and `error`. Claude Haiku 5.5 searches only the public serialized entries in the selected language through the `search_changes`, `find_version`, `get_entry` and `list_recent` tools, for at most 5 rounds. Answers link entries as `?entry=<id>`. See the [event type](../../src/shared/types.ts).
+A successful response is `application/x-ndjson` with `no-store`, uncompressed so events arrive as they are produced. Events are `start`, `delta` (answer text), `tool` (the search the agent ran), `retract` (drop text streamed before a tool call), `sources` (consulted or cited entries), `done` and `error`. Claude Haiku 5.5 searches only the public serialized entries in the selected language through the `search_changes`, `find_version`, `get_entry` and `list_recent` tools, for at most 5 rounds. Answers link entries as `?entry=<id>`. Copying an answer in the browser rewrites those links to shareable `?entry=<id>&lang=<language>` addresses and writes Markdown and HTML together. See the [event type](../../src/shared/types.ts).
 
 ### Presence and caching
 
@@ -150,7 +150,7 @@ RSS는 `product`와 선택적인 `lang=ko`, `lang=en`을 허용합니다. 영어
 
 POST `/api/chat`에는 설정값과 정확히 일치하는 `Origin`, `x-code-pulse-client: 1`, JSON 본문 `{ language, entryId?, messages }`가 필요합니다. `language`는 `ko` 또는 `en`이며 `entryId`는 독자가 보고 있는 글입니다. `messages`는 `user`로 시작해 번갈아 이어지고 `user`로 끝나는 1~12개 대화이며, 각 내용은 2,000자 이하입니다. Origin이나 클라이언트 헤더가 올바르지 않으면 403, 허용하지 않는 본문이면 400, 스냅샷을 읽지 못하면 503을 반환합니다. 프로세스 단위 한도(동시 답변 8개, 분당 120개)를 넘으면 `Retry-After: 20`과 함께 429를 반환하며 방문자 주소는 저장하지 않습니다.
 
-성공 응답은 `no-store`인 `application/x-ndjson`이며, 생성되는 대로 전달되도록 압축하지 않습니다. 이벤트는 `start`, `delta`(답변 글), `tool`(에이전트가 실행한 검색), `retract`(도구 호출 전에 보낸 글 삭제), `sources`(참고하거나 인용한 글), `done`, `error`입니다. Claude Haiku 5.5는 `search_changes`, `find_version`, `get_entry`, `list_recent` 도구로 선택한 언어의 공개 글만 최대 5회까지 검색합니다. 답변은 `?entry=<id>` 형식으로 글을 연결합니다. [이벤트 타입](../../src/shared/types.ts)을 참고합니다.
+성공 응답은 `no-store`인 `application/x-ndjson`이며, 생성되는 대로 전달되도록 압축하지 않습니다. 이벤트는 `start`, `delta`(답변 글), `tool`(에이전트가 실행한 검색), `retract`(도구 호출 전에 보낸 글 삭제), `sources`(참고하거나 인용한 글), `done`, `error`입니다. Claude Haiku 5.5는 `search_changes`, `find_version`, `get_entry`, `list_recent` 도구로 선택한 언어의 공개 글만 최대 5회까지 검색합니다. 답변은 `?entry=<id>` 형식으로 글을 연결합니다. 브라우저에서 답변을 복사하면 이 링크를 `?entry=<id>&lang=<언어>` 공유 주소로 바꾸고 Markdown과 HTML을 함께 복사합니다. [이벤트 타입](../../src/shared/types.ts)을 참고합니다.
 
 ### 방문 집계와 캐시
 

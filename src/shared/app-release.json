@@ -1,6 +1,17 @@
 {
-  "version": "1.4.0",
+  "version": "1.5.0",
   "releases": [
+    {
+      "version": "1.5.0",
+      "date": "2026-10-21",
+      "changes": [
+        {
+          "category": "Added",
+          "en": "Copy an AI agent answer to the clipboard as Markdown and formatted text. Entry links become shareable addresses, and sources the answer did not link are listed after it.",
+          "ko": "AI 에이전트 답변을 Markdown과 서식 있는 텍스트로 클립보드에 복사하고 근거 글 링크는 공유 주소로 바꾸며 답변에 연결되지 않은 참고 글은 목록으로 덧붙임"
+        }
+      ]
+    },
     {
       "version": "1.4.0",
       "date": "2026-10-21",

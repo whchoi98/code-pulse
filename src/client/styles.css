@@ -658,7 +658,7 @@ button, a, input, select, summary { outline-offset: 4px; }
 .chat-message { max-width: 92%; font-size: 13px; line-height: 1.8; word-break: keep-all; overflow-wrap: anywhere; }
 .chat-message.user { align-self: flex-end; padding: 9px 13px; border-radius: 13px 13px 4px 13px; background: var(--accent-wash); color: var(--ink); white-space: pre-wrap; }
 .chat-message.assistant { align-self: flex-start; padding: 2px 2px; }
-.chat-message.assistant.error > p:last-of-type { color: var(--warning); }
+.chat-message.assistant.error .chat-answer > p:last-of-type { color: var(--warning); }
 .chat-message p + p, .chat-message p + ul, .chat-message p + ol, .chat-message ul + p, .chat-message ol + p, .chat-message h4 + * { margin-top: 8px; }
 .chat-message h4 { font-size: 13px; font-weight: 600; margin: 10px 0 0; }
 .chat-message ul, .chat-message ol { margin: 4px 0 0; padding-left: 19px; }
@@ -675,6 +675,11 @@ button, a, input, select, summary { outline-offset: 4px; }
 .chat-sources a { display: flex; flex-direction: column; gap: 1px; padding: 7px 10px; border: 1px solid var(--soft-line); border-radius: 8px; font-size: 11.5px; line-height: 1.55; color: var(--ink); text-decoration: none; }
 .chat-sources a:hover { border-color: var(--accent); }
 .chat-sources a > span { font-family: "IBM Plex Mono", monospace; font-size: 10px; color: var(--accent-dark); }
+.chat-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 8px; }
+.chat-copy { display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border: 1px solid var(--soft-line); border-radius: 7px; background: transparent; color: var(--muted); font: inherit; font-size: 11px; line-height: 1.5; cursor: pointer; }
+.chat-copy:hover { color: var(--ink); border-color: var(--accent); }
+.chat-copy.copied { color: var(--accent-dark); border-color: var(--accent); }
+.chat-copy-note { margin: 0; font-size: 11px; line-height: 1.5; color: var(--warning); }
 .chat-input { display: flex; align-items: flex-end; gap: 8px; margin: 0 12px; padding: 8px 8px 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
 .chat-input:focus-within { border-color: var(--accent); }
 .chat-input textarea { flex: 1; resize: none; border: 0; outline: 0; background: none; color: var(--ink); font-size: 13px; line-height: 1.6; max-height: 120px; }

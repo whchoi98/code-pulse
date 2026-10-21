@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
-import { ArrowUp, Bot, GripHorizontal, RotateCcw, Square, X } from 'lucide-react';
+import { ArrowUp, Bot, Check, Copy, GripHorizontal, RotateCcw, Square, X } from 'lucide-react';
 import type { ChatEvent, ChatSource, Language } from '../shared/types';
 import { products } from './lib';
 import { useLocale } from './i18n';
@@ -156,6 +156,97 @@ export function ChatMarkdown({ text, onEntry }: { text: string; onEntry: (id: st
   return <>{blocks}</>;
 }
 
+/** The same shareable address the article copy button uses. */
+function entryAddress(id: string, language: Language): string {
+  const url = new URL(window.location.pathname, window.location.origin);
+  url.search = new URLSearchParams({ entry: id, lang: language }).toString();
+  return url.href;
+}
+const unlinkedSources = (content: string, sources: ChatSource[] = []) => sources.filter(source => !content.includes(`(?entry=${source.id})`));
+const sourceLabel = (source: ChatSource) => `${products[source.product].name}${source.version ? ` ${source.version}` : ''}, ${source.publishedDate}`;
+
+/** Markdown for pasting elsewhere: reader-relative links become addresses and unlinked sources are listed. */
+function answerMarkdown(content: string, sources: ChatSource[] | undefined, language: Language): string {
+  const text = content.trim().replace(/\]\(\?entry=([a-z0-9-]{1,128})\)/g, (_, id: string) => `](${entryAddress(id, language)})`);
+  const unlinked = unlinkedSources(content, sources);
+  if (!unlinked.length) return text;
+  const items = unlinked.map(source => `- [${source.title.replace(/[[\]]/g, '\\$&')}](${entryAddress(source.id, language)}) (${sourceLabel(source)})`);
+  return `${text}\n\n${language === 'en' ? 'Referenced changes' : '참고한 변경 기록'}\n${items.join('\n')}`;
+}
+
+/** Formatted text for rich editors, built from the rendered answer rather than reparsed Markdown. */
+function answerHtml(rendered: HTMLElement, content: string, sources: ChatSource[] | undefined, language: Language): string {
+  const copy = rendered.cloneNode(true) as HTMLElement;
+  for (const link of copy.querySelectorAll('a')) {
+    const entry = /^\?entry=([a-z0-9-]{1,128})$/.exec(link.getAttribute('href') ?? '');
+    if (entry) link.href = entryAddress(entry[1], language);
+  }
+  const unlinked = unlinkedSources(content, sources);
+  if (unlinked.length) {
+    const heading = copy.appendChild(document.createElement('p'));
+    heading.textContent = language === 'en' ? 'Referenced changes' : '참고한 변경 기록';
+    const list = copy.appendChild(document.createElement('ul'));
+    for (const source of unlinked) {
+      const item = list.appendChild(document.createElement('li'));
+      const link = item.appendChild(document.createElement('a'));
+      link.href = entryAddress(source.id, language);
+      link.textContent = source.title;
+      item.append(` (${sourceLabel(source)})`);
+    }
+  }
+  return copy.innerHTML;
+}
+
+function AssistantMessage({ message, onEntry }: { message: ChatMessage; onEntry: (id: string) => void }) {
+  const { language, t } = useLocale();
+  const answer = useRef<HTMLDivElement>(null);
+  const [copied, setCopied] = useState<'idle' | 'copied' | 'failed'>('idle');
+  useEffect(() => {
+    if (copied !== 'copied') return;
+    const timer = window.setTimeout(() => setCopied('idle'), 2000);
+    return () => window.clearTimeout(timer);
+  }, [copied]);
+  const copy = async () => {
+    const plain = answerMarkdown(message.content, message.sources, language);
+    try {
+      if (!navigator.clipboard) throw new Error('Clipboard unavailable');
+      let written = false;
+      if (answer.current && typeof ClipboardItem !== 'undefined') {
+        const html = answerHtml(answer.current, message.content, message.sources, language);
+        try {
+          await navigator.clipboard.write([new ClipboardItem({
+            'text/plain': new Blob([plain], { type: 'text/plain' }),
+            'text/html': new Blob([html], { type: 'text/html' }),
+          })]);
+          written = true;
+        } catch { /* Some browsers accept only plain text. */ }
+      }
+      if (!written) await navigator.clipboard.writeText(plain);
+      setCopied('copied');
+    } catch {
+      // Without clipboard access, select the answer so the reader can copy it manually.
+      if (answer.current) window.getSelection()?.selectAllChildren(answer.current);
+      setCopied('failed');
+    }
+  };
+  return <>
+    {message.content && <div ref={answer} className="chat-answer"><ChatMarkdown text={message.content} onEntry={onEntry} /></div>}
+    {message.activity && <p className="chat-activity"><span className="chat-dots" aria-hidden="true"><i /><i /><i /></span>{message.activity}</p>}
+    {message.sources && message.sources.length > 0 && <div className="chat-sources" aria-label={t('참고한 변경 기록', 'Referenced changes')}>
+      {message.sources.map(source => <a key={source.id} href={`?entry=${source.id}&lang=${language}`} onClick={event => { event.preventDefault(); onEntry(source.id); }}>
+        <span>{products[source.product].name}{source.version ? ` ${source.version}` : ''}</span>{source.title}
+      </a>)}
+    </div>}
+    {message.status === 'done' && message.content.trim() && <div className="chat-actions">
+      <button type="button" className={`chat-copy ${copied}`} onClick={() => void copy()}>
+        {copied === 'copied' ? <Check size={13} aria-hidden="true" /> : <Copy size={13} aria-hidden="true" />}
+        {copied === 'copied' ? t('복사했습니다', 'Copied') : t('답변 복사', 'Copy answer')}
+      </button>
+      {copied === 'failed' && <p className="chat-copy-note">{t('복사하지 못했습니다. 선택된 답변을 직접 복사하세요.', 'Could not copy. The answer is selected so you can copy it yourself.')}</p>}
+    </div>}
+  </>;
+}
+
 export function ChatWidget({ entryId, onOpenEntry }: { entryId: string | null; onOpenEntry: (id: string) => void }) {
   const { language, t } = useLocale();
   const chat = useChat(language, entryId);
@@ -248,15 +339,7 @@ export function ChatWidget({ entryId, onOpenEntry }: { entryId: string | null; o
           <div className="chat-suggestions">{suggestions.map(text => <button key={text} onClick={() => void chat.send(text)}>{text}</button>)}</div>
         </div>}
         {chat.messages.map(message => <div key={message.id} className={`chat-message ${message.role} ${message.status}`}>
-          {message.role === 'user' ? <p>{message.content}</p> : <>
-            {message.content && <ChatMarkdown text={message.content} onEntry={openEntry} />}
-            {message.activity && <p className="chat-activity"><span className="chat-dots" aria-hidden="true"><i /><i /><i /></span>{message.activity}</p>}
-            {message.sources && message.sources.length > 0 && <div className="chat-sources" aria-label={t('참고한 변경 기록', 'Referenced changes')}>
-              {message.sources.map(source => <a key={source.id} href={`?entry=${source.id}&lang=${language}`} onClick={event => { event.preventDefault(); openEntry(source.id); }}>
-                <span>{products[source.product].name}{source.version ? ` ${source.version}` : ''}</span>{source.title}
-              </a>)}
-            </div>}
-          </>}
+          {message.role === 'user' ? <p>{message.content}</p> : <AssistantMessage message={message} onEntry={openEntry} />}
         </div>)}
       </div>
       <form className="chat-input" onSubmit={event => { event.preventDefault(); submit(); }}>
