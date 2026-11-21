@@ -20,6 +20,7 @@ Start with the [project overview](../README.md) and [contributor instructions](.
 | Inspect application build history | [Changelog](../CHANGELOG.md) and the release links in the project overview |
 | Inspect static delivery, language and loading evidence | [v1.3.0 verification](verification.md#v130-정적-배포와-영어-지원) |
 | Inspect deployment evidence | [Verification](verification.md), currently in Korean |
+| Inspect the November 21 source failures and their reader impact | [Collector review](collector-review-2026-11-21.md#english) |
 | Inspect complete-change coverage | [v1.3.0 source inventory](full-changes-v1.3.0-verification.json), [both public languages](static-content-verification.json) |
 | Check logo provenance | [Brand sources](../public/brand/SOURCES.md) |
 
@@ -47,6 +48,7 @@ The [RSS implementation notes](rss-implementation.md), [initial final review](fi
 | 앱 빌드 이력 확인 | [변경 기록](../CHANGELOG.md)과 프로젝트 소개의 릴리스 링크 |
 | 정적 배포, 언어와 로딩 검증 | [v1.3.0 검증](verification.md#v130-정적-배포와-영어-지원) |
 | 배포 검증 근거 확인 | [검증 기록](verification.md), 한국어 문서 |
+| 11월 21일 수집 오류와 영향 확인 | [수집기 점검](collector-review-2026-11-21.md#한국어) |
 | 전체 변경 항목의 포함 여부 확인 | [v1.3.0 원문 항목](full-changes-v1.3.0-verification.json), [두 언어 공개 데이터](static-content-verification.json) |
 | 로고 출처 확인 | [브랜드 자료](../public/brand/SOURCES.md) |
 

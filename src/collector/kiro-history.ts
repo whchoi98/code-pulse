@@ -1,4 +1,4 @@
-import { load } from 'cheerio';
+import { load, type CheerioAPI } from 'cheerio';
 import type { FetchedDocument } from './official-fetch.js';
 import { isOfficialUrl } from './official-fetch.js';
 import { parseKiroChangelog, plainText, type Candidate, type SourceDefinition } from './sources.js';
@@ -70,10 +70,17 @@ function patchLinks(html: string, parent: Candidate): PatchMetadata[] {
   return [...patches.values()];
 }
 
+function codePlaceholders($: CheerioAPI): number {
+  return $('template[data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"]').next('div')
+    .filter((_, element) => $(element).text().trim() === 'Loading code example...').length;
+}
+
 function incompleteHtml(html: string): boolean {
   const $ = load(html);
-  return $('button[aria-expanded="false"], astro-island').length > 0;
+  return $('button[aria-expanded="false"], astro-island').length > 0 || codePlaceholders($) > 0;
 }
+
+const kiroText = (html: string) => plainText(html, 'pre[data-kiro-code] > code');
 
 /**
  * Read the literal React Flight data embedded by Kiro's server. JavaScript is
@@ -172,6 +179,14 @@ class FlightArticles {
       const sourceTag = typeof value[1] === 'string' ? value[1] : '';
       if (/^(?:script|style|svg|nav|footer|button|input)$/i.test(sourceTag)) return '';
       const custom = !/^[a-z][a-z0-9]*$/i.test(sourceTag);
+      // The patch header's date component has an ISO day prop but no text children.
+      if (custom && props.children === undefined && typeof props.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(props.date)) {
+        return `<time datetime="${props.date}"></time>`;
+      }
+      if (custom && typeof props.code === 'string' && typeof props.language === 'string' && props.code.trim()) {
+        const encoded = render(props.code, depth + 1);
+        return `<pre data-kiro-code><code>${encoded}</code></pre>`;
+      }
       const title = custom && typeof props.title === 'string' && SECTION_TITLE.test(props.title) ? props.title : undefined;
       const tag = custom ? (typeof props.href === 'string' ? 'a' : title ? 'section' : 'div') : sourceTag;
       const attributes = [
@@ -189,6 +204,9 @@ class FlightArticles {
 function verifyRecoveredSections(original: string, recovered: string): void {
   const originalDom = load(original);
   const recoveredDom = load(recovered);
+  if (recoveredDom('[data-kiro-code]').filter((_, node) => Boolean(recoveredDom(node).text().trim())).length < codePlaceholders(originalDom)) {
+    throw new Error('Kiro 코드 예제의 원문을 복구할 수 없습니다.');
+  }
   const expected = originalDom('button[aria-expanded="false"]').toArray().map(button => originalDom(button).text().trim()).filter(title => SECTION_TITLE.test(title));
   for (const title of expected) {
     const section = recoveredDom('[data-kiro-section]').filter((_, node) => recoveredDom(node).attr('data-kiro-section') === title).first();
@@ -203,10 +221,11 @@ function patchCandidate(parent: Candidate, patch: PatchMetadata, html: string): 
   const node = $('[id]').filter((_, element) => $(element).attr('id') === patch.id).first().clone();
   const heading = node.children('p').first();
   if (!node.length || heading.find('strong').first().text().trim() !== patch.version) throw new Error('Kiro 패치 버전과 실제 본문이 일치하지 않습니다.');
-  const headerDate = heading.find('span').text().replace(/^\s*\|\s*/, '').trim();
-  if (day(headerDate) !== patch.date) throw new Error('Kiro 패치의 본문과 발표일이 일치하지 않습니다.');
+  const bodyDate = heading.children('time[datetime]').attr('datetime')
+    ?? day(heading.find('span').text().replace(/^\s*\|\s*/, '').trim());
+  if (bodyDate !== patch.date) throw new Error('Kiro 패치의 본문과 발표일이 일치하지 않습니다.');
   heading.remove();
-  const originalText = plainText(node.html() ?? '');
+  const originalText = kiroText(node.html() ?? '');
   if (!originalText) throw new Error('Kiro 패치의 본문이 비어 있습니다.');
   const category = new URL(parent.sourceUrl).pathname.split('/')[2];
   const label = category === 'cli' || category === 'ide' ? category.toUpperCase() : category === 'crew' ? 'Crew' : category === 'web' ? 'Web' : '';
@@ -229,11 +248,11 @@ function parentText(html: string, originalTitle: string): string {
   // Detail pages place publication metadata and adjacent-release links inside
   // article. The changelog container is the actual release body.
   const content = article.find('.changelog').first();
-  const contentText = plainText(content.html() ?? '');
+  const contentText = kiroText(content.html() ?? '');
   if (content.length && !contentText) throw new Error('Kiro 기록의 본문이 비어 있습니다.');
   const text = content.length
     ? [originalTitle, ...article.children('p').toArray().map(paragraph => plainText($.html(paragraph))), contentText].filter(Boolean).join('\n\n')
-    : plainText(article.html() ?? '');
+    : kiroText(article.html() ?? '');
   if (!text) throw new Error('Kiro 기록의 본문이 비어 있습니다.');
   return text;
 }
@@ -243,7 +262,9 @@ function nextPage(body: string, url: string, current: number): string | undefine
   const pageNumbers = new Map<number, string>();
   $('a[href]').each((_, anchor) => {
     if ($(anchor).closest('article').length) return;
-    const link = new URL($(anchor).attr('href')!, url);
+    const href = $(anchor).attr('href')!.trim();
+    if (href.startsWith('#')) return;
+    const link = new URL(href, url);
     const number = link.pathname.match(/^\/changelog\/page\/([1-9]\d*)\/?$/)?.[1];
     if (!number) return;
     officialKiroUrl(link.href);

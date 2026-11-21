@@ -12,6 +12,12 @@ These entries describe application builds. Git tags and hosted releases are veri
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-11-21
+
+### Fixed
+
+- Fix stalled Kiro updates: skip in-page links when following changelog pages and verify the new patch date format against the official timeline. Preserve code examples that load separately in the browser.
+
 ## [1.5.0] - 2026-10-21
 
 ### Added
@@ -85,6 +91,12 @@ These entries describe application builds. Git tags and hosted releases are veri
 아래 내용은 앱 빌드의 변경 기록입니다. Git 태그와 원격 릴리스는 릴리스 워크플로에서 별도로 확인하며 저장소 주소를 임의로 만들지 않습니다.
 
 ## [Unreleased]
+
+## [1.5.1] - 2026-11-21
+
+### Fixed
+
+- Kiro 변경 기록을 수집할 때 본문 바로가기 링크를 건너뛰고 새 형식의 패치 날짜를 공식 목록의 발표일과 대조하도록 수정. 브라우저에서 따로 불러오는 코드 예제도 원문에 포함
 
 ## [1.5.0] - 2026-10-21
 

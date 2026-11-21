@@ -82,11 +82,18 @@ function timestamp(value: string): string {
   return date.toISOString();
 }
 
-export function plainText(html: string): string {
+export function plainText(html: string, verbatimSelector?: string): string {
   const $ = load(html);
   $('script, style, svg, nav, footer, .anchor-link, .copied-indicator').remove();
   $('p, li, h1, h2, h3, h4, br, pre').each((_, el) => { $(el).prepend('\n'); $(el).append('\n'); });
-  return $.root().text().replace(/[ \t]+/g, ' ').replace(/\n[ \t]+/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  // NUL is not present in parsed HTML text. Preserve code indentation through prose cleanup.
+  const literals: string[] = [];
+  if (verbatimSelector) $(verbatimSelector).each((_, el) => {
+    const index = literals.push($(el).text()) - 1;
+    $(el).text(`\0${index}\0`);
+  });
+  const text = $.root().text().replace(/[ \t]+/g, ' ').replace(/\n[ \t]+/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  return literals.length ? text.replace(/\0(\d+)\0/g, (_, index: string) => literals[Number(index)]) : text;
 }
 
 function blogReferences(text: string, base: string): SourceReference[] {

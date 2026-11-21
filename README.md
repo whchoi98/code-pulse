@@ -3,7 +3,7 @@
 [GitHub 저장소](https://github.com/whchoi98/code-pulse)에서 소스와 이슈를 관리합니다.
 
 <!-- app-version:start -->
-현재 소스 버전: **1.5.0**. [변경 기록](CHANGELOG.md)과 [릴리스 노트](docs/releases/1.5.0.md)를 함께 관리합니다.
+현재 소스 버전: **1.5.1**. [변경 기록](CHANGELOG.md)과 [릴리스 노트](docs/releases/1.5.1.md)를 함께 관리합니다.
 <!-- app-version:end -->
 
 2026년 1월 1일부터 현재까지 Claude Code, Codex, Kiro의 공식 변경 기록을 모아 한국어와 영어로 제공하는 웹사이트입니다. 바뀐 기능과 적용할 때 확인할 사항을 설명하고 공식 원문으로 연결합니다.

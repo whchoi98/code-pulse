@@ -19,7 +19,7 @@ function row(path: string, version: string, date: string, content = '<p>Official
 }
 
 function page(rows: string, next?: number) {
-  return `<html><body>${rows}${next ? `<nav><a aria-label="Go to page ${next}" href="/changelog/page/${next}/">Next</a></nav>` : ''}</body></html>`;
+  return `<html><body><a href="#main">Skip to main content</a><main id="main">${rows}${next ? `<nav aria-label="Pagination"><a aria-label="Go to page ${next}" href="/changelog/page/${next}/">Next</a></nav>` : ''}</main></body></html>`;
 }
 
 const element = (tag: string, children: unknown, props: Record<string, unknown> = {}) => ['$', tag, null, { ...props, children }];
@@ -33,7 +33,7 @@ const patchNode = (version: string, date: string, body: string) => element('div'
 const flightScript = (stream: string) => `<script>self.__next_f.push(${JSON.stringify([1, stream]).replaceAll('<', '\\u003c')});</script>`;
 
 describe('Kiro history collection', () => {
-  it('walks to the final page despite older parent dates and archives complete HTML without detail requests', async () => {
+  it('follows pagination past in-page skip links and older parent dates, archiving every page', async () => {
     const pages = new Map([
       [pageUrl(1), page(row('cli/2-0', '2.0.0', 'Oct 5, 2026'), 2)],
       [pageUrl(2), page(row('cli/1-24', '1.24.0', 'Jan 16, 2026'), 3)],
@@ -56,6 +56,54 @@ describe('Kiro history collection', () => {
     expect(result.map(entry => entry.publishedDate)).toEqual(['2026-10-05', '2026-01-16', '2025-12-18', '2025-11-17']);
     expect(result[0]).toMatchObject({ product: 'kiro', channel: 'cli', version: '2.0.0', sourceUrl: 'https://kiro.dev/changelog/cli/2-0/' });
     expect(result[0]!.originalText).toContain('Official release content is present here.');
+  });
+
+  it.each([
+    { bodyDate: '2026-11-12', matches: true },
+    { bodyDate: '2026-11-10', matches: false },
+  ])('checks the Flight patch date $bodyDate against the timeline before collecting it', async ({ bodyDate, matches }) => {
+    const path = 'crew/0-12';
+    const main = row(path, '0.12.0', 'Nov 6, 2026', '<p>Parent release notes.</p><button aria-expanded="false">Patches</button>',
+      [{ version: '0.12.2', date: 'Nov 12, 2026' }]);
+    // Kiro's date component carries an ISO date prop and has no rendered children.
+    const patch = element('div', [
+      element('p', [element('strong', '0.12.2'), ['$', '$L7b', null, { date: bodyDate }]]),
+      element('p', 'The update downloads in the background.'),
+    ], { id: 'patch-0-12-2' });
+    const article = articleModel(path, [element('p', 'Parent release notes.'), element('$LCollapsible', patch, { title: 'Patches' })]);
+    const body = page(main) + flightScript(`a:${JSON.stringify(article)}\n`);
+    const result = readKiroHistory(source, { earliestPublishedAt, fetchDocument: async url => document(url, body) });
+    if (!matches) {
+      await expect(result).rejects.toThrow(/본문과 발표일이 일치하지 않습니다/);
+      return;
+    }
+    const entries = await result;
+    expect(entries.find(entry => entry.version === '0.12.2')).toMatchObject({
+      publishedDate: '2026-11-12', originalText: 'The update downloads in the background.',
+      sourceUrl: 'https://kiro.dev/changelog/crew/0-12#patch-0-12-2',
+    });
+    expect(entries.find(entry => entry.version === '0.12.0')).toMatchObject({
+      publishedDate: '2026-11-06', originalText: 'Parent release notes.',
+    });
+  });
+
+  it('restores a client-rendered code example from its own article or fails if the example is missing', async () => {
+    const path = 'general/enterprise-management-preview';
+    const title = element('h2', 'Release 1.0.0');
+    const code = 'if [ "$channel" = "lts" ]; then\n  kiro-cli --version\nfi';
+    const placeholder = '<template data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING"></template><div>Loading code example...</div>';
+    const main = row(path, '1.0.0', 'Nov 10, 2026', `<div class="changelog"><p>Choose the channel:</p>${placeholder}<p>Then continue.</p></div>`);
+    const read = (example: unknown) => {
+      const content = element('div', [element('p', 'Choose the channel:'), example, element('p', 'Then continue.')], { className: 'changelog' });
+      const other = articleModel('crew/another', ['$', '$L49', null, { code: 'unrelated', language: 'bash' }]);
+      const body = page(main) + flightScript(`a:${JSON.stringify(articleModel(path, [title, content]))}\nb:${JSON.stringify(other)}\n`);
+      return readKiroHistory(source, { earliestPublishedAt, fetchDocument: async url => document(url, body) });
+    };
+    const [entry] = await read(['$', '$L49', null, { code, language: 'bash' }]);
+    expect(entry.originalText).toContain(code);
+    expect(entry.originalText).toContain('Then continue.');
+    expect(entry.originalText).not.toMatch(/Loading code example|unrelated/);
+    await expect(read(null)).rejects.toThrow();
   });
 
   it.each([
